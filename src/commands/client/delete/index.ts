@@ -29,7 +29,7 @@ type Payload = {
  *
  * The DeleteCommand takes a payload containing the IDs of the records to be deleted and performs the deletion operation when executed.
  */
-export class DeleteCommand<TResult = "Success"> extends Command<TResult> {
+export class DeleteCommand extends Command<string> {
   constructor(payload: Payload) {
     super(payload.ids, "delete");
   }

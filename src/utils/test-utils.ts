@@ -1,6 +1,6 @@
-import { HttpClient } from "../http";
+import { HttpClient, RetryConfig } from "../http";
 
-export const newHttpClient = () => {
+export const newHttpClient = (retry?: RetryConfig | undefined) => {
   const url = process.env.UPSTASH_VECTOR_REST_URL;
   if (!url) {
     throw new Error("Could not find url");
@@ -13,6 +13,7 @@ export const newHttpClient = () => {
   return new HttpClient({
     baseUrl: url,
     headers: { authorization: `Bearer ${token}` },
+    retry,
   });
 };
 

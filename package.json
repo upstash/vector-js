@@ -1,12 +1,34 @@
 {
-  "name": "vector-sdk",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@biomejs/biome": "^1.4.1",
-    "bun-types": "latest"
+  "name": "@upstash/sqs",
+  "description": "An HTTP/REST based Vector DB client built on top of Upstash REST API.",
+  "module": "./dist/index.mjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "version": "0.1.0",
+  "keywords": [
+    "vector",
+    "upstash",
+    "db"
+  ],
+  "author": "Oguzhan Olguncu <oguzhan@upstash.com>",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "bugs": {
+    "url": "https://github.com/upstash/vector/issues"
   },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+  "scripts": {
+    "test": "bun test src --coverage --bail",
+    "fmt": "bunx biome check --apply ./src",
+    "build": "tsup",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@biomejs/biome": "^1.4.1",
+    "bun-types": "latest",
+    "husky": "^8.0.3",
+    "tsup": "latest"
   }
 }

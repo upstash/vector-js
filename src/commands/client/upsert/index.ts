@@ -33,7 +33,7 @@ type Payload = {
  *
  * The UpsertCommand takes a payload containing the necessary data for the upsert operation. It supports handling both insertion and update of records based on the provided identifier.
  */
-export class UpsertCommand extends Command<"Success"> {
+export class UpsertCommand extends Command<string> {
   constructor(payload: Payload) {
     super({ ...payload }, "upsert");
   }

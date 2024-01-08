@@ -1,0 +1,1 @@
+bun run fmt && bun run test
