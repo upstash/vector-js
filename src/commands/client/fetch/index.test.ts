@@ -1,12 +1,13 @@
-import { describe, expect, test } from "bun:test";
+import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand } from ".";
-import { newHttpClient, randomID } from "../../../utils/test-utils";
+import { newHttpClient, randomFloat, randomID, resetIndexes } from "../../../utils/test-utils";
 import { UpsertCommand } from "../upsert";
 
 const client = newHttpClient();
-const randomFloat = () => parseFloat((Math.random() * 10).toFixed(1));
 
 describe("FETCH", () => {
+  afterAll(async () => await resetIndexes());
+
   test("should fetch records successfully", async () => {
     const randomizedData = new Array(20)
       .fill("")

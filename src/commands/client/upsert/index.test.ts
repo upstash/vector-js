@@ -1,10 +1,12 @@
-import { describe, expect, test } from "bun:test";
+import { afterAll, describe, expect, test } from "bun:test";
 import { UpsertCommand } from ".";
-import { newHttpClient } from "../../../utils/test-utils";
+import { newHttpClient, resetIndexes } from "../../../utils/test-utils";
 
 const client = newHttpClient();
 
 describe("UPSERT", () => {
+  afterAll(async () => await resetIndexes());
+
   test("should add record successfully", async () => {
     const res = await new UpsertCommand({ id: 1, vector: [0.1, 0.2] }).exec(client);
     expect(res).toEqual("Success");

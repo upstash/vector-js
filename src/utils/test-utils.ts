@@ -1,3 +1,4 @@
+import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, RetryConfig } from "../http";
 
 export const newHttpClient = (retry?: RetryConfig | undefined) => {
@@ -40,3 +41,7 @@ export function randomID(): string {
   }
   return btoa(s.join(""));
 }
+
+export const randomFloat = () => parseFloat((Math.random() * 10).toFixed(1));
+
+export const resetIndexes = async () => await new ResetCommand().exec(newHttpClient());

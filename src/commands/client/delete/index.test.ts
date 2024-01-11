@@ -1,11 +1,13 @@
-import { describe, expect, test } from "bun:test";
-import { newHttpClient, randomID } from "../../../utils/test-utils";
+import { afterAll, describe, expect, test } from "bun:test";
+import { newHttpClient, randomID, resetIndexes } from "../../../utils/test-utils";
 import { UpsertCommand } from "../upsert";
 import { DeleteCommand } from "./";
 
 const client = newHttpClient();
 
 describe("DELETE", () => {
+  afterAll(async () => await resetIndexes());
+
   test("should delete record(s) successfully", async () => {
     const initialVector = [6.6, 7.7];
     const idsToUpsert = [randomID(), randomID(), randomID()];

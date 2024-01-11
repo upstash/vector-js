@@ -1,7 +1,8 @@
 import { UpstashError } from "../error";
 import { Requester } from "../http";
 
-const ENDPOINTS = ["upsert", "query", "delete", "fetch"] as const;
+const ENDPOINTS = ["upsert", "query", "delete", "fetch", "reset"] as const;
+
 export type EndpointVariants = (typeof ENDPOINTS)[number];
 /**
  * TResult is the raw data returned from upstash, which may need to be transformed or parsed.
