@@ -4,7 +4,7 @@ import {
   RequesterConfig,
   UpstashRequest,
   UpstashResponse,
-} from "@http/index";
+} from "@http";
 import * as core from "./src/vector";
 
 export type { Requester, UpstashRequest, UpstashResponse };

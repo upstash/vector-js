@@ -1,7 +1,14 @@
 import { UpstashError } from "@error/index";
-import { Requester } from "@http/index";
+import { Requester } from "@http";
 
-const ENDPOINTS = ["upsert", "query", "delete", "fetch", "reset", "range"] as const;
+const ENDPOINTS = [
+  "upsert",
+  "query",
+  "delete",
+  "fetch",
+  "reset",
+  "range",
+] as const;
 
 export type EndpointVariants = (typeof ENDPOINTS)[number];
 /**
@@ -11,7 +18,10 @@ export class Command<TResult> {
   public readonly payload: Record<string, unknown> | unknown[];
   public readonly endpoint: EndpointVariants;
 
-  constructor(command: Record<string, unknown> | unknown[], endpoint: EndpointVariants) {
+  constructor(
+    command: Record<string, unknown> | unknown[],
+    endpoint: EndpointVariants
+  ) {
     this.payload = command;
     this.endpoint = endpoint;
   }
