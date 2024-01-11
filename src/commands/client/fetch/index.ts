@@ -38,9 +38,7 @@ type FetchReturnResponse<TMetadata> = Vector<TMetadata> | null;
  *  // Use fetchCommand to execute the fetch operation
  *  ```
  */
-export class FetchCommand<TMetadata> extends Command<
-  FetchReturnResponse<TMetadata>[]
-> {
+export class FetchCommand<TMetadata> extends Command<FetchReturnResponse<TMetadata>[]> {
   constructor(payload: Payload) {
     super({ ...payload }, "fetch");
   }

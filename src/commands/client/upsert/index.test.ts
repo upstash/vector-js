@@ -8,9 +8,7 @@ describe("UPSERT", () => {
   afterAll(async () => await resetIndexes());
 
   test("should add record successfully", async () => {
-    const res = await new UpsertCommand({ id: 1, vector: [0.1, 0.2] }).exec(
-      client
-    );
+    const res = await new UpsertCommand({ id: 1, vector: [0.1, 0.2] }).exec(client);
     expect(res).toEqual("Success");
   });
 

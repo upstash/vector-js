@@ -48,9 +48,7 @@ type RangeReturnResponse<TMetadata> = {
  *  // Use rangeCommand to execute the range query and retrieve data
  *  ```
  */
-export class RangeCommand<TResult> extends Command<
-  RangeReturnResponse<TResult>
-> {
+export class RangeCommand<TResult> extends Command<RangeReturnResponse<TResult>> {
   constructor(payload: Payload) {
     super(payload, "range");
   }
