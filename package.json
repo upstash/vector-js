@@ -1,5 +1,5 @@
 {
-  "name": "@upstash/sqs",
+  "name": "@upstash/vector",
   "description": "An HTTP/REST based Vector DB client built on top of Upstash REST API.",
   "module": "./dist/index.mjs",
   "main": "./dist/index.js",
