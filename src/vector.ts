@@ -1,3 +1,4 @@
+import { FetchCommand } from "./commands/client";
 import { DeleteCommand } from "./commands/client/delete";
 import { QueryCommand } from "./commands/client/query";
 import { UpsertCommand } from "./commands/client/upsert";
@@ -30,4 +31,5 @@ export class Index {
   delete = (args: CommandArgs<typeof DeleteCommand>) => new DeleteCommand(args).exec(this.client);
   query = (args: CommandArgs<typeof QueryCommand>) => new QueryCommand(args).exec(this.client);
   upsert = (args: CommandArgs<typeof UpsertCommand>) => new UpsertCommand(args).exec(this.client);
+  fetch = (args: CommandArgs<typeof FetchCommand>) => new FetchCommand(args).exec(this.client);
 }

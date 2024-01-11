@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { newHttpClient } from "../../../utils/test-utils";
-import { QueryCommand } from "./index";
 import { UpsertCommand } from "../upsert";
+import { QueryCommand } from "./index";
 
 const client = newHttpClient();
 
@@ -16,7 +16,12 @@ describe("QUERY", () => {
       vector: initialVector,
       topK: 1,
     }).exec(client);
-
-    expect(res).toBeTruthy();
+    expect(res).toEqual([
+      {
+        id: "33",
+        score: 1,
+        vector: [6.6, 7.7],
+      },
+    ]);
   });
 });

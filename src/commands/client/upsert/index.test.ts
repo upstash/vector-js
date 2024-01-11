@@ -1,14 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { newHttpClient } from "../../../utils/test-utils";
 import { UpsertCommand } from ".";
+import { newHttpClient } from "../../../utils/test-utils";
 
 const client = newHttpClient();
 
 describe("UPSERT", () => {
   test("should add record successfully", async () => {
-    const res = await new UpsertCommand({ id: 1, vector: [0.1, 0.2] }).exec(
-      client
-    );
+    const res = await new UpsertCommand({ id: 1, vector: [0.1, 0.2] }).exec(client);
     expect(res).toEqual("Success");
   });
   // biome-ignore lint/nursery/useAwait: required to test bad payloads

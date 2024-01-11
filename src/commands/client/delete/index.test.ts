@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { newHttpClient, randomID } from "../../../utils/test-utils";
-import { DeleteCommand } from "./";
 import { UpsertCommand } from "../upsert";
+import { DeleteCommand } from "./";
 
 const client = newHttpClient();
 
