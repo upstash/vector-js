@@ -32,15 +32,10 @@ export class Index {
     this.client = client;
   }
 
-  delete = (args: CommandArgs<typeof DeleteCommand>) =>
-    new DeleteCommand(args).exec(this.client);
-  query = (args: CommandArgs<typeof QueryCommand>) =>
-    new QueryCommand(args).exec(this.client);
-  upsert = (args: CommandArgs<typeof UpsertCommand>) =>
-    new UpsertCommand(args).exec(this.client);
-  fetch = (args: CommandArgs<typeof FetchCommand>) =>
-    new FetchCommand(args).exec(this.client);
+  delete = (args: CommandArgs<typeof DeleteCommand>) => new DeleteCommand(args).exec(this.client);
+  query = (args: CommandArgs<typeof QueryCommand>) => new QueryCommand(args).exec(this.client);
+  upsert = (args: CommandArgs<typeof UpsertCommand>) => new UpsertCommand(args).exec(this.client);
+  fetch = (args: CommandArgs<typeof FetchCommand>) => new FetchCommand(args).exec(this.client);
   reset = () => new ResetCommand().exec(this.client);
-  range = (args: CommandArgs<typeof RangeCommand>) =>
-    new RangeCommand(args).exec(this.client);
+  range = (args: CommandArgs<typeof RangeCommand>) => new RangeCommand(args).exec(this.client);
 }
