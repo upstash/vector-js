@@ -1,4 +1,4 @@
-import { Command } from "../../index";
+import { Command } from "@commands/command";
 
 /**
  * Payload Type Definition for UpsertCommand

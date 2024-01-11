@@ -1,4 +1,4 @@
-import { UpstashError } from "../error";
+import { UpstashError } from "@error/index";
 
 type CacheSetting =
   | "default"

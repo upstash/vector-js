@@ -1,4 +1,4 @@
-import { Command } from "../../index";
+import { Command } from "@commands/command";
 
 /**
  * Payload Type Definition for DeleteCommand
@@ -26,8 +26,6 @@ type Payload = {
  *  const deleteCommand = new DeleteCommand({ ids: deletionIds });
  *  // Use deleteCommand to execute the deletion operation
  *  ```
- *
- * The DeleteCommand takes a payload containing the IDs of the records to be deleted and performs the deletion operation when executed.
  */
 export class DeleteCommand extends Command<string> {
   constructor(payload: Payload) {

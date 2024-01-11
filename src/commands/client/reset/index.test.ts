@@ -1,8 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { ResetCommand } from ".";
-import { newHttpClient, randomFloat, randomID } from "../../../utils/test-utils";
-import { FetchCommand } from "../fetch";
-import { UpsertCommand } from "../upsert";
+import { FetchCommand, ResetCommand, UpsertCommand } from "@commands/index";
+import { newHttpClient, randomFloat, randomID } from "@utils/test-utils";
 
 const client = newHttpClient();
 

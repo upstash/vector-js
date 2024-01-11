@@ -1,7 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { FetchCommand } from ".";
-import { newHttpClient, randomFloat, randomID, resetIndexes } from "../../../utils/test-utils";
-import { UpsertCommand } from "../upsert";
+import { FetchCommand, UpsertCommand } from "@commands/index";
+import { newHttpClient, randomFloat, randomID, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
 

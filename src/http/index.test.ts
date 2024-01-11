@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
+import { newHttpClient } from "@utils/test-utils";
 import { HttpClient } from "./";
-
-import { newHttpClient } from "../utils/test-utils";
 
 test("remove trailing slash from urls", () => {
   const client = new HttpClient({ baseUrl: "https://example.com/" });

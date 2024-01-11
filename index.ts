@@ -4,7 +4,7 @@ import {
   RequesterConfig,
   UpstashRequest,
   UpstashResponse,
-} from "./src/http";
+} from "@http/index";
 import * as core from "./src/vector";
 
 export type { Requester, UpstashRequest, UpstashResponse };
@@ -75,14 +75,18 @@ export class Index extends core.Index {
       configOrRequester.url.endsWith(" ") ||
       /\r|\n/.test(configOrRequester.url)
     ) {
-      console.warn("The vector url contains whitespace or newline, which can cause errors!");
+      console.warn(
+        "The vector url contains whitespace or newline, which can cause errors!"
+      );
     }
     if (
       configOrRequester.token.startsWith(" ") ||
       configOrRequester.token.endsWith(" ") ||
       /\r|\n/.test(configOrRequester.token)
     ) {
-      console.warn("The vector token contains whitespace or newline, which can cause errors!");
+      console.warn(
+        "The vector token contains whitespace or newline, which can cause errors!"
+      );
     }
 
     const client = new HttpClient({
@@ -108,11 +112,15 @@ export class Index extends core.Index {
   static fromEnv(config?: Omit<VectorConfig, "url" | "token">): Index {
     const url = process?.env.UPSTASH_VECTOR_REST_URL;
     if (!url) {
-      throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
+      throw new Error(
+        "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`"
+      );
     }
     const token = process?.env.UPSTASH_VECTOR_REST_TOKEN;
     if (!token) {
-      throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
+      throw new Error(
+        "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`"
+      );
     }
     return new Index({ ...config, url, token });
   }

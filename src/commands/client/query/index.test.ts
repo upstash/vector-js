@@ -1,8 +1,7 @@
 import { afterAll, describe, expect, test } from "bun:test";
+import { QueryCommand, UpsertCommand } from "@commands/index";
+import { newHttpClient, resetIndexes } from "@utils/test-utils";
 import { sleep } from "bun";
-import { newHttpClient, resetIndexes } from "../../../utils/test-utils";
-import { UpsertCommand } from "../upsert";
-import { QueryCommand } from "./index";
 
 const client = newHttpClient();
 

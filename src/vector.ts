@@ -1,10 +1,12 @@
-import { FetchCommand } from "./commands/client";
-import { DeleteCommand } from "./commands/client/delete";
-import { QueryCommand } from "./commands/client/query";
-import { RangeCommand } from "./commands/client/range";
-import { ResetCommand } from "./commands/client/reset";
-import { UpsertCommand } from "./commands/client/upsert";
-import { Requester } from "./http";
+import {
+  DeleteCommand,
+  FetchCommand,
+  QueryCommand,
+  RangeCommand,
+  ResetCommand,
+  UpsertCommand,
+} from "@commands/client";
+import { Requester } from "@http/index";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
