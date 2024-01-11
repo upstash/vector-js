@@ -1,15 +1,10 @@
 import { Command } from "../../index";
+import { Vector } from "../types";
 
 type Payload = {
   ids: number[] | string[];
   includeMetadata?: boolean;
   includeVectors?: boolean;
-};
-
-type Vector<TMetadata> = {
-  id: string;
-  vector: number[];
-  metadata?: TMetadata;
 };
 
 type FetchReturnResponse<TMetadata> = Vector<TMetadata> | null;

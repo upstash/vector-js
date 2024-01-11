@@ -21,20 +21,17 @@ describe("DELETE", () => {
     expect(deletionResult).toBeTruthy();
   });
 
-  test("deleting the same ids should throw", () => {
-    const throwable = async () => {
-      const initialVector = [6.6, 7.7];
-      const idsToUpsert = [randomID(), randomID(), randomID()];
+  test("deleting the same ids should throw", async () => {
+    const initialVector = [6.6, 7.7];
+    const idsToUpsert = [randomID(), randomID(), randomID()];
 
-      const upsertPromises = idsToUpsert.map((id) =>
-        new UpsertCommand({ id, vector: initialVector }).exec(client)
-      );
-      await Promise.all(upsertPromises);
+    const upsertPromises = idsToUpsert.map((id) =>
+      new UpsertCommand({ id, vector: initialVector }).exec(client)
+    );
+    await Promise.all(upsertPromises);
 
-      await new DeleteCommand({ ids: idsToUpsert }).exec(client);
-      //This should throw
-      await new DeleteCommand({ ids: idsToUpsert }).exec(client);
-    };
-    expect(throwable).toThrow();
+    await new DeleteCommand({ ids: idsToUpsert }).exec(client);
+    const res1 = await new DeleteCommand({ ids: idsToUpsert }).exec(client);
+    expect(res1).toBeNull();
   });
 });

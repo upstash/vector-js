@@ -154,10 +154,7 @@ export class HttpClient implements Requester {
 
       return body as UpstashResponse<TResult>;
     }
-    if (isArray<TResult>(body)) {
-      return { result: body };
-    }
-    throw new UpstashError(`${body}, command was: ${JSON.stringify(req.body)}`);
+    return { result: body };
   }
 }
 
@@ -165,8 +162,4 @@ function isResultErrorTuple<T>(
   response: RawUpstashResponse<T>
 ): response is { result?: string; error?: string } {
   return response && typeof response === "object" && ("result" in response || "error" in response);
-}
-
-function isArray<T>(response: RawUpstashResponse<T>): response is T {
-  return Array.isArray(response);
 }

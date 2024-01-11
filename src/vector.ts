@@ -1,6 +1,7 @@
 import { FetchCommand } from "./commands/client";
 import { DeleteCommand } from "./commands/client/delete";
 import { QueryCommand } from "./commands/client/query";
+import { RangeCommand } from "./commands/client/range";
 import { ResetCommand } from "./commands/client/reset";
 import { UpsertCommand } from "./commands/client/upsert";
 import { Requester } from "./http";
@@ -34,4 +35,5 @@ export class Index {
   upsert = (args: CommandArgs<typeof UpsertCommand>) => new UpsertCommand(args).exec(this.client);
   fetch = (args: CommandArgs<typeof FetchCommand>) => new FetchCommand(args).exec(this.client);
   reset = () => new ResetCommand().exec(this.client);
+  range = (args: CommandArgs<typeof RangeCommand>) => new RangeCommand(args).exec(this.client);
 }
