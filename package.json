@@ -19,7 +19,7 @@
     "url": "https://github.com/upstash/vector/issues"
   },
   "scripts": {
-    "test": "bun test src --coverage --bail",
+    "test": "bun test src --coverage --bail --coverageSkipTestFiles=[test-utils.ts]",
     "fmt": "bunx biome check --apply ./src",
     "build": "tsup",
     "prepare": "husky install"

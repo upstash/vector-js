@@ -33,7 +33,7 @@ export type VectorConfig = {
 /**
  * Serverless vector client for upstash.
  */
-export class Vector extends core.Vector {
+export class Index extends core.Index {
   /**
    * Create a new vector client by providing the url and token
    *
@@ -105,7 +105,7 @@ export class Vector extends core.Vector {
    * This tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
    * your environment using `process.env`.
    */
-  static fromEnv(config?: Omit<VectorConfig, "url" | "token">): Vector {
+  static fromEnv(config?: Omit<VectorConfig, "url" | "token">): Index {
     const url = process?.env.UPSTASH_VECTOR_REST_URL;
     if (!url) {
       throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
@@ -114,6 +114,6 @@ export class Vector extends core.Vector {
     if (!token) {
       throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
     }
-    return new Vector({ ...config, url, token });
+    return new Index({ ...config, url, token });
   }
 }

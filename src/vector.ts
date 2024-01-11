@@ -9,7 +9,7 @@ export type CommandArgs<TCommand extends new (_args: any) => any> =
 /**
  * Serverless vector client for upstash vector db.
  */
-export class Vector {
+export class Index {
   protected client: Requester;
 
   /**
@@ -17,9 +17,9 @@ export class Vector {
    *
    * @example
    * ```typescript
-   * const redis = new Vector({
-   *  url: "<UPSTASH_REDIS_REST_URL>",
-   *  token: "<UPSTASH_REDIS_REST_TOKEN>",
+   * const index = new Index({
+   *  url: "<UPSTASH_VECTOR_REST_URL>",
+   *  token: "<UPSTASH_VECTOR_REST_TOKEN>",
    * });
    * ```
    */
