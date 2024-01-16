@@ -15,19 +15,23 @@ describe("FETCH", () => {
     const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));
     await Promise.all(payloads);
 
-    const res = await new FetchCommand({
-      ids: randomizedData.map((x) => x.id),
-      includeVectors: true,
-    }).exec(client);
+    const res = await new FetchCommand([
+      randomizedData.map((x) => x.id),
+      {
+        includeVectors: true,
+      },
+    ]).exec(client);
 
     expect(res).toEqual(randomizedData);
   });
 
   test("should return null when id does not exist", async () => {
-    const res = await new FetchCommand({
-      ids: [randomID()],
-      includeVectors: true,
-    }).exec(client);
+    const res = await new FetchCommand([
+      [randomID()],
+      {
+        includeVectors: true,
+      },
+    ]).exec(client);
 
     expect(res).toEqual([null]);
   });
@@ -40,11 +44,13 @@ describe("FETCH", () => {
     };
     await new UpsertCommand(mockData).exec(client);
 
-    const res = await new FetchCommand<{ hello: string }>({
-      ids: [mockData.id],
-      includeVectors: true,
-      includeMetadata: true,
-    }).exec(client);
+    const res = await new FetchCommand<{ hello: string }>([
+      [mockData.id],
+      {
+        includeVectors: true,
+        includeMetadata: true,
+      },
+    ]).exec(client);
 
     expect(res).toEqual([mockData]);
   });

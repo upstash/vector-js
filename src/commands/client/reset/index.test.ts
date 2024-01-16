@@ -14,18 +14,22 @@ describe("RESET", () => {
 
     await Promise.all(payloads);
 
-    const res = await new FetchCommand({
-      ids: randomizedData.map((x) => x.id),
-      includeVectors: true,
-    }).exec(client);
+    const res = await new FetchCommand([
+      randomizedData.map((x) => x.id),
+      {
+        includeVectors: true,
+      },
+    ]).exec(client);
 
     expect(res).toEqual(randomizedData);
 
     await new ResetCommand().exec(client);
-    const resAfterReset = await new FetchCommand({
-      ids: randomizedData.map((x) => x.id),
-      includeVectors: true,
-    }).exec(client);
+    const resAfterReset = await new FetchCommand([
+      randomizedData.map((x) => x.id),
+      {
+        includeVectors: true,
+      },
+    ]).exec(client);
 
     expect(resAfterReset).toEqual(new Array(20).fill(null));
   });

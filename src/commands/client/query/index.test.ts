@@ -15,7 +15,7 @@ describe("QUERY", () => {
     await new UpsertCommand(initialData).exec(client);
     //This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
     await sleep(2000);
-    const res = await new QueryCommand({
+    const res = await new QueryCommand<{ hello: "World" }>({
       includeVectors: true,
       vector: initialVector,
       topK: 1,

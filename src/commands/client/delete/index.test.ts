@@ -16,7 +16,7 @@ describe("DELETE", () => {
     );
     await Promise.all(upsertPromises);
 
-    const deletionResult = await new DeleteCommand({ ids: idsToUpsert }).exec(client);
+    const deletionResult = await new DeleteCommand(idsToUpsert).exec(client);
     expect(deletionResult).toBeTruthy();
   });
 
@@ -29,8 +29,21 @@ describe("DELETE", () => {
     );
     await Promise.all(upsertPromises);
 
-    await new DeleteCommand({ ids: idsToUpsert }).exec(client);
-    const res1 = await new DeleteCommand({ ids: idsToUpsert }).exec(client);
-    expect(res1).toBeNull();
+    await new DeleteCommand(idsToUpsert).exec(client);
+    const res1 = await new DeleteCommand(idsToUpsert).exec(client);
+    expect(res1).toEqual({
+      deleted: 0,
+    });
+  });
+
+  test("should delete single item", async () => {
+    const initialVector = [6.6, 7.7];
+    const id = randomID();
+    await new UpsertCommand({ id, vector: initialVector }).exec(client);
+
+    const res1 = await new DeleteCommand(id).exec(client);
+    expect(res1).toEqual({
+      deleted: 1,
+    });
   });
 });

@@ -13,7 +13,7 @@ export type { Requester, UpstashRequest, UpstashResponse };
  * Connection credentials for upstash vector.
  * Get them from https://console.upstash.com/vector/<uuid>
  */
-export type VectorConfig = {
+export type IndexConfig = {
   /**
    * UPSTASH_VECTOR_REST_URL
    */
@@ -39,13 +39,13 @@ export class Index extends core.Index {
    *
    * @example
    * ```typescript
-   * const vector = new Vector({
+   * const index = new Index({
    *  url: "<UPSTASH_VECTOR_REST_URL>",
    *  token: "<UPSTASH_VECTOR_REST_TOKEN>",
    * });
    * ```
    */
-  constructor(config: VectorConfig);
+  constructor(config: IndexConfig);
 
   /**
    * Create a new vector client by providing a custom `Requester` implementation
@@ -65,7 +65,7 @@ export class Index extends core.Index {
    * ```
    */
   constructor(requesters: Requester);
-  constructor(configOrRequester: VectorConfig | Requester) {
+  constructor(configOrRequester: IndexConfig | Requester) {
     if ("request" in configOrRequester) {
       super(configOrRequester);
       return;
@@ -109,7 +109,7 @@ export class Index extends core.Index {
    * This tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
    * your environment using `process.env`.
    */
-  static fromEnv(config?: Omit<VectorConfig, "url" | "token">): Index {
+  static fromEnv(config?: Omit<IndexConfig, "url" | "token">): Index {
     const url = process?.env.UPSTASH_VECTOR_REST_URL;
     if (!url) {
       throw new Error(

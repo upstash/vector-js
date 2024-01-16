@@ -20,13 +20,6 @@ export type UpstashResponse<TResult> = {
   error?: string;
 };
 
-export type RawUpstashResponse<TResult> =
-  | {
-      result?: string;
-      error?: string;
-    }
-  | TResult;
-
 export interface Requester {
   request: <TResult = unknown>(req: UpstashRequest) => Promise<UpstashResponse<TResult>>;
 }
@@ -146,20 +139,11 @@ export class HttpClient implements Requester {
       throw error ?? new Error("Exhausted all retries");
     }
 
-    const body = (await res.json()) as RawUpstashResponse<TResult>;
-    if (isResultErrorTuple<TResult>(body)) {
-      if (!res.ok) {
-        throw new UpstashError(`${body.error}, command was: ${JSON.stringify(req.body)}`);
-      }
-
-      return body as UpstashResponse<TResult>;
+    const body = (await res.json()) as UpstashResponse<TResult>;
+    if (!res.ok) {
+      throw new UpstashError(`${body.error}, command was: ${JSON.stringify(req.body)}`);
     }
-    return { result: body };
-  }
-}
 
-function isResultErrorTuple<T>(
-  response: RawUpstashResponse<T>
-): response is { result?: string; error?: string } {
-  return response && typeof response === "object" && ("result" in response || "error" in response);
+    return { result: body.result, error: body.error };
+  }
 }
