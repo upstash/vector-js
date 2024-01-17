@@ -7,6 +7,7 @@ import {
   UpsertCommand,
 } from "@commands/client";
 import { Requester } from "@http";
+import { StatsCommand } from "./commands";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
@@ -43,7 +44,8 @@ export class Index {
    * @param id - List of ids or single id
    * @returns A promise that resolves when the request to delete the index is completed.
    */
-  delete = (args: CommandArgs<typeof DeleteCommand>) => new DeleteCommand(args).exec(this.client);
+  delete = (args: CommandArgs<typeof DeleteCommand>) =>
+    new DeleteCommand(args).exec(this.client);
 
   /**
    * Queries an index with specified parameters.
@@ -63,7 +65,8 @@ export class Index {
    *
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
-  query = (args: CommandArgs<typeof QueryCommand>) => new QueryCommand(args).exec(this.client);
+  query = (args: CommandArgs<typeof QueryCommand>) =>
+    new QueryCommand(args).exec(this.client);
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.
@@ -87,7 +90,8 @@ export class Index {
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  upsert = (args: CommandArgs<typeof UpsertCommand>) => new UpsertCommand(args).exec(this.client);
+  upsert = (args: CommandArgs<typeof UpsertCommand>) =>
+    new UpsertCommand(args).exec(this.client);
 
   /**
    * It's used for retrieving specific items from the index, optionally including
@@ -109,7 +113,8 @@ export class Index {
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  fetch = (...args: CommandArgs<typeof FetchCommand>) => new FetchCommand(args).exec(this.client);
+  fetch = (...args: CommandArgs<typeof FetchCommand>) =>
+    new FetchCommand(args).exec(this.client);
 
   /**
    * It's used for wiping an entire index.
@@ -147,5 +152,19 @@ export class Index {
    *
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the next cursor and an array of vectors, after the command is executed.
    */
-  range = (args: CommandArgs<typeof RangeCommand>) => new RangeCommand(args).exec(this.client);
+  range = (args: CommandArgs<typeof RangeCommand>) =>
+    new RangeCommand(args).exec(this.client);
+
+  /**
+   * Retrieves stats from the index.
+   *
+   * @example
+   * ```js
+   * const statResults = await index.stats();
+   * console.log(statResults); // Outputs the result of the stats operation
+   * ```
+   *
+   * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the vectorCount, pendingVectorCount, indexSize after the command is executed.
+   */
+  stats = () => new StatsCommand().exec(this.client);
 }

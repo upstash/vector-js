@@ -118,6 +118,8 @@ type UpstashRecord = {
 };
 ```
 
+#### Upsert many
+
 To upsert some records, you can use the client like so:
 
 ```typescript
@@ -139,6 +141,22 @@ const records = [
 
 // Upsert the data into your index
 await index.upsert(records);
+```
+
+#### Upsert one
+
+```typescript
+const index = new Index();
+
+// Prepare your data. The length of each array
+// of vector values must match the dimension of
+// the index where you plan to store them.
+const record = {
+  id: "1",
+  vector: [0.236, 0.971, 0.559],
+};
+// Upsert the data into your index
+await index.upsert(record);
 ```
 
 ### Querying
@@ -218,4 +236,12 @@ await index.delete("id-to-delete");
 
 ```typescript
 await index.delete(["id-1", "id-2", "id-3"]);
+```
+
+### Stats
+
+To get statistics of your index, you can use the client like so:
+
+```typescript
+await index.stats(["id-1", "id-2", "id-3"]);
 ```

@@ -7,6 +7,8 @@ import {
 } from "@http";
 import * as core from "./src/vector";
 
+export type * from "@commands/types";
+
 export type { Requester, UpstashRequest, UpstashResponse };
 
 /**

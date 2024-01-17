@@ -8,12 +8,12 @@ type RangeCommandPayload = {
   includeMetadata?: boolean;
 };
 
-export type RangeReturnResponse<TMetadata> = {
+export type RangeResult<TMetadata = Record<string, unknown>> = {
   nextCursor: string;
   vectors: Vector<TMetadata>[];
 };
 
-export class RangeCommand<TMetadata> extends Command<RangeReturnResponse<TMetadata>> {
+export class RangeCommand<TMetadata> extends Command<RangeResult<TMetadata>> {
   constructor(payload: RangeCommandPayload) {
     super(payload, "range");
   }

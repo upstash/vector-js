@@ -6,9 +6,9 @@ type FetchCommandOptions = {
   includeVectors?: boolean;
 };
 
-export type FetchReturnResponse<TMetadata> = Vector<TMetadata> | null;
+export type FetchResult<TMetadata = Record<string, unknown>> = Vector<TMetadata> | null;
 
-export class FetchCommand<TMetadata> extends Command<FetchReturnResponse<TMetadata>[]> {
+export class FetchCommand<TMetadata> extends Command<FetchResult<TMetadata>[]> {
   constructor([ids, opts]: [ids: number[] | string[], opts: FetchCommandOptions]) {
     super({ ids, ...opts }, "fetch");
   }
