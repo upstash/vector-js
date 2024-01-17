@@ -1,11 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { UpsertCommand } from "@commands/index";
-import {
-  newHttpClient,
-  randomFloat,
-  randomID,
-  resetIndexes,
-} from "@utils/test-utils";
+import { newHttpClient, randomFloat, randomID, resetIndexes } from "@utils/test-utils";
 import { sleep } from "bun";
 import { StatsCommand } from ".";
 
@@ -21,9 +16,7 @@ describe("STATS", () => {
       vector: [randomFloat(), randomFloat()],
     }));
 
-    const payloads = randomizedData.map((data) =>
-      new UpsertCommand(data).exec(client)
-    );
+    const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));
     await Promise.all(payloads);
     await sleep(2000);
     const res = await new StatsCommand().exec(client);
