@@ -31,7 +31,7 @@ UPSTASH_VECTOR_REST_TOKEN="your_rest_token"
 When these environment variables are set, the client constructor does not require any additional arguments.
 
 ```typescript
-import { fromEnv } from "@upstash/vector";
+import { Index } from "@upstash/vector";
 
 const index = new Index();
 ```
@@ -97,7 +97,7 @@ if (results[0].metadata) {
   // Since we passed the Metadata type parameter above,
   // we can interact with metadata fields without having to
   // do any typecasting.
-  const { title, genre, category } = movie.metadata;
+  const { title, genre, category } = results[0].metadata;
   console.log(`The best match in fantasy was ${title}`)
 }
 ```
@@ -236,6 +236,14 @@ To get statistics of your index, you can use the client like so:
 
 ```typescript
 await index.stats(["id-1", "id-2", "id-3"]);
+```
+
+### Reset
+
+To delete everything related with that index:
+
+```typescript
+await index.reset();
 ```
 
 ## Contributing
