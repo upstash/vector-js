@@ -80,11 +80,17 @@ export class Index extends core.Index {
       super(configOrRequester);
       return;
     }
-    const token = process.env.UPSTASH_VECTOR_TOKEN ?? configOrRequester?.token;
-    const url = process.env.UPSTASH_VECTOR_REST_URL ?? configOrRequester?.url;
+    const token =
+      process.env.NEXT_PUBLIC_UPSTASH_VECTOR_REST_TOKEN ??
+      process.env.UPSTASH_VECTOR_REST_TOKEN ??
+      configOrRequester?.token;
+    const url =
+      process.env.NEXT_PUBLIC_UPSTASH_VECTOR_REST_URL ??
+      process.env.UPSTASH_VECTOR_REST_URL ??
+      configOrRequester?.url;
 
     if (!token) {
-      throw new Error("UPSTASH_VECTOR_TOKEN is missing!");
+      throw new Error("UPSTASH_VECTOR_REST_TOKEN is missing!");
     }
     if (!url) {
       throw new Error("UPSTASH_VECTOR_REST_URL is missing!");
