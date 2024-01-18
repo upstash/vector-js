@@ -19,11 +19,11 @@ export type IndexConfig = {
   /**
    * UPSTASH_VECTOR_REST_URL
    */
-  url: string;
+  url?: string;
   /**
    * UPSTASH_VECTOR_REST_TOKEN
    */
-  token: string;
+  token?: string;
 
   /**
    * The signal will allow aborting requests on the fly.
@@ -52,7 +52,7 @@ export class Index extends core.Index {
    * const index = new Index();
    * ```
    */
-  constructor(config: IndexConfig);
+  constructor(config?: IndexConfig);
 
   /**
    * Create a new vector client by providing a custom `Requester` implementation
@@ -71,14 +71,24 @@ export class Index extends core.Index {
    * const vector = new vector(requester)
    * ```
    */
-  constructor(requesters: Requester);
-  constructor(configOrRequester: IndexConfig | Requester) {
-    if ("request" in configOrRequester) {
+  constructor(requesters?: Requester);
+  constructor(configOrRequester?: IndexConfig | Requester) {
+    if (
+      typeof configOrRequester !== "undefined" &&
+      "request" in configOrRequester
+    ) {
       super(configOrRequester);
       return;
     }
-    const token = process.env.UPSTASH_VECTOR_TOKEN ?? configOrRequester.token;
-    const url = process.env.UPSTASH_VECTOR_REST_URL ?? configOrRequester.url;
+    const token = process.env.UPSTASH_VECTOR_TOKEN ?? configOrRequester?.token;
+    const url = process.env.UPSTASH_VECTOR_REST_URL ?? configOrRequester?.url;
+
+    if (!token) {
+      throw new Error("UPSTASH_VECTOR_TOKEN is missing!");
+    }
+    if (!url) {
+      throw new Error("UPSTASH_VECTOR_REST_URL is missing!");
+    }
 
     if (url.startsWith(" ") || url.endsWith(" ") || /\r|\n/.test(url)) {
       console.warn(
@@ -93,10 +103,10 @@ export class Index extends core.Index {
 
     const client = new HttpClient({
       baseUrl: url,
-      retry: configOrRequester.retry,
+      retry: configOrRequester?.retry,
       headers: { authorization: `Bearer ${token}` },
-      cache: configOrRequester.cache || "no-store",
-      signal: configOrRequester.signal,
+      cache: configOrRequester?.cache || "no-store",
+      signal: configOrRequester?.signal,
     });
 
     super(client);
