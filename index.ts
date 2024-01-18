@@ -46,6 +46,11 @@ export class Index extends core.Index {
    *  token: "<UPSTASH_VECTOR_REST_TOKEN>",
    * });
    * ```
+   * OR
+   * This will automatically get environment variables from .env file
+   * ```typescript
+   * const index = new Index();
+   * ```
    */
   constructor(config: IndexConfig);
 
@@ -72,29 +77,24 @@ export class Index extends core.Index {
       super(configOrRequester);
       return;
     }
-    if (
-      configOrRequester.url.startsWith(" ") ||
-      configOrRequester.url.endsWith(" ") ||
-      /\r|\n/.test(configOrRequester.url)
-    ) {
+    const token = process.env.UPSTASH_VECTOR_TOKEN ?? configOrRequester.token;
+    const url = process.env.UPSTASH_VECTOR_REST_URL ?? configOrRequester.url;
+
+    if (url.startsWith(" ") || url.endsWith(" ") || /\r|\n/.test(url)) {
       console.warn(
         "The vector url contains whitespace or newline, which can cause errors!"
       );
     }
-    if (
-      configOrRequester.token.startsWith(" ") ||
-      configOrRequester.token.endsWith(" ") ||
-      /\r|\n/.test(configOrRequester.token)
-    ) {
+    if (token.startsWith(" ") || token.endsWith(" ") || /\r|\n/.test(token)) {
       console.warn(
         "The vector token contains whitespace or newline, which can cause errors!"
       );
     }
 
     const client = new HttpClient({
-      baseUrl: configOrRequester.url,
+      baseUrl: url,
       retry: configOrRequester.retry,
-      headers: { authorization: `Bearer ${configOrRequester.token}` },
+      headers: { authorization: `Bearer ${token}` },
       cache: configOrRequester.cache || "no-store",
       signal: configOrRequester.signal,
     });

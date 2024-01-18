@@ -33,7 +33,7 @@ When these environment variables are set, the client constructor does not requir
 ```typescript
 import { fromEnv } from "@upstash/vector";
 
-const index = fromEnv();
+const index = new Index();
 ```
 
 #### Using a configuration object
@@ -59,8 +59,6 @@ Upstash vector indexes support operations for working with vector data using ope
 To perform data operations on an index, you target it using the `index` method.
 
 ```typescript
-const index = new Index();
-
 // Now perform index operations
 await index.fetch([1, 2, 3], { includeMetadata: true, includeVectors: true });
 ```
@@ -70,8 +68,6 @@ await index.fetch([1, 2, 3], { includeMetadata: true, includeVectors: true });
 If you are storing metadata alongside your vector values, you can pass a type parameter to `index()` in order to get proper TypeScript typechecking.
 
 ```typescript
-const index = new Index();
-
 type Metadata = {
   title: string,
   genre: 'sci-fi' | 'fantasy' | 'horror' | 'action'
@@ -123,8 +119,6 @@ type UpstashRecord = {
 To upsert some records, you can use the client like so:
 
 ```typescript
-const index = new Index();
-
 // Prepare your data. The length of each array
 // of vector values must match the dimension of
 // the index where you plan to store them.
@@ -146,8 +140,6 @@ await index.upsert(records);
 #### Upsert one
 
 ```typescript
-const index = new Index();
-
 // Prepare your data. The length of each array
 // of vector values must match the dimension of
 // the index where you plan to store them.
@@ -244,4 +236,30 @@ To get statistics of your index, you can use the client like so:
 
 ```typescript
 await index.stats(["id-1", "id-2", "id-3"]);
+```
+
+## Contributing
+
+## Preparing the environment
+
+This project uses [Bun](https://bun.sh/) for packaging and dependency management. Make sure you have the relevant dependencies.
+
+You will also need a vector database on [Upstash](https://console.upstash.com/).
+
+```commandline
+curl -fsSL https://bun.sh/install | bash
+```
+
+## Code Formatting
+
+```bash
+bun run fmt
+```
+
+## Running tests
+
+To run all the tests, make sure you have the relevant environment variables.
+
+```bash
+bun run test
 ```
