@@ -44,8 +44,7 @@ export class Index {
    * @param id - List of ids or single id
    * @returns A promise that resolves when the request to delete the index is completed.
    */
-  delete = (args: CommandArgs<typeof DeleteCommand>) =>
-    new DeleteCommand(args).exec(this.client);
+  delete = (args: CommandArgs<typeof DeleteCommand>) => new DeleteCommand(args).exec(this.client);
 
   /**
    * Queries an index with specified parameters.
@@ -90,8 +89,7 @@ export class Index {
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  upsert = (args: CommandArgs<typeof UpsertCommand>) =>
-    new UpsertCommand(args).exec(this.client);
+  upsert = (args: CommandArgs<typeof UpsertCommand>) => new UpsertCommand(args).exec(this.client);
 
   /**
    * It's used for retrieving specific items from the index, optionally including
