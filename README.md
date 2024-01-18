@@ -54,9 +54,9 @@ const index = new Index({
 
 Upstash vector indexes support operations for working with vector data using operations such as upsert, query, fetch, and delete.
 
-### Targeting an index
+### Accessing an index
 
-To perform data operations on an index, you target it using the `index` method.
+To perform data operations on an index, access it using the `index` method.
 
 ```typescript
 const index = new Index();
@@ -65,7 +65,7 @@ const index = new Index();
 await index.fetch([1, 2, 3], { includeMetadata: true, includeVectors: true });
 ```
 
-### Targeting an index, with metadata typing
+### Accesing an index, with metadata typing
 
 If you are storing metadata alongside your vector values, you can pass a type parameter to `index()` in order to get proper TypeScript typechecking.
 
