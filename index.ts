@@ -81,13 +81,13 @@ export class Index extends core.Index {
       return;
     }
     const token =
+      configOrRequester?.token ??
       process.env.NEXT_PUBLIC_UPSTASH_VECTOR_REST_TOKEN ??
-      process.env.UPSTASH_VECTOR_REST_TOKEN ??
-      configOrRequester?.token;
+      process.env.UPSTASH_VECTOR_REST_TOKEN;
     const url =
+      configOrRequester?.url ??
       process.env.NEXT_PUBLIC_UPSTASH_VECTOR_REST_URL ??
-      process.env.UPSTASH_VECTOR_REST_URL ??
-      configOrRequester?.url;
+      process.env.UPSTASH_VECTOR_REST_URL;
 
     if (!token) {
       throw new Error("UPSTASH_VECTOR_REST_TOKEN is missing!");
