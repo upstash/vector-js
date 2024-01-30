@@ -7,7 +7,7 @@ import {
   UpsertCommand,
 } from "@commands/client";
 import { Requester } from "@http";
-import { StatsCommand } from "./commands";
+import { InfoCommand } from "./commands";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
@@ -164,5 +164,5 @@ export class Index {
    *
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the vectorCount, pendingVectorCount, indexSize after the command is executed.
    */
-  stats = () => new StatsCommand().exec(this.client);
+  stats = () => new InfoCommand().exec(this.client);
 }

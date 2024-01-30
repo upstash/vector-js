@@ -1,13 +1,13 @@
 import { Command } from "@commands/command";
 
-export type StatsResult = {
+export type InfoResult = {
   vectorCount: number;
   pendingVectorCount: number;
   indexSize: number;
 };
 
-export class StatsCommand extends Command<StatsResult> {
+export class InfoCommand extends Command<InfoResult> {
   constructor() {
-    super([], "stats");
+    super([], "info");
   }
 }
