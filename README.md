@@ -230,12 +230,12 @@ await index.delete("id-to-delete");
 await index.delete(["id-1", "id-2", "id-3"]);
 ```
 
-### Stats
+### Info
 
 To get statistics of your index, you can use the client like so:
 
 ```typescript
-await index.stats(["id-1", "id-2", "id-3"]);
+await index.info(["id-1", "id-2", "id-3"]);
 ```
 
 ### Reset
