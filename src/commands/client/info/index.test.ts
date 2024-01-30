@@ -2,11 +2,11 @@ import { afterAll, describe, expect, test } from "bun:test";
 import { UpsertCommand } from "@commands/index";
 import { newHttpClient, randomFloat, randomID, resetIndexes } from "@utils/test-utils";
 import { sleep } from "bun";
-import { StatsCommand } from ".";
+import { InfoCommand } from ".";
 
 const client = newHttpClient();
 
-describe("STATS", () => {
+describe("INFO", () => {
   afterAll(async () => await resetIndexes());
 
   test("should return vectorCount successfully", async () => {
@@ -19,7 +19,7 @@ describe("STATS", () => {
     const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));
     await Promise.all(payloads);
     await sleep(2000);
-    const res = await new StatsCommand().exec(client);
+    const res = await new InfoCommand().exec(client);
     expect(res.vectorCount).toBeGreaterThanOrEqual(vectorCount);
   });
 });

@@ -5,4 +5,4 @@ export * from "./client/query";
 export * from "./client/upsert";
 export * from "./client/reset";
 export * from "./client/range";
-export * from "./client/stats";
+export * from "./client/info";

@@ -7,7 +7,7 @@ import {
   UpsertCommand,
 } from "@commands/client";
 import { Requester } from "@http";
-import { StatsCommand } from "./commands";
+import { InfoCommand } from "./commands";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
@@ -154,15 +154,15 @@ export class Index {
     new RangeCommand<TMetadata>(args).exec(this.client);
 
   /**
-   * Retrieves stats from the index.
+   * Retrieves info from the index.
    *
    * @example
    * ```js
-   * const statResults = await index.stats();
-   * console.log(statResults); // Outputs the result of the stats operation
+   * const infoResults = await index.info();
+   * console.log(infoResults); // Outputs the result of the info operation
    * ```
    *
-   * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the vectorCount, pendingVectorCount, indexSize after the command is executed.
+   * @returns {Promise<InfoResult>} A promise that resolves with the response containing the vectorCount, pendingVectorCount, indexSize, dimension count and similarity algorithm after the command is executed.
    */
-  stats = () => new StatsCommand().exec(this.client);
+  info = () => new InfoCommand().exec(this.client);
 }
