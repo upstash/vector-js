@@ -232,10 +232,10 @@ await index.delete(["id-1", "id-2", "id-3"]);
 
 ### Info
 
-To get statistics of your index, you can use the client like so:
+To get information about your index, you can use the client like so:
 
 ```typescript
-await index.info(["id-1", "id-2", "id-3"]);
+await index.info();
 ```
 
 ### Reset
