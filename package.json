@@ -32,5 +32,10 @@
     "bun-types": "latest",
     "husky": "^8.0.3",
     "tsup": "latest"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/upstash/vector-js"
+  },
+  "homepage": "https://upstash.com/vector"
 }
