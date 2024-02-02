@@ -15,8 +15,13 @@ export type CommandArgs<TCommand extends new (_args: any) => any> =
 /**
  * Serverless vector client for upstash vector db.
  */
-export class Index {
-  protected client: Requester;
+export class Index<
+  TIndexMetadata extends Record<
+    string,
+    unknown
+  > = Record<string, unknown>
+> {
+  protected client: Requester
 
   /**
    * Create a new vector db client
@@ -64,8 +69,14 @@ export class Index {
    *
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
-  query = <TMetadata>(args: CommandArgs<typeof QueryCommand>) =>
-    new QueryCommand<TMetadata>(args).exec(this.client);
+  query = <
+    TMetadata extends TIndexMetadata = TIndexMetadata
+  >(
+    args: CommandArgs<typeof QueryCommand>
+  ) =>
+    new QueryCommand<TMetadata>(args).exec(
+      this.client
+    );
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.
@@ -89,7 +100,11 @@ export class Index {
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  upsert = (args: CommandArgs<typeof UpsertCommand>) => new UpsertCommand(args).exec(this.client);
+  upsert = <TMetadata extends TIndexMetadata = TIndexMetadata>(
+    args: CommandArgs<
+      typeof UpsertCommand<TMetadata>
+    >
+  ) => new UpsertCommand<TMetadata>(args).exec(this.client)
 
   /**
    * It's used for retrieving specific items from the index, optionally including
@@ -111,8 +126,12 @@ export class Index {
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  fetch = <TMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
-    new FetchCommand<TMetadata>(args).exec(this.client);
+  fetch = <TMetadata extends TIndexMetadata = TIndexMetadata>(
+    ...args: CommandArgs<typeof FetchCommand>
+  ) =>
+    new FetchCommand<TMetadata>(args).exec(
+      this.client
+    )
 
   /**
    * It's used for wiping an entire index.
@@ -150,8 +169,12 @@ export class Index {
    *
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the next cursor and an array of vectors, after the command is executed.
    */
-  range = <TMetadata>(args: CommandArgs<typeof RangeCommand>) =>
-    new RangeCommand<TMetadata>(args).exec(this.client);
+  range = <TMetadata extends TIndexMetadata = TIndexMetadata>(
+    args: CommandArgs<typeof RangeCommand>
+  ) =>
+    new RangeCommand<TMetadata>(args).exec(
+      this.client
+    );
 
   /**
    * Retrieves info from the index.

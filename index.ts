@@ -35,7 +35,12 @@ export type IndexConfig = {
 /**
  * Serverless vector client for upstash.
  */
-export class Index extends core.Index {
+export class Index<
+  TIndexMetadata extends Record<
+    string,
+    unknown
+  > = Record<string, unknown>
+> extends core.Index<TIndexMetadata> {
   /**
    * Create a new vector client by providing the url and token
    *
