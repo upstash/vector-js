@@ -15,13 +15,8 @@ export type CommandArgs<TCommand extends new (_args: any) => any> =
 /**
  * Serverless vector client for upstash vector db.
  */
-export class Index<
-  TIndexMetadata extends Record<
-    string,
-    unknown
-  > = Record<string, unknown>
-> {
-  protected client: Requester
+export class Index<TIndexMetadata extends Record<string, unknown> = Record<string, unknown>> {
+  protected client: Requester;
 
   /**
    * Create a new vector db client
@@ -69,14 +64,9 @@ export class Index<
    *
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
-  query = <
-    TMetadata extends TIndexMetadata = TIndexMetadata
-  >(
+  query = <TMetadata extends TIndexMetadata = TIndexMetadata>(
     args: CommandArgs<typeof QueryCommand>
-  ) =>
-    new QueryCommand<TMetadata>(args).exec(
-      this.client
-    );
+  ) => new QueryCommand<TMetadata>(args).exec(this.client);
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.
@@ -101,10 +91,8 @@ export class Index<
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
   upsert = <TMetadata extends TIndexMetadata = TIndexMetadata>(
-    args: CommandArgs<
-      typeof UpsertCommand<TMetadata>
-    >
-  ) => new UpsertCommand<TMetadata>(args).exec(this.client)
+    args: CommandArgs<typeof UpsertCommand<TMetadata>>
+  ) => new UpsertCommand<TMetadata>(args).exec(this.client);
 
   /**
    * It's used for retrieving specific items from the index, optionally including
@@ -128,10 +116,7 @@ export class Index<
    */
   fetch = <TMetadata extends TIndexMetadata = TIndexMetadata>(
     ...args: CommandArgs<typeof FetchCommand>
-  ) =>
-    new FetchCommand<TMetadata>(args).exec(
-      this.client
-    )
+  ) => new FetchCommand<TMetadata>(args).exec(this.client);
 
   /**
    * It's used for wiping an entire index.
@@ -171,10 +156,7 @@ export class Index<
    */
   range = <TMetadata extends TIndexMetadata = TIndexMetadata>(
     args: CommandArgs<typeof RangeCommand>
-  ) =>
-    new RangeCommand<TMetadata>(args).exec(
-      this.client
-    );
+  ) => new RangeCommand<TMetadata>(args).exec(this.client);
 
   /**
    * Retrieves info from the index.
