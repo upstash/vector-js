@@ -9,6 +9,14 @@ import {
 import { Requester } from "@http";
 import { InfoCommand } from "./commands";
 
+type ValidateShape<T, Base> = T extends Base
+  ? Exclude<keyof T, keyof Base> extends never
+    ? T
+    : ExtraProperties<Exclude<keyof T, keyof Base>>
+  : never;
+
+type ExtraProperties<Keys extends PropertyKey> = Record<Keys, never>;
+
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
 
@@ -91,8 +99,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
   upsert = <TMetadata extends TIndexMetadata = TIndexMetadata>(
-    args: CommandArgs<typeof UpsertCommand<TMetadata>>
-  ) => new UpsertCommand<TMetadata>(args).exec(this.client);
+    args: CommandArgs<typeof UpsertCommand<ValidateShape<TMetadata, TIndexMetadata>>>
+  ) => new UpsertCommand<ValidateShape<TMetadata, TIndexMetadata>>(args).exec(this.client);
 
   /**
    * It's used for retrieving specific items from the index, optionally including
