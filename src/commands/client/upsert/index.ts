@@ -1,13 +1,13 @@
 import { Command } from "@commands/command";
 
-type UpsertCommandPayload = {
+type UpsertCommandPayload<TMetadata> = {
   id: number | string;
   vector: number[];
-  metadata?: Record<string, unknown>;
+  metadata?: TMetadata;
 };
 
-export class UpsertCommand extends Command<string> {
-  constructor(payload: UpsertCommandPayload | UpsertCommandPayload[]) {
+export class UpsertCommand<TMetadata> extends Command<string> {
+  constructor(payload: UpsertCommandPayload<TMetadata> | UpsertCommandPayload<TMetadata>[]) {
     super(payload, "upsert");
   }
 }
