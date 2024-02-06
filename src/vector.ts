@@ -64,7 +64,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
-  query = <TMetadata extends TIndexMetadata = TIndexMetadata>(
+  query = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
     args: CommandArgs<typeof QueryCommand>
   ) => new QueryCommand<TMetadata>(args).exec(this.client);
 
@@ -90,7 +90,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  upsert = <TMetadata extends TIndexMetadata = TIndexMetadata>(
+  upsert = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
     args: CommandArgs<typeof UpsertCommand<TMetadata>>
   ) => new UpsertCommand<TMetadata>(args).exec(this.client);
 
@@ -114,7 +114,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  fetch = <TMetadata extends TIndexMetadata = TIndexMetadata>(
+  fetch = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
     ...args: CommandArgs<typeof FetchCommand>
   ) => new FetchCommand<TMetadata>(args).exec(this.client);
 
@@ -154,7 +154,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the next cursor and an array of vectors, after the command is executed.
    */
-  range = <TMetadata extends TIndexMetadata = TIndexMetadata>(
+  range = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
     args: CommandArgs<typeof RangeCommand>
   ) => new RangeCommand<TMetadata>(args).exec(this.client);
 
