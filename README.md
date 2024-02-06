@@ -23,9 +23,9 @@ See [the list of APIs](https://upstash.com/docs/vector/api/endpoints) supported.
 npm install @upstash/vector
 ```
 
-### Create vector
+### Create Index
 
-Create a new vector index on [Upstash](https://console.upstash.com/vector)
+Create a new index on [Upstash](https://console.upstash.com/vector)
 
 ## Basic Usage:
 
@@ -104,8 +104,7 @@ await index.random();
 
 ## Troubleshooting
 
-We have a
-[dedicated page](https://docs.upstash.com/vector/sdks/javascriptsdk/troubleshooting) for common problems. If you can't find a solution, please [open an issue](https://github.com/upstash/vector-js/issues/new).
+We have a [Discord](upstash.com/discord) for common problems. If you can't find a solution, please [open an issue](https://github.com/upstash/vector-js/issues/new).
 
 ## Docs
 
@@ -115,9 +114,9 @@ See [the documentation](https://upstash.com/docs/oss/sdks/ts/vector/overview) fo
 
 ### [Install Bun](https://bun.sh/docs/installation)
 
-### Database
+### Vector Database
 
-Create a new vector index on [vector](https://console.upstash.com/vector) and copy the url and token.
+Create a new index on [Upstash](https://console.upstash.com/vector) and copy the url and token.
 
 ### Running tests
 
