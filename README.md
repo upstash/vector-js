@@ -1,273 +1,131 @@
 # Upstash Vector Node.js Client &middot; ![license](https://img.shields.io/npm/l/%40upstash%2Fvector) [![Tests](https://github.com/upstash/vector-js/actions/workflows/tests.yaml/badge.svg)](https://github.com/upstash/vector-js/actions/workflows/tests.yaml) ![npm (scoped)](https://img.shields.io/npm/v/@upstash/vector) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@upstash/vector) ![npm weekly download](https://img.shields.io/npm/dw/%40upstash%2Fvector)
 
-This is the official Node.js client for [Upstash](https://upstash.com/), written in TypeScript.
+`@upstash/vector` is an HTTP/REST based client for Typescript, built on top of [Upstash REST API](https://upstash.com/docs/vector/api/endpoints/).
 
-## Documentation
+It is the only connectionless (HTTP based) Vector client and designed for:
 
-- [**Reference Documentation**](https://upstash.com/docs/vector/overall/getstarted)
+- Serverless functions (AWS Lambda ...)
+- Cloudflare Workers
+- Next.js, Jamstack ...
+- Client side web/mobile applications
+- WebAssembly
+- and other environments where HTTP is preferred over TCP.
 
-## Installation
+See [the list of APIs](https://upstash.com/docs/vector/api/endpoints) supported.
 
-```
-npm install @upstash/vector
-pnpm add @upstash/vector
-```
+## Quick Start
 
-## Usage
+### Install
 
-### Initializing the client
-
-There are two pieces of configuration required to use the Upstash vector client: an REST token and REST URL. These values can be passed using environment variables or in code through a configuration object. Find your configuration values in the console dashboard at [https://console.upstash.com/](https://console.upstash.com/).
-
-#### Using environment variables
-
-The environment variables used to configure the client are the following:
+#### Node.js
 
 ```bash
-UPSTASH_VECTOR_REST_URL="your_rest_url"
-UPSTASH_VECTOR_REST_TOKEN="your_rest_token"
+npm install @upstash/vector
 ```
 
-When these environment variables are set, the client constructor does not require any additional arguments.
+### Create Index
 
-```typescript
+Create a new index on [Upstash](https://console.upstash.com/vector)
+
+## Basic Usage:
+
+```ts
 import { Index } from "@upstash/vector";
 
-const index = new Index();
-```
-
-#### Using a configuration object
-
-If you prefer to pass configuration in code, the constructor accepts a config object containing the `url` and `token` values. This
-could be useful if your application needs to interact with multiple projects, each with a different configuration.
-
-```typescript
-import { Index } from "@upstash/vector";
-
-const index = new Index({
-  url: "<UPSTASH_VECTOR_REST_URL>",
-  token: "<UPSTASH_VECTOR_REST_TOKEN>",
-});
-```
-
-## Index operations
-
-Upstash vector indexes support operations for working with vector data using operations such as upsert, query, fetch, and delete.
-
-### Accessing an index
-
-To perform data operations on an index, access it using the `index` method.
-
-```typescript
-// Now perform index operations
-await index.fetch([1, 2, 3], { includeMetadata: true, includeVectors: true });
-```
-
-### Accesing an index, with metadata typing
-
-If you are storing metadata alongside your vector values, you can pass a type parameter to `index()` in order to get proper TypeScript typechecking.
-
-```typescript
 type Metadata = {
   title: string,
   genre: 'sci-fi' | 'fantasy' | 'horror' | 'action'
+  category: "classic" | "modern"
 }
 
+const index = new Index<Metadata>({
+  url: "<UPSTASH_VECTOR_REST_URL>",
+  token: "<UPSTASH_VECTOR_REST_TOKEN>",
+});
+
+//Upsert Data
 await index.upsert([{
-  id: '1234',
+  id: 'upstash-rocks',
   vector: [
     .... // embedding values
   ],
   metadata: {
     title: 'Lord of The Rings',
-    genre: 'drama',
+    genre: 'fantasy',
     category: 'classic'
   }
 }])
 
+//Query Data
 const results = await index.query<Metadata>({
   vector: [
     ... // query embedding
   ],
   includeVectors: true,
+  includeMetadata: true
   topK: 1,
 })
 
-if (results[0].metadata) {
-  // Since we passed the Metadata type parameter above,
-  // we can interact with metadata fields without having to
-  // do any typecasting.
-  const { title, genre, category } = results[0].metadata;
-  console.log(`The best match in fantasy was ${title}`)
-}
-```
-
-### Upsert records
-
-Upstash vector expects records inserted into indexes to have the following form:
-
-```typescript
-type UpstashRecord = {
-  id: number | string;
-  vector: number[];
-  metadata?: Record<string, unknown>;
-};
-```
-
-#### Upsert many
-
-To upsert some records, you can use the client like so:
-
-```typescript
-// Prepare your data. The length of each array
-// of vector values must match the dimension of
-// the index where you plan to store them.
-const records = [
-  {
-    id: "1",
-    vector: [0.236, 0.971, 0.559],
-  },
-  {
-    id: "2",
-    vector: [0.685, 0.111, 0.857],
-  },
-];
-
-// Upsert the data into your index
-await index.upsert(records);
-```
-
-#### Upsert one
-
-```typescript
-// Prepare your data. The length of each array
-// of vector values must match the dimension of
-// the index where you plan to store them.
-const record = {
-  id: "1",
-  vector: [0.236, 0.971, 0.559],
-};
-// Upsert the data into your index
-await index.upsert(record);
-```
-
-### Querying
-
-#### Querying with vector values
-
-The query method accepts a large number of options. The dimension of the query vector must match the dimension of your index.
-
-```typescript
-type QueryOptions = {
-  vector: number[];
-  topK: number;
-  includeVectors?: boolean;
-  includeMetadata?: boolean;
-};
-```
-
-For example, to query by vector values you would pass the `vector` param in the options configuration. For brevity sake this example query vector is tiny (dimension 2), but in a more realistic use case this query vector would be an embedding outputted by a model. Look at the [Example code](#example-code) to see more realistic examples of how to use `query`.
-
-```typescript
-> await index.query({ topK: 3, vector: [ 0.22, 0.66 ]})
-{
-  matches: [
-    {
-      id: '6345',
-      score: 1.00000012,
-      vector: [],
-      metadata: undefined
-    },
-    {
-      id: '1233',
-      score: 1.00000012,
-      vector: [],
-      metadata: undefined
-    },
-    {
-      id: '4142',
-      score: 1.00000012,
-      vector: [],
-      metadata: undefined
-    }
-  ],
-  namespace: ''
-}
-```
-
-You include options to `includeMetadata: true` or `includeVectors: true` if you need this information. By default these are not returned to keep the response payload small.
-
-### Update a record
-
-You may want to update vector `vector` or `metadata`. Specify the id and the attribute value you want to update.
-
-```typescript
+//Update Data
 await index.upsert({
-  id: "18593",
-  metadata: { genre: "romance" },
+  id: "upstash-rocks",
+  metadata: {
+    title: 'Star Wars',
+    genre: 'sci-fi',
+    category: 'classic'
+  }
 });
-```
 
-### Fetch records by their IDs
+//Delete record
+await index.delete("upstash-rocks");
 
-```typescript
-const fetchResult = await index.fetch(["id-1", "id-2"]);
-```
-
-### Delete records
-
-For convenience there are several delete-related options. You can verify the results of a delete operation by trying to `fetch()` a record.
-
-#### Delete one
-
-```typescript
-await index.delete("id-to-delete");
-```
-
-#### Delete many by id
-
-```typescript
+//Delete many by id
 await index.delete(["id-1", "id-2", "id-3"]);
-```
 
-### Info
+//Fetch records by their IDs
+await index.fetch(["id-1", "id-2"]);
 
-To get information about your index, you can use the client like so:
+//Fetch records with range
+await index.range({
+      cursor: 0,
+      limit: 5,
+      includeVectors: true,
+});
 
-```typescript
-await index.info();
-```
-
-### Reset
-
-To delete everything related with that index:
-
-```typescript
+//Reset index
 await index.reset();
+
+//Info about index
+await index.info();
+
+//Random vector based on stored vectors
+await index.random();
 ```
+
+## Troubleshooting
+
+We have a [Discord](upstash.com/discord) for common problems. If you can't find a solution, please [open an issue](https://github.com/upstash/vector-js/issues/new).
+
+## Docs
+
+See [the documentation](https://upstash.com/docs/oss/sdks/ts/vector/overview) for details.
 
 ## Contributing
 
-## Preparing the environment
+### [Install Bun](https://bun.sh/docs/installation)
 
-This project uses [Bun](https://bun.sh/) for packaging and dependency management. Make sure you have the relevant dependencies.
+### Vector Database
 
-You will also need a vector database on [Upstash](https://console.upstash.com/).
+Create a new index on [Upstash](https://console.upstash.com/vector) and copy the url and token.
 
-```commandline
-curl -fsSL https://bun.sh/install | bash
-```
+### Running tests
 
-## Code Formatting
-
-```bash
-bun run fmt
-```
-
-## Running tests
-
-To run all the tests, make sure you have the relevant environment variables.
-
-```bash
+```sh
 bun run test
+```
+
+### Building
+
+```sh
+bun run build
 ```
