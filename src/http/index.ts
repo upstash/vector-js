@@ -141,7 +141,7 @@ export class HttpClient implements Requester {
 
     const body = (await res.json()) as UpstashResponse<TResult>;
     if (!res.ok) {
-      throw new UpstashError(`${body.error}, command was: ${JSON.stringify(req.body)}`);
+      throw new UpstashError(`${body.error}`);
     }
 
     return { result: body.result, error: body.error };
