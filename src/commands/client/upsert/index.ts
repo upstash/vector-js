@@ -1,6 +1,6 @@
 import { Command } from "@commands/command";
 
-type NoInfer<T> = T extends infer U ? U : never
+type NoInfer<T> = T extends infer U ? U : never;
 
 type UpsertCommandPayload<TMetadata> = {
   id: number | string;
