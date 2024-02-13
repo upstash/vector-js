@@ -1,6 +1,8 @@
 import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, RetryConfig } from "../http";
 
+export type NonArrayType<T> = T extends Array<infer U> ? U : T;
+
 export const newHttpClient = (retry?: RetryConfig | undefined) => {
   const url = process.env.UPSTASH_VECTOR_REST_URL;
   if (!url) {
