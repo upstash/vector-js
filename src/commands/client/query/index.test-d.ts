@@ -1,5 +1,5 @@
+import { expectTypeOf, test } from "vitest";
 import { Index } from "../../../../index";
-import { TypeEqual, expectType, test } from "../utils.test-d";
 
 type Metadata = { genre: string; year: number };
 
@@ -10,7 +10,7 @@ test("case 1: no metadata is provided, any object should be expected", () => {
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedQueryVector>["metadata"]>;
 
-  expectType<TypeEqual<RetrievedMetadata, Record<string, unknown>>>(true);
+  expectTypeOf<RetrievedMetadata>().toEqualTypeOf<Record<string, unknown>>();
 });
 
 test("case 2: index-level metadata is provided, index-level metadata should be expected", () => {
@@ -20,7 +20,7 @@ test("case 2: index-level metadata is provided, index-level metadata should be e
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedQueryVector>["metadata"]>;
 
-  expectType<TypeEqual<RetrievedMetadata, Metadata>>(true);
+  expectTypeOf<RetrievedMetadata>().toEqualTypeOf<Metadata>();
 });
 
 test("case 3: index-level and command-level metadata are provided, command-level metadata should be expected", () => {
@@ -32,8 +32,7 @@ test("case 3: index-level and command-level metadata are provided, command-level
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedQueryVector>["metadata"]>;
 
-  expectType<TypeEqual<RetrievedMetadata, Metadata>>(false);
-  expectType<TypeEqual<RetrievedMetadata, OverrideMetadata>>(true);
+  expectTypeOf<RetrievedMetadata>().toEqualTypeOf<OverrideMetadata>();
 });
 
 test("case 4: command-level metadata is provided, command-level metadata should be expected", () => {
@@ -43,5 +42,5 @@ test("case 4: command-level metadata is provided, command-level metadata should 
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedQueryVector>["metadata"]>;
 
-  expectType<TypeEqual<RetrievedMetadata, Metadata>>(true);
+  expectTypeOf<RetrievedMetadata>().toEqualTypeOf<Metadata>();
 });

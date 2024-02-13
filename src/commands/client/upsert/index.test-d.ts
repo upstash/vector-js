@@ -1,5 +1,6 @@
+import { NonArrayType } from "@utils/test-utils";
+import { expectTypeOf, test } from "vitest";
 import { Index } from "../../../../index";
-import { NonArrayType, TypeEqual, expectType, test } from "../utils.test-d";
 
 type Metadata = { genre: string; year: number };
 
@@ -10,7 +11,7 @@ test("case 1: no metadata is provided, any object should be expected", () => {
   type ExpectedParameters = Parameters<typeof index.upsert>["0"];
   type ExpectedMetadata = NonNullable<NonArrayType<ExpectedParameters>["metadata"]>;
 
-  expectType<TypeEqual<ExpectedMetadata, Record<string, unknown>>>(true);
+  expectTypeOf<ExpectedMetadata>().toEqualTypeOf<Record<string, unknown>>();
 });
 
 test("case 2: index-level metadata is provided, index-level metadata should be expected", () => {
@@ -20,32 +21,26 @@ test("case 2: index-level metadata is provided, index-level metadata should be e
   type ExpectedParameters = Parameters<typeof index.upsert<Metadata>>["0"];
   type ExpectedMetadata = NonNullable<NonArrayType<ExpectedParameters>["metadata"]>;
 
-  expectType<TypeEqual<ExpectedMetadata, Metadata>>(true);
+  expectTypeOf<ExpectedMetadata>().toEqualTypeOf<Metadata>();
 });
 
 test("case 3: index-level metadata is provided and command-level metadata is provided, command-level metadata should be expected", () => {
   const index = new Index<Metadata>();
-
-  type InitialParameters = Parameters<typeof index.upsert>["0"];
-  type InitialMetadata = NonNullable<NonNullable<NonArrayType<InitialParameters>>["metadata"]>;
 
   type OverrideMetadata = { director: string };
 
   type ExpectedParameters = Parameters<typeof index.upsert<OverrideMetadata>>["0"];
   type ExpectedMetadata = NonNullable<NonNullable<NonArrayType<ExpectedParameters>>["metadata"]>;
 
-  expectType<TypeEqual<ExpectedMetadata, InitialMetadata>>(false);
-  expectType<TypeEqual<ExpectedMetadata, OverrideMetadata>>(true);
+  expectTypeOf<ExpectedMetadata>().toEqualTypeOf<OverrideMetadata>();
 });
 
 test("case 4: command-level metadata is provided, command-level metadata should be expected", () => {
   const index = new Index();
 
-  type CommandLevelMetadata = { director: string };
-
-  type ExpectedParameters = Parameters<typeof index.upsert<CommandLevelMetadata>>["0"];
+  type ExpectedParameters = Parameters<typeof index.upsert<Metadata>>["0"];
 
   type ExpectedMetadata = NonNullable<NonNullable<NonArrayType<ExpectedParameters>>["metadata"]>;
 
-  expectType<TypeEqual<ExpectedMetadata, CommandLevelMetadata>>(true);
+  expectTypeOf<ExpectedMetadata>().toEqualTypeOf<Metadata>();
 });

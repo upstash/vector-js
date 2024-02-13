@@ -1,41 +1,42 @@
 {
   "name": "@upstash/vector",
-  "description": "An HTTP/REST based Vector DB client built on top of Upstash REST API.",
-  "module": "./dist/index.mjs",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "version": "v0.1.0-alpha-9",
-  "keywords": [
-    "vector",
-    "upstash",
-    "db"
-  ],
   "author": "Oguzhan Olguncu <oguzhan@upstash.com>",
-  "license": "MIT",
-  "files": [
-    "dist"
-  ],
-  "bugs": {
-    "url": "https://github.com/upstash/vector/issues"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/upstash/vector-js"
   },
-  "scripts": {
-    "test": "bun test src --coverage --bail --coverageSkipTestFiles=[test-utils.ts]",
-    "fmt": "bunx biome check --apply ./src",
-    "build": "tsup",
-    "prepare": "husky install"
-  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "devDependencies": {
-    "typescript": "^5.0.0",
     "@biomejs/biome": "^1.4.1",
     "@commitlint/cli": "^18.6.0",
     "@commitlint/config-conventional": "^18.6.0",
     "bun-types": "latest",
     "husky": "^8.0.3",
-    "tsup": "latest"
+    "tsup": "latest",
+    "typescript": "^5.0.0",
+    "vitest": "^1.2.2"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/upstash/vector-js"
+  "bugs": {
+    "url": "https://github.com/upstash/vector/issues"
   },
-  "homepage": "https://upstash.com/vector"
+  "description": "An HTTP/REST based Vector DB client built on top of Upstash REST API.",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://upstash.com/vector",
+  "keywords": [
+    "vector",
+    "upstash",
+    "db"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "bun test src --coverage --bail --coverageSkipTestFiles=[test-utils.ts] && vitest run --typecheck",
+    "fmt": "bunx biome check --apply ./src",
+    "build": "tsup",
+    "prepare": "husky install"
+  },
+  "types": "./dist/index.d.ts"
 }
