@@ -1,6 +1,6 @@
 {
   "name": "@upstash/vector",
-  "version": "v0.1.0-alpha-9",
+  "version": "v1.0.3",
   "author": "Oguzhan Olguncu <oguzhan@upstash.com>",
   "repository": {
     "type": "git",
