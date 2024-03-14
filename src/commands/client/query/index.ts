@@ -3,6 +3,7 @@ import { Command } from "@commands/command";
 type QueryCommandPayload = {
   vector: number[];
   topK: number;
+  filter?: string;
   includeVectors?: boolean;
   includeMetadata?: boolean;
 };
