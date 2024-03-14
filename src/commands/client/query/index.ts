@@ -6,7 +6,6 @@ type QueryCommandPayload = {
   filter?: string;
   includeVectors?: boolean;
   includeMetadata?: boolean;
-
 };
 
 export type QueryResult<TMetadata = Record<string, unknown>> = {

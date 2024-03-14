@@ -53,9 +53,9 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @example
    * ```js
    * await index.query({
-   *  topK: 3, 
+   *  topK: 3,
    *  vector: [ 0.22, 0.66 ],
-   *  filter: "age >= 23 and (type = \'turtle\' OR type = \'cat\')" 
+   *  filter: "age >= 23 and (type = \'turtle\' OR type = \'cat\')"
    * });
    * ```
    *
