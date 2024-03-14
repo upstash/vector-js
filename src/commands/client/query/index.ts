@@ -3,8 +3,10 @@ import { Command } from "@commands/command";
 type QueryCommandPayload = {
   vector: number[];
   topK: number;
+  filter?: string;
   includeVectors?: boolean;
   includeMetadata?: boolean;
+
 };
 
 export type QueryResult<TMetadata = Record<string, unknown>> = {

@@ -52,13 +52,18 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @example
    * ```js
-   * await index.query({ topK: 3, vector: [ 0.22, 0.66 ]})
+   * await index.query({
+   *  topK: 3, 
+   *  vector: [ 0.22, 0.66 ],
+   *  filter: "age >= 23 and (type = \'turtle\' OR type = \'cat\')" 
+   * });
    * ```
    *
    * @param {Object} args - The arguments for the query command.
    * @param {number[]} args.vector - An array of numbers representing the feature vector for the query.
    *                                This vector is utilized to find the most relevant items in the index.
    * @param {number} args.topK - The desired number of top results to be returned, based on relevance or similarity to the query vector.
+   * @param {string} [args.filter] - An optional filter string to be used in the query. The filter string is used to narrow down the query results.
    * @param {boolean} [args.includeVectors=false] - When set to true, includes the feature vectors of the returned items in the response.
    * @param {boolean} [args.includeMetadata=false] - When set to true, includes additional metadata of the returned items in the response.
    *
