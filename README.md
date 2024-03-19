@@ -1,7 +1,6 @@
 # Upstash Vector Node.js Client &middot; ![license](https://img.shields.io/npm/l/%40upstash%2Fvector) [![Tests](https://github.com/upstash/vector-js/actions/workflows/tests.yaml/badge.svg)](https://github.com/upstash/vector-js/actions/workflows/tests.yaml) ![npm (scoped)](https://img.shields.io/npm/v/@upstash/vector) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@upstash/vector) ![npm weekly download](https://img.shields.io/npm/dw/%40upstash%2Fvector)
 
-> [!NOTE]  
-> **This project is in GA Stage.**
+> [!NOTE] > **This project is in GA Stage.**
 >
 > The Upstash Professional Support fully covers this project. It receives regular updates, and bug fixes. The Upstash team is committed to maintaining and improving its functionality.
 
@@ -69,7 +68,10 @@ const results = await index.query<Metadata>({
   includeVectors: true,
   includeMetadata: true
   topK: 1,
+  filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
 })
+
+// If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
 //Update Data
 await index.upsert({
@@ -106,6 +108,10 @@ await index.info();
 //Random vector based on stored vectors
 await index.random();
 ```
+
+## Metadata Filtering
+
+If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
 ## Troubleshooting
 
