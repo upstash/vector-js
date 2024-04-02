@@ -139,4 +139,42 @@ describe("QUERY", () => {
     },
     { timeout: 20000 }
   );
+
+  test(
+    "should query with plain text successfully",
+    async () => {
+      const embeddingClient = newHttpClient(undefined, {
+        token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+        url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+      });
+      await new UpsertCommand([
+        {
+          id: "hello-world",
+          data: "Test1-2-3-4-5",
+          metadata: { upstash: "Cookie" },
+        },
+        {
+          id: "hello-world1",
+          data: "Test1-2-3-4-5-6",
+          metadata: { upstash: "Monster" },
+        },
+        {
+          id: "hello-world2",
+          data: "Test1-2-3-4-5",
+          metadata: { upstash: "Jar" },
+        },
+      ]).exec(embeddingClient);
+      //   This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
+      await sleep(5000);
+      const res = await new QueryCommand({
+        data: "Test1-2-3-4-5",
+        topK: 1,
+        includeVectors: true,
+        includeMetadata: true,
+      }).exec(embeddingClient);
+
+      expect(res[0].metadata).toEqual({ upstash: "Cookie" });
+    },
+    { timeout: 20000 }
+  );
 });

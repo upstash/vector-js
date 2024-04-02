@@ -10,14 +10,18 @@ test("remove trailing slash from urls", () => {
 
 describe(new URL("", import.meta.url).pathname, () => {
   describe("when the request is invalid", () => {
-    test("throws", async () => {
-      const client = newHttpClient();
-      let hasThrown = false;
-      await client.request({ body: ["get", "1", "2"] }).catch(() => {
-        hasThrown = true;
-      });
-      expect(hasThrown).toBeTrue();
-    });
+    test(
+      "throws",
+      async () => {
+        const client = newHttpClient();
+        let hasThrown = false;
+        await client.request({ body: ["get", "1", "2"] }).catch(() => {
+          hasThrown = true;
+        });
+        expect(hasThrown).toBeTrue();
+      },
+      { timeout: 20000 }
+    );
   });
 
   describe("whithout authorization", () => {
