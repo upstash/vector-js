@@ -32,7 +32,6 @@ describe("UPSERT", () => {
   });
 
   test("should add bulk data with string id", async () => {
-    //@ts-ignore
     const res = await new UpsertCommand([
       {
         id: "hello-world",
@@ -45,6 +44,22 @@ describe("UPSERT", () => {
         metadata: { upstash: "test" },
       },
     ]).exec(client);
+    expect(res).toEqual("Success");
+  });
+
+  test("should add plain text as data successfully", async () => {
+    const embeddingClient = newHttpClient(undefined, {
+      token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+      url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+    });
+
+    const res = await new UpsertCommand([
+      {
+        id: "hello-world",
+        data: "Test1-2-3-4-5",
+        metadata: { upstash: "test" },
+      },
+    ]).exec(embeddingClient);
     expect(res).toEqual("Success");
   });
 });

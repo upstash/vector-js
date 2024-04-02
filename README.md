@@ -140,3 +140,18 @@ bun run test
 ```sh
 bun run build
 ```
+
+### Contributing
+
+Make sure you have Bun.js installed and have those relevant keys with specific vector dimensions:
+
+```bash
+
+## Vector dimension should be 2
+UPSTASH_VECTOR_REST_URL="XXXXX"
+UPSTASH_VECTOR_REST_TOKEN="XXXXX"
+
+## Vector dimension should be 384
+EMBEDDING_UPSTASH_VECTOR_REST_URL="XXXXX"
+EMBEDDING_UPSTASH_VECTOR_REST_TOKEN="XXXXX"
+```

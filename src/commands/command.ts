@@ -1,7 +1,17 @@
 import { UpstashError } from "@error/index";
 import { Requester } from "@http";
 
-const ENDPOINTS = ["upsert", "query", "delete", "fetch", "reset", "range", "info"] as const;
+const ENDPOINTS = [
+  "upsert",
+  "query",
+  "delete",
+  "fetch",
+  "reset",
+  "range",
+  "info",
+  "upsert-data",
+  "query-data",
+] as const;
 
 export type EndpointVariants = (typeof ENDPOINTS)[number];
 /**

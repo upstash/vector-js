@@ -1,12 +1,11 @@
 import { Command } from "@commands/command";
 
 type QueryCommandPayload = {
-  vector: number[];
   topK: number;
   filter?: string;
   includeVectors?: boolean;
   includeMetadata?: boolean;
-};
+} & ({ vector: number[]; data?: never } | { data: string; vector?: never });
 
 export type QueryResult<TMetadata = Record<string, unknown>> = {
   id: number | string;
@@ -17,6 +16,11 @@ export type QueryResult<TMetadata = Record<string, unknown>> = {
 
 export class QueryCommand<TMetadata> extends Command<QueryResult<TMetadata>[]> {
   constructor(payload: QueryCommandPayload) {
-    super(payload, "query");
+    let endpoint: "query" | "query-data" = "query";
+
+    if ("data" in payload) {
+      endpoint = "query-data";
+    }
+    super(payload, endpoint);
   }
 }
