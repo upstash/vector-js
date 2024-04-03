@@ -3,7 +3,10 @@ import { HttpClient, RetryConfig } from "../http";
 
 export type NonArrayType<T> = T extends Array<infer U> ? U : T;
 
-export const newHttpClient = (retry?: RetryConfig | undefined) => {
+export const newHttpClient = (
+  retry?: RetryConfig | undefined,
+  altToken?: { url: string; token: string }
+) => {
   const url = process.env.UPSTASH_VECTOR_REST_URL;
   if (!url) {
     throw new Error("Could not find url");
@@ -14,8 +17,8 @@ export const newHttpClient = (retry?: RetryConfig | undefined) => {
   }
 
   return new HttpClient({
-    baseUrl: url,
-    headers: { authorization: `Bearer ${token}` },
+    baseUrl: altToken?.url ?? url,
+    headers: { authorization: `Bearer ${altToken?.token ?? token}` },
     retry,
   });
 };
