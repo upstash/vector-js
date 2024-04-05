@@ -46,8 +46,6 @@ export class UpsertCommand<TMetadata> extends Command<string> {
       }
     }
 
-
-
     super(payload, endpoint);
   }
 }

@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { UpsertCommand, FetchCommand } from "@commands/index";
+import { FetchCommand, UpsertCommand } from "@commands/index";
 import { newHttpClient, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
@@ -108,5 +108,5 @@ describe("UPSERT", () => {
     expect(resFetch[0]?.metadata).toEqual({ data: "testing data" });
 
     expect(resUpsert).toEqual("Success");
-  })
+  });
 });
