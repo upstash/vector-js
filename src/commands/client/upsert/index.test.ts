@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { UpsertCommand } from "@commands/index";
+import { FetchCommand, UpsertCommand } from "@commands/index";
 import { newHttpClient, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
@@ -86,5 +86,27 @@ describe("UPSERT", () => {
     };
 
     expect(throwable).toThrow();
+  });
+
+  test("should add data as metadata, when no metadata is provided", async () => {
+    const embeddingClient = newHttpClient(undefined, {
+      token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+      url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+    });
+    const resUpsert = await new UpsertCommand({
+      id: "hello-world",
+      data: "testing data",
+    }).exec(embeddingClient);
+
+    const resFetch = await new FetchCommand([
+      ["hello-world"],
+      {
+        includeMetadata: true,
+      },
+    ]).exec(embeddingClient);
+
+    expect(resFetch[0]?.metadata).toEqual({ data: "testing data" });
+
+    expect(resUpsert).toEqual("Success");
   });
 });
