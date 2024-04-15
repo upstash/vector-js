@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { DeleteCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, randomID, resetIndexes } from "@utils/test-utils";
+import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -8,7 +8,7 @@ describe("DELETE", () => {
   afterAll(async () => await resetIndexes());
 
   test("should delete record(s) successfully", async () => {
-    const initialVector = [6.6, 7.7];
+    const initialVector = range(0, 384);
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
     const upsertPromises = idsToUpsert.map((id) =>
@@ -21,7 +21,7 @@ describe("DELETE", () => {
   });
 
   test("deleting the same ids should throw", async () => {
-    const initialVector = [6.6, 7.7];
+    const initialVector = range(0, 384);
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
     const upsertPromises = idsToUpsert.map((id) =>
@@ -37,7 +37,7 @@ describe("DELETE", () => {
   });
 
   test("should delete single item", async () => {
-    const initialVector = [6.6, 7.7];
+    const initialVector = range(0, 384);
     const id = randomID();
     await new UpsertCommand({ id, vector: initialVector }).exec(client);
 

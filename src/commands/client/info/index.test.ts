@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { UpsertCommand } from "@commands/index";
-import { newHttpClient, randomFloat, randomID, resetIndexes } from "@utils/test-utils";
+import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
 import { sleep } from "bun";
 import { InfoCommand } from ".";
 
@@ -13,7 +13,7 @@ describe("INFO", () => {
     const vectorCount = 20;
     const randomizedData = new Array(vectorCount).fill("").map(() => ({
       id: randomID(),
-      vector: [randomFloat(), randomFloat()],
+      vector: range(0, 384),
     }));
 
     const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));

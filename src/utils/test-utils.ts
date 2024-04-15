@@ -50,3 +50,11 @@ export function randomID(): string {
 export const randomFloat = () => parseFloat((Math.random() * 10).toFixed(1));
 
 export const resetIndexes = async () => await new ResetCommand().exec(newHttpClient());
+
+export const range = (start: number, end: number, step = 1) => {
+  const result = [];
+  for (let i = start; i < end; i += step) {
+    result.push(i);
+  }
+  return result;
+};

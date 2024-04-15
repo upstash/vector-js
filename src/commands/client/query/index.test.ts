@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { QueryCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, resetIndexes } from "@utils/test-utils";
+import { newHttpClient, range, resetIndexes } from "@utils/test-utils";
 import { sleep } from "bun";
 
 const client = newHttpClient();
@@ -8,7 +8,7 @@ const client = newHttpClient();
 describe("QUERY", () => {
   afterAll(async () => await resetIndexes());
   test("should query records successfully", async () => {
-    const initialVector = [6.6, 7.7];
+    const initialVector = range(0, 384);
     const initialData = { id: 33, vector: initialVector };
     await new UpsertCommand(initialData).exec(client);
     //This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
@@ -22,12 +22,12 @@ describe("QUERY", () => {
       {
         id: "33",
         score: 1,
-        vector: [6.6, 7.7],
+        vector: initialVector,
       },
     ]);
   });
   test("should query records filtered with metadata filter", async () => {
-    const initialVector = [6.6, 7.7];
+    const initialVector = range(0, 384);
     const initialData = {
       id: 34,
       vector: initialVector,
@@ -57,7 +57,7 @@ describe("QUERY", () => {
       {
         id: "34",
         score: 1,
-        vector: [6.6, 7.7],
+        vector: initialVector,
         metadata: {
           city: "Istanbul",
           population: 1546000,
@@ -67,11 +67,11 @@ describe("QUERY", () => {
     ]);
   });
   test("should narrow down the query results with filter", async () => {
-    const exampleVector = [6.6, 7.7];
+    const initialVector = range(0, 384);
     const initialData = [
       {
         id: 1,
-        vector: exampleVector,
+        vector: initialVector,
         metadata: {
           animal: "elephant",
           tags: ["mammal"],
@@ -80,7 +80,7 @@ describe("QUERY", () => {
       },
       {
         id: 2,
-        vector: exampleVector,
+        vector: initialVector,
         metadata: {
           animal: "tiger",
           tags: ["mammal"],
@@ -96,7 +96,7 @@ describe("QUERY", () => {
       tags: string[];
       diet: string;
     }>({
-      vector: exampleVector,
+      vector: initialVector,
       topK: 1,
       filter: "tags[0] = 'mammal' AND diet = 'carnivore'",
       includeVectors: true,
@@ -106,7 +106,7 @@ describe("QUERY", () => {
       {
         id: "2",
         score: 1,
-        vector: [6.6, 7.7],
+        vector: initialVector,
         metadata: { animal: "tiger", tags: ["mammal"], diet: "carnivore" },
       },
     ]);
@@ -115,17 +115,13 @@ describe("QUERY", () => {
   test(
     "should query with plain text successfully",
     async () => {
-      const embeddingClient = newHttpClient(undefined, {
-        token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-        url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-      });
       await new UpsertCommand([
         {
           id: "hello-world",
           data: "Test1-2-3-4-5",
           metadata: { upstash: "test" },
         },
-      ]).exec(embeddingClient);
+      ]).exec(client);
       //   This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
       await sleep(5000);
       const res = await new QueryCommand({
@@ -133,7 +129,7 @@ describe("QUERY", () => {
         topK: 1,
         includeVectors: true,
         includeMetadata: true,
-      }).exec(embeddingClient);
+      }).exec(client);
 
       expect(res[0].metadata).toEqual({ upstash: "test" });
     },
@@ -143,10 +139,6 @@ describe("QUERY", () => {
   test(
     "should query with plain text successfully",
     async () => {
-      const embeddingClient = newHttpClient(undefined, {
-        token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-        url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-      });
       await new UpsertCommand([
         {
           id: "hello-world",
@@ -158,12 +150,7 @@ describe("QUERY", () => {
           data: "Test1-2-3-4-5-6",
           metadata: { upstash: "Monster" },
         },
-        {
-          id: "hello-world2",
-          data: "Test1-2-3-4-5",
-          metadata: { upstash: "Jar" },
-        },
-      ]).exec(embeddingClient);
+      ]).exec(client);
       //   This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
       await sleep(5000);
       const res = await new QueryCommand({
@@ -171,7 +158,7 @@ describe("QUERY", () => {
         topK: 1,
         includeVectors: true,
         includeMetadata: true,
-      }).exec(embeddingClient);
+      }).exec(client);
 
       expect(res[0].metadata).toEqual({ upstash: "Cookie" });
     },
