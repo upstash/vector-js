@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { RangeCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, randomFloat, randomID, resetIndexes } from "@utils/test-utils";
+import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -10,7 +10,7 @@ describe("RANGE", () => {
   test("should query records successfully", async () => {
     const randomizedData = new Array(20)
       .fill("")
-      .map(() => ({ id: randomID(), vector: [randomFloat(), randomFloat()] }));
+      .map(() => ({ id: randomID(), vector: range(0, 384) }));
 
     const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));
     await Promise.all(payloads);

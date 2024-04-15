@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, resetIndexes } from "@utils/test-utils";
+import { newHttpClient, range, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -8,7 +8,7 @@ describe("UPSERT", () => {
   afterAll(async () => await resetIndexes());
 
   test("should add record successfully", async () => {
-    const res = await new UpsertCommand({ id: 1, vector: [0.1, 0.2] }).exec(client);
+    const res = await new UpsertCommand({ id: 1, vector: range(0, 384) }).exec(client);
     expect(res).toEqual("Success");
   });
 
@@ -25,7 +25,7 @@ describe("UPSERT", () => {
     //@ts-ignore
     const res = await new UpsertCommand({
       id: 1,
-      vector: [0.1, 0.2],
+      vector: range(0, 384),
       metadata: { upstash: "test" },
     }).exec(client);
     expect(res).toEqual("Success");
@@ -35,12 +35,12 @@ describe("UPSERT", () => {
     const res = await new UpsertCommand([
       {
         id: "hello-world",
-        vector: [0.1, 0.2],
+        vector: range(0, 384),
         metadata: { upstash: "test" },
       },
       {
         id: "hello-world-4",
-        vector: [3, 4],
+        vector: range(0, 384),
         metadata: { upstash: "test" },
       },
     ]).exec(client);
