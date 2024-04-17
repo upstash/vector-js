@@ -6,7 +6,8 @@ type CacheSetting =
   | "no-cache"
   | "no-store"
   | "only-if-cached"
-  | "reload";
+  | "reload"
+  | false;
 
 export type UpstashRequest = {
   path?: string[];
