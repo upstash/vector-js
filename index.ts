@@ -116,7 +116,9 @@ export class Index<
       baseUrl: url,
       retry: configOrRequester?.retry,
       headers: { authorization: `Bearer ${token}` },
-      cache: configOrRequester?.cache || "no-store",
+      cache: configOrRequester?.cache === false 
+        ? undefined 
+        : configOrRequester?.cache || "no-store",
       signal: configOrRequester?.signal,
     });
 
