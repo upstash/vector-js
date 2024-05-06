@@ -14,7 +14,6 @@ type InfoCommandOptions = { namespace?: string };
 
 export class InfoCommand extends Command<InfoResult> {
   constructor(options?: InfoCommandOptions) {
-
     let endpoint: InfoEndpointVariants = "info";
 
     if (options?.namespace) {

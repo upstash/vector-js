@@ -1,12 +1,12 @@
 import {
   DeleteCommand,
   FetchCommand,
+  InfoCommand,
+  Namespace,
   QueryCommand,
   RangeCommand,
   ResetCommand,
   UpsertCommand,
-  InfoCommand,
-  Namespace
 } from "@commands/client";
 import { Requester } from "@http";
 
@@ -34,7 +34,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
     this.client = client;
   }
 
-  namespace = (namespace: string) => new Namespace(this.client, namespace);
+  namespace = (namespace: string) => new Namespace<TIndexMetadata>(this.client, namespace);
 
   /**
    * Deletes a specific item or items from the index by their ID(s).   *
@@ -47,7 +47,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @param id - List of ids or single id
    * @returns A promise that resolves when the request to delete the index is completed.
    */
-  delete = (args: CommandArgs<typeof DeleteCommand>, options?: { namespace?: string }) => new DeleteCommand(args, options).exec(this.client);
+  delete = (args: CommandArgs<typeof DeleteCommand>, options?: { namespace?: string }) =>
+    new DeleteCommand(args, options).exec(this.client);
 
   /**
    * Queries an index with specified parameters.
@@ -73,7 +74,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
   query = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    args: CommandArgs<typeof QueryCommand>, options?: { namespace?: string }
+    args: CommandArgs<typeof QueryCommand>,
+    options?: { namespace?: string }
   ) => new QueryCommand<TMetadata>(args, options).exec(this.client);
 
   /**
@@ -99,7 +101,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
   upsert = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    args: CommandArgs<typeof UpsertCommand<TMetadata>>, options?: { namespace?: string }
+    args: CommandArgs<typeof UpsertCommand<TMetadata>>,
+    options?: { namespace?: string }
   ) => new UpsertCommand<TMetadata>(args, options).exec(this.client);
 
   /**
@@ -123,9 +126,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
   fetch = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-
     ...args: CommandArgs<typeof FetchCommand>
-
   ) => new FetchCommand<TMetadata>(args).exec(this.client);
 
   /**
