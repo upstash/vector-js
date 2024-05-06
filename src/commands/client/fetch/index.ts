@@ -1,5 +1,5 @@
-import { Command } from "@commands/command";
 import type { NAMESPACE, Vector } from "@commands/client/types";
+import { Command } from "@commands/command";
 
 type FetchCommandOptions = {
   includeMetadata?: boolean;

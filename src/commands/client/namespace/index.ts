@@ -19,8 +19,6 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
     this.namespace = namespace;
   }
 
-
-
   upsert = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
     args: CommandArgs<typeof UpsertCommand<TMetadata>>
   ) => new UpsertCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
