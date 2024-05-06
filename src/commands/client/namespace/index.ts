@@ -14,6 +14,19 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
   protected client: Requester;
   protected namespace: string;
 
+  /**
+ * Create a new index namespace client
+ *
+ * @example
+ * ```typescript
+ * const index = new Index({
+ *  url: "<UPSTASH_VECTOR_REST_URL>",
+ *  token: "<UPSTASH_VECTOR_REST_TOKEN>",
+ * });
+ * 
+ * const namespace = index.namespace("ns");
+ * ```
+ */
   constructor(client: Requester, namespace: string) {
     this.client = client;
     this.namespace = namespace;
