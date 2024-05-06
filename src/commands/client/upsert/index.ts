@@ -1,17 +1,21 @@
 import { Command } from "@commands/command";
 
+
 type NoInfer<T> = T extends infer U ? U : never;
 
 type VectorPayload<TMetadata> = {
   id: number | string;
-  vector: number[];
-  metadata?: NoInfer<TMetadata>;
-};
+} & (
+    | { vector: number[]; metadata?: NoInfer<TMetadata> }
+    | { vector?: number[]; metadata: NoInfer<TMetadata> }
+  );
+
 type DataPayload<TMetadata> = {
   id: number | string;
-  data: string;
-  metadata?: NoInfer<TMetadata>;
-};
+} & (
+    | { data: string, metadata?: NoInfer<TMetadata> }
+    | { data?: string, metadata: NoInfer<TMetadata> }
+  );
 
 type PayloadArray<TMetadata> = VectorPayload<TMetadata>[] | DataPayload<TMetadata>[];
 
