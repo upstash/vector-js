@@ -8,8 +8,19 @@ export type InfoResult = {
   similarityFunction: "COSINE" | "EUCLIDEAN" | "DOT_PRODUCT";
 };
 
+type InfoEndpointVariants = `info` | `info/${string}`;
+
+type InfoCommandOptions = { namespace?: string };
+
 export class InfoCommand extends Command<InfoResult> {
-  constructor() {
-    super([], "info");
+  constructor(options?: InfoCommandOptions) {
+
+    let endpoint: InfoEndpointVariants = "info";
+
+    if (options?.namespace) {
+      endpoint = `${endpoint}/${options.namespace}`;
+    }
+
+    super([], endpoint);
   }
 }

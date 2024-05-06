@@ -15,11 +15,19 @@ type DataPayload<TMetadata> = {
 
 type PayloadArray<TMetadata> = VectorPayload<TMetadata>[] | DataPayload<TMetadata>[];
 
+type UpsertCommandOptions = { namespace?: string };
+
+type UpsertEndpointVariants = `upsert` | `upsert-data` | `upsert/${string}` | `upsert-data/${string}`;
+
 export class UpsertCommand<TMetadata> extends Command<string> {
   constructor(
-    payload: VectorPayload<TMetadata> | DataPayload<TMetadata> | PayloadArray<TMetadata>
+    payload: VectorPayload<TMetadata> | DataPayload<TMetadata> | PayloadArray<TMetadata>, opts?: UpsertCommandOptions
   ) {
-    let endpoint: "upsert" | "upsert-data" = "upsert";
+    let endpoint: UpsertEndpointVariants = "upsert";
+
+    if (opts?.namespace) {
+      endpoint = `${endpoint}/${opts.namespace}`
+    }
 
     if (Array.isArray(payload)) {
       const hasData = payload.some((p) => "data" in p && p.data);

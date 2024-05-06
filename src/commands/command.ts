@@ -13,7 +13,7 @@ const ENDPOINTS = [
   "query-data",
 ] as const;
 
-export type EndpointVariants = (typeof ENDPOINTS)[number];
+export type EndpointVariants = (typeof ENDPOINTS)[number] | `${typeof ENDPOINTS[number]}/${string}`;
 /**
  * TResult is the raw data returned from upstash, which may need to be transformed or parsed.
  */

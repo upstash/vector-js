@@ -14,13 +14,22 @@ export type QueryResult<TMetadata = Record<string, unknown>> = {
   metadata?: TMetadata;
 };
 
+type QueryCommandOptions = { namespace?: string };
+
+type QueryEndpointVariants = `query` | `query-data` | `query/${string}` | `query-data/${string}`;
+
 export class QueryCommand<TMetadata> extends Command<QueryResult<TMetadata>[]> {
-  constructor(payload: QueryCommandPayload) {
-    let endpoint: "query" | "query-data" = "query";
+  constructor(payload: QueryCommandPayload, options?: QueryCommandOptions) {
+    let endpoint: QueryEndpointVariants = "query";
 
     if ("data" in payload) {
       endpoint = "query-data";
     }
+
+    if (options?.namespace) {
+      endpoint = `${endpoint}/${options.namespace}`;
+    }
+
     super(payload, endpoint);
   }
 }

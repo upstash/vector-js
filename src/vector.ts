@@ -5,9 +5,10 @@ import {
   RangeCommand,
   ResetCommand,
   UpsertCommand,
+  InfoCommand,
+  Namespace
 } from "@commands/client";
 import { Requester } from "@http";
-import { InfoCommand } from "./commands";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
@@ -33,6 +34,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
     this.client = client;
   }
 
+  namespace = (namespace: string) => new Namespace(this.client, namespace);
+
   /**
    * Deletes a specific item or items from the index by their ID(s).   *
    *
@@ -44,7 +47,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @param id - List of ids or single id
    * @returns A promise that resolves when the request to delete the index is completed.
    */
-  delete = (args: CommandArgs<typeof DeleteCommand>) => new DeleteCommand(args).exec(this.client);
+  delete = (args: CommandArgs<typeof DeleteCommand>, options?: { namespace?: string }) => new DeleteCommand(args, options).exec(this.client);
 
   /**
    * Queries an index with specified parameters.
@@ -70,8 +73,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
   query = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    args: CommandArgs<typeof QueryCommand>
-  ) => new QueryCommand<TMetadata>(args).exec(this.client);
+    args: CommandArgs<typeof QueryCommand>, options?: { namespace?: string }
+  ) => new QueryCommand<TMetadata>(args, options).exec(this.client);
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.
@@ -96,8 +99,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
   upsert = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    args: CommandArgs<typeof UpsertCommand<TMetadata>>
-  ) => new UpsertCommand<TMetadata>(args).exec(this.client);
+    args: CommandArgs<typeof UpsertCommand<TMetadata>>, options?: { namespace?: string }
+  ) => new UpsertCommand<TMetadata>(args, options).exec(this.client);
 
   /**
    * It's used for retrieving specific items from the index, optionally including
@@ -120,7 +123,9 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
   fetch = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
+
     ...args: CommandArgs<typeof FetchCommand>
+
   ) => new FetchCommand<TMetadata>(args).exec(this.client);
 
   /**
@@ -134,7 +139,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {Promise<string>} A promise that resolves with the result of the reset operation after the command is executed.
    */
-  reset = () => new ResetCommand().exec(this.client);
+  reset = (options?: { namespace?: string }) => new ResetCommand(options).exec(this.client);
 
   /**
    * Retrieves a range of items from the index.
@@ -160,8 +165,9 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the next cursor and an array of vectors, after the command is executed.
    */
   range = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    args: CommandArgs<typeof RangeCommand>
-  ) => new RangeCommand<TMetadata>(args).exec(this.client);
+    args: CommandArgs<typeof RangeCommand>,
+    options?: { namespace?: string }
+  ) => new RangeCommand<TMetadata>(args, options).exec(this.client);
 
   /**
    * Retrieves info from the index.
@@ -174,5 +180,5 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {Promise<InfoResult>} A promise that resolves with the response containing the vectorCount, pendingVectorCount, indexSize, dimension count and similarity algorithm after the command is executed.
    */
-  info = () => new InfoCommand().exec(this.client);
+  info = (options?: { namespace?: string }) => new InfoCommand(options).exec(this.client);
 }
