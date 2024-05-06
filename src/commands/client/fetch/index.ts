@@ -1,5 +1,5 @@
 import { Command } from "@commands/command";
-import { Vector } from "../types";
+import { NAMESPACE, Vector } from "../types";
 
 type FetchCommandOptions = {
   includeMetadata?: boolean;
@@ -8,7 +8,7 @@ type FetchCommandOptions = {
 
 export type FetchResult<TMetadata = Record<string, unknown>> = Vector<TMetadata> | null;
 
-type FetchEndpointVariants = `fetch` | `fetch/${string}`;
+type FetchEndpointVariants = `fetch` | `fetch/${NAMESPACE}`;
 
 export class FetchCommand<TMetadata> extends Command<FetchResult<TMetadata>[]> {
   constructor(

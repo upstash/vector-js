@@ -1,6 +1,7 @@
 import { Command } from "@commands/command";
+import { NAMESPACE } from "../types";
 
-type ResetEndpointVariants = `reset` | `reset/${string}`;
+type ResetEndpointVariants = `reset` | `reset/${NAMESPACE}`;
 
 type ResetCommandOptions = { namespace?: string };
 export class ResetCommand extends Command<string> {

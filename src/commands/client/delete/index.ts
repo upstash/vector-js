@@ -1,6 +1,7 @@
 import { Command } from "@commands/command";
+import { NAMESPACE } from "../types";
 
-type DeleteEndpointVariants = `delete` | `delete/${string}`;
+type DeleteEndpointVariants = `delete` | `delete/${NAMESPACE}`;
 export class DeleteCommand extends Command<{ deleted: number }> {
   constructor(id: (number[] | string[]) | number | string, options?: { namespace?: string }) {
     let endpoint: DeleteEndpointVariants = "delete";

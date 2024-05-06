@@ -26,9 +26,8 @@ describe("NAMESPACE", () => {
       metadata: { namespace: "namespace2" },
     });
 
-    sleep(1000);
+    sleep(3000);
 
-    // const res1 = await namespace1.fetch([1], { includeMetadata: true });
     const query1 = await namespace1.query({
       vector: range(0, 384),
       topK: 3,

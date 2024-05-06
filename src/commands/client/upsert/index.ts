@@ -1,4 +1,5 @@
 import { Command } from "@commands/command";
+import { NAMESPACE } from "../types";
 
 type NoInfer<T> = T extends infer U ? U : never;
 
@@ -20,8 +21,8 @@ type UpsertCommandOptions = { namespace?: string };
 type UpsertEndpointVariants =
   | `upsert`
   | `upsert-data`
-  | `upsert/${string}`
-  | `upsert-data/${string}`;
+  | `upsert/${NAMESPACE}`
+  | `upsert-data/${NAMESPACE}`;
 
 export class UpsertCommand<TMetadata> extends Command<string> {
   constructor(

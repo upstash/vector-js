@@ -1,5 +1,6 @@
 import { UpstashError } from "@error/index";
 import { Requester } from "@http";
+import { NAMESPACE } from "./client/types";
 
 const ENDPOINTS = [
   "upsert",
@@ -15,7 +16,7 @@ const ENDPOINTS = [
 
 export type EndpointVariants =
   | (typeof ENDPOINTS)[number]
-  | `${(typeof ENDPOINTS)[number]}/${string}`;
+  | `${(typeof ENDPOINTS)[number]}/${NAMESPACE}`;
 /**
  * TResult is the raw data returned from upstash, which may need to be transformed or parsed.
  */

@@ -1,4 +1,5 @@
 import { Command } from "@commands/command";
+import { NAMESPACE } from "../types";
 
 export type InfoResult = {
   vectorCount: number;
@@ -8,7 +9,7 @@ export type InfoResult = {
   similarityFunction: "COSINE" | "EUCLIDEAN" | "DOT_PRODUCT";
 };
 
-type InfoEndpointVariants = `info` | `info/${string}`;
+type InfoEndpointVariants = `info` | `info/${NAMESPACE}`;
 
 type InfoCommandOptions = { namespace?: string };
 

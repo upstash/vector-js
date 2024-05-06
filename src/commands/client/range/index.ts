@@ -1,5 +1,5 @@
 import { Command } from "@commands/command";
-import { Vector } from "../types";
+import { NAMESPACE, Vector } from "../types";
 
 type RangeCommandPayload = {
   cursor: number | string;
@@ -10,7 +10,7 @@ type RangeCommandPayload = {
 
 type RangeCommandOptions = { namespace?: string };
 
-type RangeEndpointVariants = `range` | `range/${string}`;
+type RangeEndpointVariants = `range` | `range/${NAMESPACE}`;
 
 export type RangeResult<TMetadata = Record<string, unknown>> = {
   nextCursor: string;

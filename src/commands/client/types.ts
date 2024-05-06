@@ -3,3 +3,5 @@ export type Vector<TMetadata = Record<string, unknown>> = {
   vector: number[];
   metadata?: TMetadata;
 };
+
+export type NAMESPACE = string;

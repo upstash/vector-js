@@ -1,4 +1,5 @@
 import { Command } from "@commands/command";
+import { NAMESPACE } from "../types";
 
 type QueryCommandPayload = {
   topK: number;
@@ -16,7 +17,11 @@ export type QueryResult<TMetadata = Record<string, unknown>> = {
 
 type QueryCommandOptions = { namespace?: string };
 
-type QueryEndpointVariants = `query` | `query-data` | `query/${string}` | `query-data/${string}`;
+type QueryEndpointVariants =
+  | `query`
+  | `query-data`
+  | `query/${NAMESPACE}`
+  | `query-data/${NAMESPACE}`;
 
 export class QueryCommand<TMetadata> extends Command<QueryResult<TMetadata>[]> {
   constructor(payload: QueryCommandPayload, options?: QueryCommandOptions) {
