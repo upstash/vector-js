@@ -1,5 +1,5 @@
 import { Command } from "@commands/command";
-import { NAMESPACE, Vector } from "../types";
+import type { NAMESPACE, Vector } from "@commands/client/types";
 
 type RangeCommandPayload = {
   cursor: number | string;

@@ -1,5 +1,5 @@
 import { Command } from "@commands/command";
-import { NAMESPACE } from "../types";
+import type { NAMESPACE } from "@commands/client/types";
 
 export type InfoResult = {
   vectorCount: number;

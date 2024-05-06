@@ -1,5 +1,5 @@
 import { Command } from "@commands/command";
-import { NAMESPACE } from "../types";
+import type { NAMESPACE } from "@commands/client/types";
 
 type DeleteEndpointVariants = `delete` | `delete/${NAMESPACE}`;
 export class DeleteCommand extends Command<{ deleted: number }> {

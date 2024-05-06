@@ -1,5 +1,5 @@
 import { Command } from "@commands/command";
-import { NAMESPACE } from "../types";
+import type { NAMESPACE } from "@commands/client/types";
 
 type NoInfer<T> = T extends infer U ? U : never;
 
