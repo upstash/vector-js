@@ -73,13 +73,13 @@ describe("UPSERT", () => {
       await new UpsertCommand([
         {
           id: "hello-world",
-          //@ts-ignore
+          //@ts-expect-error Mixed usage of vector and data in the same upsert command is not allowed. 
           data: "Test1-2-3-4-5",
           metadata: { upstash: "test" },
         },
         {
           id: "hello-world",
-          //@ts-ignore
+
           vector: [1, 2, 3, 4],
           metadata: { upstash: "test" },
         },
