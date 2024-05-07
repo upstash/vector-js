@@ -7,7 +7,7 @@ type BasePayload = {
   id: number | string;
 };
 
-type ExtendedPayload<TMetadata> = BasePayload & ({
+type ExtendedVectorPayload<TMetadata> = BasePayload & ({
   metadata: NoInfer<TMetadata>;
   vector?: number[];
   data?: never;
@@ -15,7 +15,9 @@ type ExtendedPayload<TMetadata> = BasePayload & ({
   metadata?: NoInfer<TMetadata>;
   vector: number[];
   data?: never;
-} | {
+});
+
+type ExtendedDataPayload<TMetadata> = BasePayload & ({
   metadata: NoInfer<TMetadata>;
   data: string;
   vector?: never;
@@ -25,11 +27,11 @@ type ExtendedPayload<TMetadata> = BasePayload & ({
   vector?: never;
 });
 
-type Payload<TMetadata> = ExtendedPayload<TMetadata>;
+type Payload<TMetadata> = ExtendedDataPayload<TMetadata> | ExtendedVectorPayload<TMetadata> | ExtendedDataPayload<TMetadata>[] | ExtendedVectorPayload<TMetadata>[];
 
 export class UpsertCommand<TMetadata> extends Command<string> {
   constructor(
-    payload: Payload<TMetadata> | Payload<TMetadata>[],
+    payload: Payload<TMetadata>,
   ) {
     let endpoint: "upsert" | "upsert-data" = "upsert";
 

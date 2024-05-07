@@ -73,6 +73,7 @@ describe("UPSERT", () => {
       await new UpsertCommand([
         {
           id: "hello-world",
+          //@ts-ignore
           data: "Test1-2-3-4-5",
           metadata: { upstash: "test" },
         },
