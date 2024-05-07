@@ -1,23 +1,37 @@
 import { Command } from "@commands/command";
 
+
 type NoInfer<T> = T extends infer U ? U : never;
 
-type VectorPayload<TMetadata> = {
+type BasePayload = {
   id: number | string;
-  vector: number[];
-  metadata?: NoInfer<TMetadata>;
-};
-type DataPayload<TMetadata> = {
-  id: number | string;
-  data: string;
-  metadata?: NoInfer<TMetadata>;
 };
 
-type PayloadArray<TMetadata> = VectorPayload<TMetadata>[] | DataPayload<TMetadata>[];
+type ExtendedVectorPayload<TMetadata> = BasePayload & ({
+  metadata: NoInfer<TMetadata>;
+  vector?: number[];
+  data?: never;
+} | {
+  metadata?: NoInfer<TMetadata>;
+  vector: number[];
+  data?: never;
+});
+
+type ExtendedDataPayload<TMetadata> = BasePayload & ({
+  metadata: NoInfer<TMetadata>;
+  data: string;
+  vector?: never;
+} | {
+  metadata?: NoInfer<TMetadata>;
+  data: string;
+  vector?: never;
+});
+
+type Payload<TMetadata> = ExtendedDataPayload<TMetadata> | ExtendedVectorPayload<TMetadata> | ExtendedDataPayload<TMetadata>[] | ExtendedVectorPayload<TMetadata>[];
 
 export class UpsertCommand<TMetadata> extends Command<string> {
   constructor(
-    payload: VectorPayload<TMetadata> | DataPayload<TMetadata> | PayloadArray<TMetadata>
+    payload: Payload<TMetadata>,
   ) {
     let endpoint: "upsert" | "upsert-data" = "upsert";
 
