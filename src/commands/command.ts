@@ -1,3 +1,4 @@
+import { Dict } from "@commands/client/types";
 import { UpstashError } from "@error/index";
 import { Requester } from "@http";
 import { NAMESPACE } from "./client/types";
@@ -21,10 +22,10 @@ export type EndpointVariants =
  * TResult is the raw data returned from upstash, which may need to be transformed or parsed.
  */
 export class Command<TResult> {
-  public readonly payload: Record<string, unknown> | unknown[];
+  public readonly payload: Dict | unknown[];
   public readonly endpoint: EndpointVariants;
 
-  constructor(command: Record<string, unknown> | unknown[], endpoint: EndpointVariants) {
+  constructor(command: Dict | unknown[], endpoint: EndpointVariants) {
     this.payload = command;
     this.endpoint = endpoint;
   }

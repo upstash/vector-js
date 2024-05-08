@@ -8,6 +8,7 @@ import {
   ResetCommand,
   UpsertCommand,
 } from "@commands/client";
+import { Dict } from "@commands/client/types";
 import { Requester } from "@http";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
@@ -16,7 +17,7 @@ export type CommandArgs<TCommand extends new (_args: any) => any> =
 /**
  * Serverless vector client for upstash vector db.
  */
-export class Index<TIndexMetadata extends Record<string, unknown> = Record<string, unknown>> {
+export class Index<TIndexMetadata extends Dict = Dict> {
   protected client: Requester;
 
   /**
@@ -73,7 +74,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
-  query = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
+  query = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof QueryCommand>,
     options?: { namespace?: string }
   ) => new QueryCommand<TMetadata>(args, options).exec(this.client);
@@ -100,7 +101,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  upsert = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
+  upsert = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpsertCommand<TMetadata>>,
     options?: { namespace?: string }
   ) => new UpsertCommand<TMetadata>(args, options).exec(this.client);
@@ -125,9 +126,8 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  fetch = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    ...args: CommandArgs<typeof FetchCommand>
-  ) => new FetchCommand<TMetadata>(args).exec(this.client);
+  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
+    new FetchCommand<TMetadata>(args).exec(this.client);
 
   /**
    * It's used for wiping an entire index.
@@ -165,7 +165,7 @@ export class Index<TIndexMetadata extends Record<string, unknown> = Record<strin
    *
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the next cursor and an array of vectors, after the command is executed.
    */
-  range = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
+  range = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof RangeCommand>,
     options?: { namespace?: string }
   ) => new RangeCommand<TMetadata>(args, options).exec(this.client);

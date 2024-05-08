@@ -7,10 +7,11 @@ import {
   ResetCommand,
   UpsertCommand,
 } from "@commands/client";
+import { Dict } from "@commands/client/types";
 import { Requester } from "@http";
 import { CommandArgs } from "../../../vector";
 
-export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<string, unknown>> {
+export class Namespace<TIndexMetadata extends Dict = Dict> {
   protected client: Requester;
   protected namespace: string;
 
@@ -55,7 +56,7 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
    *
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
-  upsert = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
+  upsert = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpsertCommand<TMetadata>>
   ) => new UpsertCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
@@ -77,13 +78,12 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
    * @param {CommandArgs<typeof UpsertCommand>} args - The arguments for the upsert command.
    * @param {number|string} args.id - The unique identifier for the item being upserted.
    * @param {number[]} args.vector - The feature vector associated with the item.
-   * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
+   * @param {Dict} [args.metadata] - Optional metadata to be associated with the item.
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  fetch = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    ...args: CommandArgs<typeof FetchCommand>
-  ) => new FetchCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
+    new FetchCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**
    * It's used for retrieving specific items from the index namespace, optionally including
@@ -105,9 +105,8 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  query = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    args: CommandArgs<typeof QueryCommand>
-  ) => new QueryCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+  query = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof QueryCommand>) =>
+    new QueryCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**
    * Deletes a specific item or items from the index namespace by their ID(s).   *
@@ -146,9 +145,8 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
    *
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the next cursor and an array of vectors, after the command is executed.
    */
-  range = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
-    args: CommandArgs<typeof RangeCommand>
-  ) => new RangeCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+  range = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof RangeCommand>) =>
+    new RangeCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**
    * Retrieves info from the index space.

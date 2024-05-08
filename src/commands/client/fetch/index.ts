@@ -1,4 +1,5 @@
 import type { NAMESPACE, Vector } from "@commands/client/types";
+import { Dict } from "@commands/client/types";
 import { Command } from "@commands/command";
 
 type FetchCommandOptions = {
@@ -6,7 +7,7 @@ type FetchCommandOptions = {
   includeVectors?: boolean;
 };
 
-export type FetchResult<TMetadata = Record<string, unknown>> = Vector<TMetadata> | null;
+export type FetchResult<TMetadata = Dict> = Vector<TMetadata> | null;
 
 type FetchEndpointVariants = `fetch` | `fetch/${NAMESPACE}`;
 

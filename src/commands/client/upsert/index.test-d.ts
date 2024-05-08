@@ -1,3 +1,4 @@
+import { Dict } from "@commands/client/types";
 import { NonArrayType } from "@utils/test-utils";
 import { expectTypeOf, test } from "vitest";
 import { Index } from "../../../../index";
@@ -11,7 +12,7 @@ test("case 1: no metadata is provided, any object should be expected", () => {
   type ExpectedParameters = Parameters<typeof index.upsert>["0"];
   type ExpectedMetadata = NonNullable<NonArrayType<ExpectedParameters>["metadata"]>;
 
-  expectTypeOf<ExpectedMetadata>().toEqualTypeOf<Record<string, unknown>>();
+  expectTypeOf<ExpectedMetadata>().toEqualTypeOf<Dict>();
 });
 
 test("case 2: index-level metadata is provided, index-level metadata should be expected", () => {

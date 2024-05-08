@@ -1,4 +1,5 @@
 import type { NAMESPACE, Vector } from "@commands/client/types";
+import { Dict } from "@commands/client/types";
 import { Command } from "@commands/command";
 
 type RangeCommandPayload = {
@@ -12,7 +13,7 @@ type RangeCommandOptions = { namespace?: string };
 
 type RangeEndpointVariants = `range` | `range/${NAMESPACE}`;
 
-export type RangeResult<TMetadata = Record<string, unknown>> = {
+export type RangeResult<TMetadata = Dict> = {
   nextCursor: string;
   vectors: Vector<TMetadata>[];
 };

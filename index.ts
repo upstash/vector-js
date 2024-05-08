@@ -8,6 +8,7 @@ import {
 import * as core from "./src/vector";
 
 export type * from "@commands/types";
+import { Dict } from "@commands/client/types";
 
 export type { Requester, UpstashRequest, UpstashResponse };
 
@@ -36,10 +37,8 @@ export type IndexConfig = {
  * Serverless vector client for upstash.
  */
 export class Index<
-  TIndexMetadata extends Record<
-    string,
-    unknown
-  > = Record<string, unknown>
+  TIndexMetadata extends Dict
+  = Dict
 > extends core.Index<TIndexMetadata> {
   /**
    * Create a new vector client by providing the url and token
@@ -116,8 +115,8 @@ export class Index<
       baseUrl: url,
       retry: configOrRequester?.retry,
       headers: { authorization: `Bearer ${token}` },
-      cache: configOrRequester?.cache === false 
-        ? undefined 
+      cache: configOrRequester?.cache === false
+        ? undefined
         : configOrRequester?.cache || "no-store",
       signal: configOrRequester?.signal,
     });

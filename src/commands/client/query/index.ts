@@ -1,4 +1,5 @@
 import type { NAMESPACE } from "@commands/client/types";
+import { Dict } from "@commands/client/types";
 import { Command } from "@commands/command";
 
 type QueryCommandPayload = {
@@ -8,7 +9,7 @@ type QueryCommandPayload = {
   includeMetadata?: boolean;
 } & ({ vector: number[]; data?: never } | { data: string; vector?: never });
 
-export type QueryResult<TMetadata = Record<string, unknown>> = {
+export type QueryResult<TMetadata = Dict> = {
   id: number | string;
   score: number;
   vector: number[];
