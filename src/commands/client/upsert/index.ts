@@ -53,10 +53,6 @@ export class UpsertCommand<TMetadata> extends Command<string> {
   constructor(payload: Payload<TMetadata>, opts?: UpsertCommandOptions) {
     let endpoint: UpsertEndpointVariants = "upsert";
 
-    if (opts?.namespace) {
-      endpoint = `${endpoint}/${opts.namespace}`;
-    }
-
     if (Array.isArray(payload)) {
       const hasData = payload.some((p) => "data" in p && p.data);
       if (hasData) {
@@ -80,6 +76,10 @@ export class UpsertCommand<TMetadata> extends Command<string> {
           } as NoInfer<TMetadata & { data: string }>;
         }
       }
+    }
+
+    if (opts?.namespace) {
+      endpoint = `${endpoint}/${opts.namespace}`;
     }
 
     super(payload, endpoint);

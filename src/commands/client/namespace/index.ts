@@ -148,7 +148,7 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
    */
   range = <TMetadata extends Record<string, unknown> = TIndexMetadata>(
     args: CommandArgs<typeof RangeCommand>
-  ) => new RangeCommand<TMetadata>(args).exec(this.client);
+  ) => new RangeCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**
    * Retrieves info from the index space.
@@ -174,5 +174,5 @@ export class Namespace<TIndexMetadata extends Record<string, unknown> = Record<s
    *
    * @returns {Promise<string>} A promise that resolves with the result of the reset operation after the command is executed.
    */
-  reset = () => new ResetCommand().exec(this.client);
+  reset = () => new ResetCommand({ namespace: this.namespace }).exec(this.client);
 }
