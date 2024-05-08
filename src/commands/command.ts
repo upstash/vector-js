@@ -13,6 +13,8 @@ const ENDPOINTS = [
   "info",
   "upsert-data",
   "query-data",
+  "list-namespaces",
+  "delete-namespace",
 ] as const;
 
 export type EndpointVariants =

@@ -9,6 +9,7 @@ import {
   UpsertCommand,
 } from "@commands/client";
 import { Dict } from "@commands/client/types";
+import { DeleteNamespaceCommand, ListNamespacesCommand } from "@commands/management";
 import { Requester } from "@http";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
@@ -181,5 +182,32 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    *
    * @returns {Promise<InfoResult>} A promise that resolves with the response containing the vectorCount, pendingVectorCount, indexSize, dimension count and similarity algorithm after the command is executed.
    */
-  info = (options?: { namespace?: string }) => new InfoCommand(options).exec(this.client);
+  info = () => new InfoCommand().exec(this.client);
+
+  /**
+   * List all namespaces in the vector database.
+   *
+   * @example
+   * ```js
+   * const namespaces = await index.listNamespaces();
+   * console.log(namespaces); // Outputs the list of namespaces
+   * ```
+   *
+   * @returns {Promise<string[]>} A promise that resolves with an array of namespaces after the command is executed.
+   */
+  listNamespaces = () => new ListNamespacesCommand().exec(this.client);
+
+  /**
+   * Deletes a namespace from the vector database.
+   *
+   * @example
+   * ```js
+   * await index.deleteNamespace('namespace');
+   * console.log('Namespace has been deleted');
+   * ```
+   *
+   * @param {string} namespace - The name of the namespace to be deleted.
+   * @returns {Promise<string>} A promise that resolves with the result of the delete operation after the command is executed.
+   */
+  deleteNamespace = (namespace: string) => new DeleteNamespaceCommand(namespace).exec(this.client);
 }

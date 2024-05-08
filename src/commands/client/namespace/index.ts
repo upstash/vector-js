@@ -1,7 +1,6 @@
 import {
   DeleteCommand,
   FetchCommand,
-  InfoCommand,
   QueryCommand,
   RangeCommand,
   ResetCommand,
@@ -147,19 +146,6 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    */
   range = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof RangeCommand>) =>
     new RangeCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
-
-  /**
-   * Retrieves info from the index space.
-   *
-   * @example
-   * ```js
-   * const infoResults = await index.namespace().info();
-   * console.log(infoResults); // Outputs the result of the info operation
-   * ```
-   *
-   * @returns {Promise<InfoResult>} A promise that resolves with the response containing the vectorCount, pendingVectorCount, indexSize, dimension count and similarity algorithm after the command is executed.
-   */
-  info = () => new InfoCommand({ namespace: this.namespace }).exec(this.client);
 
   /**
    * It's used for wiping all the vectors in a index namespace.
