@@ -6,22 +6,22 @@ import { sleep } from "bun";
 const client = newHttpClient();
 
 describe("NAMESPACES->DELETE", () => {
-	test("should return the list of namespaces", async () => {
-		await new UpsertCommand(
-			{ id: randomID(), vector: range(0, 384) },
-			{ namespace: "test-namespace-delete" }
-		).exec(client);
+  test("should return the list of namespaces", async () => {
+    await new UpsertCommand(
+      { id: randomID(), vector: range(0, 384) },
+      { namespace: "test-namespace-delete" }
+    ).exec(client);
 
-		sleep(2000);
+    sleep(2000);
 
-		const namespaces = await new ListNamespacesCommand().exec(client);
+    const namespaces = await new ListNamespacesCommand().exec(client);
 
-		expect(namespaces).toContain("test-namespace-delete");
+    expect(namespaces).toContain("test-namespace-delete");
 
-		await new DeleteNamespaceCommand("test-namespace-delete").exec(client);
+    await new DeleteNamespaceCommand("test-namespace-delete").exec(client);
 
-		const namespacesAfterDelete = await new ListNamespacesCommand().exec(client);
+    const namespacesAfterDelete = await new ListNamespacesCommand().exec(client);
 
-		expect(namespacesAfterDelete).not.toContain("test-namespace-delete");
-	});
+    expect(namespacesAfterDelete).not.toContain("test-namespace-delete");
+  });
 });
