@@ -140,7 +140,6 @@ export class HttpClient implements Requester {
       throw error ?? new Error("Exhausted all retries");
     }
 
-    // console.log(res.json());
     const body = (await res.json()) as UpstashResponse<TResult>;
     if (!res.ok) {
       throw new UpstashError(`${body.error}`);
