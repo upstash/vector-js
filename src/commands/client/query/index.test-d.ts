@@ -1,6 +1,6 @@
+import { Dict } from "@commands/client/types";
 import { expectTypeOf, test } from "vitest";
 import { Index } from "../../../../index";
-
 type Metadata = { genre: string; year: number };
 
 test("case 1: no metadata is provided, any object should be expected", () => {
@@ -10,7 +10,7 @@ test("case 1: no metadata is provided, any object should be expected", () => {
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedQueryVector>["metadata"]>;
 
-  expectTypeOf<RetrievedMetadata>().toEqualTypeOf<Record<string, unknown>>();
+  expectTypeOf<RetrievedMetadata>().toEqualTypeOf<Dict>();
 });
 
 test("case 2: index-level metadata is provided, index-level metadata should be expected", () => {

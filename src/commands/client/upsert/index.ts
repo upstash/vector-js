@@ -1,5 +1,5 @@
+import type { NAMESPACE } from "@commands/client/types";
 import { Command } from "@commands/command";
-
 
 type NoInfer<T> = T extends infer U ? U : never;
 
@@ -7,33 +7,51 @@ type BasePayload = {
   id: number | string;
 };
 
-type ExtendedVectorPayload<TMetadata> = BasePayload & ({
-  metadata: NoInfer<TMetadata>;
-  vector?: number[];
-  data?: never;
-} | {
-  metadata?: NoInfer<TMetadata>;
-  vector: number[];
-  data?: never;
-});
+type ExtendedVectorPayload<TMetadata> = BasePayload &
+  (
+    | {
+        metadata: NoInfer<TMetadata>;
+        vector?: number[];
+        data?: never;
+      }
+    | {
+        metadata?: NoInfer<TMetadata>;
+        vector: number[];
+        data?: never;
+      }
+  );
 
-type ExtendedDataPayload<TMetadata> = BasePayload & ({
-  metadata: NoInfer<TMetadata>;
-  data: string;
-  vector?: never;
-} | {
-  metadata?: NoInfer<TMetadata>;
-  data: string;
-  vector?: never;
-});
+type ExtendedDataPayload<TMetadata> = BasePayload &
+  (
+    | {
+        metadata: NoInfer<TMetadata>;
+        data: string;
+        vector?: never;
+      }
+    | {
+        metadata?: NoInfer<TMetadata>;
+        data: string;
+        vector?: never;
+      }
+  );
 
-type Payload<TMetadata> = ExtendedDataPayload<TMetadata> | ExtendedVectorPayload<TMetadata> | ExtendedDataPayload<TMetadata>[] | ExtendedVectorPayload<TMetadata>[];
+type Payload<TMetadata> =
+  | ExtendedDataPayload<TMetadata>
+  | ExtendedVectorPayload<TMetadata>
+  | ExtendedDataPayload<TMetadata>[]
+  | ExtendedVectorPayload<TMetadata>[];
+
+type UpsertCommandOptions = { namespace?: string };
+
+type UpsertEndpointVariants =
+  | `upsert`
+  | `upsert-data`
+  | `upsert/${NAMESPACE}`
+  | `upsert-data/${NAMESPACE}`;
 
 export class UpsertCommand<TMetadata> extends Command<string> {
-  constructor(
-    payload: Payload<TMetadata>,
-  ) {
-    let endpoint: "upsert" | "upsert-data" = "upsert";
+  constructor(payload: Payload<TMetadata>, opts?: UpsertCommandOptions) {
+    let endpoint: UpsertEndpointVariants = "upsert";
 
     if (Array.isArray(payload)) {
       const hasData = payload.some((p) => "data" in p && p.data);
@@ -58,6 +76,10 @@ export class UpsertCommand<TMetadata> extends Command<string> {
           } as NoInfer<TMetadata & { data: string }>;
         }
       }
+    }
+
+    if (opts?.namespace) {
+      endpoint = `${endpoint}/${opts.namespace}`;
     }
 
     super(payload, endpoint);
