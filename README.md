@@ -128,6 +128,10 @@ await index.random({namespace: "example-namespace"});
 
 If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
+## Namespaces
+
+Upstash Vector allows you to partition a single index into multiple isolated namespaces. Each namespace functions as a self-contained subset of the index, in which read and write requests are only limited to one namespace. To learn more about it, see [Namespaces](https://upstash.com/docs/vector/features/namespaces)
+
 ## Troubleshooting
 
 We have a [Discord](upstash.com/discord) for common problems. If you can't find a solution, please [open an issue](https://github.com/upstash/vector-js/issues/new).
