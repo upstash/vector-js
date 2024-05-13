@@ -61,43 +61,58 @@ await index.upsert([{
 }])
 
 //Query Data
-const results = await index.query<Metadata>({
-  vector: [
-    ... // query embedding
-  ],
-  includeVectors: true,
-  includeMetadata: true
-  topK: 1,
-  filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
-})
+const results = await index.query<Metadata>(
+  {
+    vector: [
+      ... // query embedding
+    ],
+    includeVectors: true,
+    includeMetadata: true
+    topK: 1,
+    filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
+  },
+  {
+    namespace: "example-namespace"
+  }
+)
 
 // If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
 //Update Data
-await index.upsert({
-  id: "upstash-rocks",
-  metadata: {
-    title: 'Star Wars',
-    genre: 'sci-fi',
-    category: 'classic'
+await index.upsert(
+  {
+    id: "upstash-rocks",
+    metadata: {
+      title: 'Star Wars',
+      genre: 'sci-fi',
+      category: 'classic'
+    }
+  },
+  {
+    namespace: "namespace"
   }
-});
+);
 
 //Delete record
-await index.delete("upstash-rocks");
+await index.delete("upstash-rocks", {namespace: "example-namespace"});
 
 //Delete many by id
 await index.delete(["id-1", "id-2", "id-3"]);
 
 //Fetch records by their IDs
-await index.fetch(["id-1", "id-2"]);
+await index.fetch(["id-1", "id-2"], {namespace: "example-namespace"});
 
 //Fetch records with range
-await index.range({
-      cursor: 0,
-      limit: 5,
-      includeVectors: true,
-});
+await index.range(
+  {
+    cursor: 0,
+    limit: 5,
+    includeVectors: true,
+  },
+  {
+    namespace: "example-namespace"
+  }
+);
 
 //Reset index
 await index.reset();
@@ -106,7 +121,7 @@ await index.reset();
 await index.info();
 
 //Random vector based on stored vectors
-await index.random();
+await index.random({namespace: "example-namespace"});
 ```
 
 ## Metadata Filtering
