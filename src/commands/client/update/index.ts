@@ -50,27 +50,6 @@ export class UpdateCommand<TMetadata> extends Command<UpdateCommandResponse> {
   constructor(payload: Payload<TMetadata>, opts?: updateCommandOptions) {
     let endpoint: updateEndpointVariants = "update";
 
-    if (Array.isArray(payload)) {
-      const hasData = payload.some((p) => "data" in p && p.data);
-      if (hasData) {
-        for (const p of payload) {
-          if (!("metadata" in p) && "data" in p) {
-            p.metadata = {
-              data: p.data,
-            } as NoInfer<TMetadata & { data: string }>;
-          }
-        }
-      }
-    } else {
-      if ("data" in payload) {
-        if (!("metadata" in payload)) {
-          payload.metadata = {
-            data: payload.data,
-          } as NoInfer<TMetadata & { data: string }>;
-        }
-      }
-    }
-
     if (opts?.namespace) {
       endpoint = `${endpoint}/${opts.namespace}`;
     }
