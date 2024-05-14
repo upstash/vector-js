@@ -81,8 +81,13 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
-    new FetchCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) => {
+    if (args[1]) {
+      args[1].namespace = this.namespace;
+    }
+
+    return new FetchCommand<TMetadata>(args).exec(this.client);
+  };
 
   /**
    * It's used for retrieving specific items from the index namespace, optionally including

@@ -5,6 +5,7 @@ import { Command } from "@commands/command";
 type FetchCommandOptions = {
   includeMetadata?: boolean;
   includeVectors?: boolean;
+  namespace?: string;
 };
 
 export type FetchResult<TMetadata = Dict> = Vector<TMetadata> | null;
@@ -12,14 +13,12 @@ export type FetchResult<TMetadata = Dict> = Vector<TMetadata> | null;
 type FetchEndpointVariants = `fetch` | `fetch/${NAMESPACE}`;
 
 export class FetchCommand<TMetadata> extends Command<FetchResult<TMetadata>[]> {
-  constructor(
-    [ids, opts]: [ids: number[] | string[], opts?: FetchCommandOptions],
-    options?: { namespace?: string }
-  ) {
+  constructor([ids, opts]: [ids: number[] | string[], opts?: FetchCommandOptions]) {
     let endpoint: FetchEndpointVariants = "fetch";
 
-    if (options?.namespace) {
-      endpoint = `${endpoint}/${options.namespace}`;
+    if (opts?.namespace) {
+      endpoint = `${endpoint}/${opts.namespace}`;
+      delete opts.namespace;
     }
 
     super({ ids, ...opts }, endpoint);
