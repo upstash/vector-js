@@ -75,7 +75,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * console.log(updateResult); // Outputs the result of the update operation
    * ```
    *
-   * @param {CommandArgs<typeof UpdateCommand>} args - The arguments for the upsert command.
+   * @param {CommandArgs<typeof UpdateCommand>} args - The arguments for the update command.
    * @param {number|string} args.id - The unique identifier for the item being updated.
    * @param {number[]} args.vector - The feature vector associated with the item.
    * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
