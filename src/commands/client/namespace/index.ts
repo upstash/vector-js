@@ -34,27 +34,27 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
   }
 
   /**
-   * Queries an index namespace with specified parameters.
-   * This method creates and executes a query command on an index based on the provided arguments.
+   * Upserts (Updates and Inserts) specific items into the index namespace.
+   * It's used for adding new items to the index namespace or updating existing ones.
    *
    * @example
    * ```js
-   * await index.namespace("ns").query({
-   *  topK: 3,
-   *  vector: [ 0.22, 0.66 ],
-   *  filter: "age >= 23 and (type = \'turtle\' OR type = \'cat\')"
-   * });
+   * const upsertArgs = {
+   *   id: '123',
+   *   vector: [0.42, 0.87, ...],
+   *   metadata: { property1: 'value1', property2: 'value2' }
+   * };
+   * const upsertResult = await index.namespace("ns").upsert(upsertArgs);
+   * console.log(upsertResult); // Outputs the result of the upsert operation
    * ```
    *
-   * @param {Object} args - The arguments for the query command.
-   * @param {number[]} args.vector - An array of numbers representing the feature vector for the query.
-   *                                This vector is utilized to find the most relevant items in the index.
-   * @param {number} args.topK - The desired number of top results to be returned, based on relevance or similarity to the query vector.
-   * @param {string} [args.filter] - An optional filter string to be used in the query. The filter string is used to narrow down the query results.
-   * @param {boolean} [args.includeVectors=false] - When set to true, includes the feature vectors of the returned items in the response.
-   * @param {boolean} [args.includeMetadata=false] - When set to true, includes additional metadata of the returned items in the response.
+   * @param {CommandArgs<typeof UpsertCommand>} args - The arguments for the upsert command.
+   * @param {number|string} args.id - The unique identifier for the item being upserted.
+   * @param {number[]} args.vector - The feature vector associated with the item.
+   * @param {Dict} [args.metadata] - Optional metadata to be associated with the item.
+   * @param {string} [args.namespace] - The namespace to fetch the item from.
    *
-   * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
+   * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
   upsert = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpsertCommand<TMetadata>>
@@ -87,31 +87,6 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
   ) => new UpdateCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**
-   * Upserts (Updates and Inserts) specific items into the index namespace.
-   * It's used for adding new items to the index namespace or updating existing ones.
-   *
-   * @example
-   * ```js
-   * const upsertArgs = {
-   *   id: '123',
-   *   vector: [0.42, 0.87, ...],
-   *   metadata: { property1: 'value1', property2: 'value2' }
-   * };
-   * const upsertResult = await index.namespace("ns").upsert(upsertArgs);
-   * console.log(upsertResult); // Outputs the result of the upsert operation
-   * ```
-   *
-   * @param {CommandArgs<typeof UpsertCommand>} args - The arguments for the upsert command.
-   * @param {number|string} args.id - The unique identifier for the item being upserted.
-   * @param {number[]} args.vector - The feature vector associated with the item.
-   * @param {Dict} [args.metadata] - Optional metadata to be associated with the item.
-   *
-   * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
-   */
-  fetch = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof FetchCommand>) =>
-    new FetchCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
-
-  /**
    * It's used for retrieving specific items from the index namespace, optionally including
    * their metadata and feature vectors.
    *
@@ -130,6 +105,32 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {boolean} [args[1].includeVectors=false] - Optionally include feature vectors of the fetched items.
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
+   */
+  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
+    new FetchCommand<TMetadata>(args).exec(this.client);
+
+  /**
+   * Queries an index namespace with specified parameters.
+   * This method creates and executes a query command on an index based on the provided arguments.
+   *
+   * @example
+   * ```js
+   * await index.namespace("ns").query({
+   *  topK: 3,
+   *  vector: [ 0.22, 0.66 ],
+   *  filter: "age >= 23 and (type = \'turtle\' OR type = \'cat\')"
+   * });
+   * ```
+   *
+   * @param {Object} args - The arguments for the query command.
+   * @param {number[]} args.vector - An array of numbers representing the feature vector for the query.
+   *                                This vector is utilized to find the most relevant items in the index.
+   * @param {number} args.topK - The desired number of top results to be returned, based on relevance or similarity to the query vector.
+   * @param {string} [args.filter] - An optional filter string to be used in the query. The filter string is used to narrow down the query results.
+   * @param {boolean} [args.includeVectors=false] - When set to true, includes the feature vectors of the returned items in the response.
+   * @param {boolean} [args.includeMetadata=false] - When set to true, includes additional metadata of the returned items in the response.
+   *
+   * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
   query = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof QueryCommand>) =>
     new QueryCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);

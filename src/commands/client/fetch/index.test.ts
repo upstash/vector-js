@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
 import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { Index } from "../../../../index";
 
 const client = newHttpClient();
 
@@ -53,5 +54,18 @@ describe("FETCH", () => {
     ]).exec(client);
 
     expect(res).toEqual([mockData]);
+  });
+
+  test("successfully fetches with the existing interface", async () => {
+    const index = new Index({
+      url: process.env.UPSTASH_VECTOR_REST_URL!,
+      token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    });
+
+    const res = await index.fetch([randomID()], { includeMetadata: true, namespace: "ns" });
+
+    expect(res).toEqual([null]);
+
+
   });
 });

@@ -156,10 +156,8 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  fetch = <TMetadata extends Dict = TIndexMetadata>(
-    args: CommandArgs<typeof FetchCommand>,
-    options?: { namespace: string }
-  ) => new FetchCommand<TMetadata>(args, options).exec(this.client);
+  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
+    new FetchCommand<TMetadata>(args).exec(this.client);
 
   /**
    * It's used for wiping an entire index.
