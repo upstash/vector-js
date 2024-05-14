@@ -84,6 +84,8 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
   fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) => {
     if (args[1]) {
       args[1].namespace = this.namespace;
+    } else {
+      args[1] = { namespace: this.namespace };
     }
 
     return new FetchCommand<TMetadata>(args).exec(this.client);
