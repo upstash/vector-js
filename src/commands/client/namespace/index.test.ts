@@ -55,7 +55,7 @@ describe("NAMESPACE", () => {
       metadata: { namespace: "test-namespace-reset" },
     });
 
-    sleep(1000);
+    sleep(5000);
 
     const res = await namespace.query({
       vector: range(0, 384),
@@ -66,7 +66,7 @@ describe("NAMESPACE", () => {
 
     await namespace.reset();
 
-    sleep(1000);
+    sleep(5000);
 
     const res2 = await namespace.query({
       vector: range(0, 384),

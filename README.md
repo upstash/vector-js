@@ -61,43 +61,58 @@ await index.upsert([{
 }])
 
 //Query Data
-const results = await index.query<Metadata>({
-  vector: [
-    ... // query embedding
-  ],
-  includeVectors: true,
-  includeMetadata: true
-  topK: 1,
-  filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
-})
+const results = await index.query<Metadata>(
+  {
+    vector: [
+      ... // query embedding
+    ],
+    includeVectors: true,
+    includeMetadata: true
+    topK: 1,
+    filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
+  },
+  {
+    namespace: "example-namespace"
+  }
+)
 
 // If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
 //Update Data
-await index.upsert({
-  id: "upstash-rocks",
-  metadata: {
-    title: 'Star Wars',
-    genre: 'sci-fi',
-    category: 'classic'
+await index.upsert(
+  {
+    id: "upstash-rocks",
+    metadata: {
+      title: 'Star Wars',
+      genre: 'sci-fi',
+      category: 'classic'
+    }
+  },
+  {
+    namespace: "namespace"
   }
-});
+);
 
 //Delete record
-await index.delete("upstash-rocks");
+await index.delete("upstash-rocks", {namespace: "example-namespace"});
 
 //Delete many by id
 await index.delete(["id-1", "id-2", "id-3"]);
 
 //Fetch records by their IDs
-await index.fetch(["id-1", "id-2"]);
+await index.fetch(["id-1", "id-2"], {namespace: "example-namespace"});
 
 //Fetch records with range
-await index.range({
-      cursor: 0,
-      limit: 5,
-      includeVectors: true,
-});
+await index.range(
+  {
+    cursor: 0,
+    limit: 5,
+    includeVectors: true,
+  },
+  {
+    namespace: "example-namespace"
+  }
+);
 
 //Reset index
 await index.reset();
@@ -106,7 +121,68 @@ await index.reset();
 await index.info();
 
 //Random vector based on stored vectors
-await index.random();
+await index.random({namespace: "example-namespace"});
+
+//List existing namesapces
+await index.listNamespaces();
+
+//Delete a namespace
+await index.deleteNamespace("namespace-to-be-deleted");
+```
+
+## Namespaces
+
+Upstash Vector allows you to partition a single index into multiple isolated namespaces. Each namespace functions as a self-contained subset of the index, in which read and write requests are only limited to one namespace. To learn more about it, see [Namespaces](https://upstash.com/docs/vector/features/namespaces)
+
+# Example
+
+```ts
+import { Index } from "@upstash/vector";
+
+type Metadata = {
+  title: string;
+  genre: "sci-fi" | "fantasy" | "horror" | "action";
+  category: "classic" | "modern";
+};
+
+const index = new Index<Metadata>({
+  url: "<UPSTASH_VECTOR_REST_URL>",
+  token: "<UPSTASH_VECTOR_REST_TOKEN>",
+});
+
+const namespace = index.namespace("example-namespace");
+
+//Upsert Data
+await namespace.upsert([{
+  id: 'upstash-rocks',
+  vector: [
+    .... // embedding values
+  ],
+  metadata: {
+    title: 'Lord of The Rings',
+    genre: 'fantasy',
+    category: 'classic'
+  }
+}])
+
+//Query Vector
+const results = await namespace.query<Metadata>(
+  {
+    vector: [
+      ... // query embedding
+    ],
+    includeVectors: true,
+    includeMetadata: true
+    topK: 1,
+    filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
+  },
+)
+
+//Delete Record
+await namespace.delete("upstash-rocks");
+
+//Fetch records by their IDs
+await namespace.fetch(["id-1", "id-2"]);
 ```
 
 ## Metadata Filtering
