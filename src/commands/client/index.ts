@@ -6,3 +6,4 @@ export * from "./range";
 export * from "./reset";
 export * from "./info";
 export * from "./namespace";
+export * from "./update";

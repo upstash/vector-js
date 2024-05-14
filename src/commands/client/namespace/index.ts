@@ -4,6 +4,7 @@ import {
   QueryCommand,
   RangeCommand,
   ResetCommand,
+  UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
 import { Dict } from "@commands/client/types";
@@ -59,6 +60,32 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
     args: CommandArgs<typeof UpsertCommand<TMetadata>>
   ) => new UpsertCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
+  /*
+   * Updates specific items in the index.
+   * It's used for updating existing items in the index.
+   *
+   * @example
+   * ```js
+   * const updateArgs = {
+   *   id: '123',
+   *   vector: [0.42, 0.87, ...],
+   *   metadata: { property1: 'value1', property2: 'value2' }
+   * };
+   * const updateResult = await index.update(updateArgs);
+   * console.log(updateResult); // Outputs the result of the update operation
+   * ```
+   *
+   * @param {CommandArgs<typeof UpsertCommand>} args - The arguments for the upsert command.
+   * @param {number|string} args.id - The unique identifier for the item being upserted.
+   * @param {number[]} args.vector - The feature vector associated with the item.
+   * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
+   *
+   * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
+   */
+  update = <TMetadata extends Dict = TIndexMetadata>(
+    args: CommandArgs<typeof UpsertCommand<TMetadata>>
+  ) => new UpdateCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+
   /**
    * Upserts (Updates and Inserts) specific items into the index namespace.
    * It's used for adding new items to the index namespace or updating existing ones.
@@ -81,7 +108,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
-  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
+  fetch = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof FetchCommand>) =>
     new FetchCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**

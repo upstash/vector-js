@@ -5,6 +5,7 @@ import { NAMESPACE } from "./client/types";
 
 const ENDPOINTS = [
   "upsert",
+  "update",
   "query",
   "delete",
   "fetch",

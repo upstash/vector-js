@@ -6,6 +6,7 @@ import {
   QueryCommand,
   RangeCommand,
   ResetCommand,
+  UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
 import { Dict } from "@commands/client/types";
@@ -107,6 +108,34 @@ export class Index<TIndexMetadata extends Dict = Dict> {
     options?: { namespace?: string }
   ) => new UpsertCommand<TMetadata>(args, options).exec(this.client);
 
+  /*
+   * Updates specific items in the index.
+   * It's used for updating existing items in the index.
+   *
+   * @example
+   * ```js
+   * const updateArgs = {
+   *   id: '123',
+   *   vector: [0.42, 0.87, ...],
+   *   metadata: { property1: 'value1', property2: 'value2' }
+   * };
+   * const updateResult = await index.update(updateArgs);
+   * console.log(updateResult); // Outputs the result of the update operation
+   * ```
+   *
+   * @param {CommandArgs<typeof UpsertCommand>} args - The arguments for the upsert command.
+   * @param {number|string} args.id - The unique identifier for the item being upserted.
+   * @param {number[]} args.vector - The feature vector associated with the item.
+   * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
+   * @param {string} [args.namespace] - The namespace to update the item in.
+   *
+   * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
+   */
+  update = <TMetadata extends Dict = TIndexMetadata>(
+    args: CommandArgs<typeof UpsertCommand<TMetadata>>,
+    options?: { namespace?: string }
+  ) => new UpdateCommand<TMetadata>(args, options).exec(this.client);
+
   /**
    * It's used for retrieving specific items from the index, optionally including
    * their metadata and feature vectors.
@@ -127,8 +156,10 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
-    new FetchCommand<TMetadata>(args).exec(this.client);
+  fetch = <TMetadata extends Dict = TIndexMetadata>(
+    args: CommandArgs<typeof FetchCommand>,
+    options?: { namespace: string }
+  ) => new FetchCommand<TMetadata>(args, options).exec(this.client);
 
   /**
    * It's used for wiping an entire index.
