@@ -75,15 +75,15 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * console.log(updateResult); // Outputs the result of the update operation
    * ```
    *
-   * @param {CommandArgs<typeof UpsertCommand>} args - The arguments for the upsert command.
-   * @param {number|string} args.id - The unique identifier for the item being upserted.
+   * @param {CommandArgs<typeof UpdateCommand>} args - The arguments for the upsert command.
+   * @param {number|string} args.id - The unique identifier for the item being updated.
    * @param {number[]} args.vector - The feature vector associated with the item.
    * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
    *
-   * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
+   * @returns {string} A promise that resolves with the result of the update operation after the command is executed.
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
-    args: CommandArgs<typeof UpsertCommand<TMetadata>>
+    args: CommandArgs<typeof UpdateCommand<TMetadata>>
   ) => new UpdateCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**
