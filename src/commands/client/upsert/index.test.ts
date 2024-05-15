@@ -1,10 +1,15 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, range, resetIndexes } from "@utils/test-utils";
+import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { Index } from "../../../../index";
 
 const client = newHttpClient();
 
 describe("UPSERT", () => {
+  const index = new Index({
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+  });
   afterAll(async () => await resetIndexes());
 
   test("should add record successfully", async () => {
@@ -107,6 +112,24 @@ describe("UPSERT", () => {
     ]).exec(embeddingClient);
 
     expect(resFetch[0]?.metadata).toEqual({ data: "testing data" });
+
+    expect(resUpsert).toEqual("Success");
+  });
+
+  test("should run with index.upsert in bulk", async () => {
+    const upsertData = [
+      {
+        id: randomID(),
+        vector: range(0, 384),
+        metadata: { upstash: "test-simple-1" },
+      },
+      {
+        id: randomID(),
+        vector: range(0, 384),
+        metadata: { upstash: "test-simple-2" },
+      },
+    ];
+    const resUpsert = await index.upsert(upsertData, { namespace: "test-namespace" });
 
     expect(resUpsert).toEqual("Success");
   });

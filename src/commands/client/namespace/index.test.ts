@@ -57,7 +57,7 @@ describe("NAMESPACE", () => {
 
     sleep(5000);
 
-    const res = await namespace.fetch([[1], { includeMetadata: true }]);
+    const res = await namespace.fetch([1], { includeMetadata: true });
     expect(res.length).toEqual(1);
 
     await namespace.reset();

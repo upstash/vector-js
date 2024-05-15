@@ -105,6 +105,7 @@ export class HttpClient implements Requester {
   }
 
   public async request<TResult>(req: UpstashRequest): Promise<UpstashResponse<TResult>> {
+    // console.log(JSON.stringify(req.body))
     const requestOptions = {
       cache: this.options.cache,
       method: "POST",

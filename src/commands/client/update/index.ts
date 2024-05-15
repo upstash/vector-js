@@ -3,52 +3,35 @@ import { Command } from "@commands/command";
 
 type NoInfer<T> = T extends infer U ? U : never;
 
-type BasePayload = {
-  id: number | string;
+type MetadataUpdatePayload<TMetadata> = {
+  id: string | number;
+  metadata: NoInfer<TMetadata>;
 };
 
-type ExtendedVectorPayload<TMetadata> = BasePayload &
-  (
-    | {
-        metadata: NoInfer<TMetadata>;
-        vector?: number[];
-        data?: never;
-      }
-    | {
-        metadata?: NoInfer<TMetadata>;
-        vector: number[];
-        data?: never;
-      }
-  );
+type VectorUpdatePayload = {
+  id: string | number;
+  vector: number[];
+};
 
-type ExtendedDataPayload<TMetadata> = BasePayload &
-  (
-    | {
-        metadata: NoInfer<TMetadata>;
-        data: string;
-        vector?: never;
-      }
-    | {
-        metadata?: NoInfer<TMetadata>;
-        data: string;
-        vector?: never;
-      }
-  );
+type DataUpdatePayload = {
+  id: string | number;
+  data: string;
+};
 
 type Payload<TMetadata> =
-  | ExtendedDataPayload<TMetadata>
-  | ExtendedVectorPayload<TMetadata>
-  | ExtendedDataPayload<TMetadata>[]
-  | ExtendedVectorPayload<TMetadata>[];
+  | MetadataUpdatePayload<TMetadata>
+  | VectorUpdatePayload
+  | DataUpdatePayload
+  | (MetadataUpdatePayload<TMetadata> | VectorUpdatePayload | DataUpdatePayload)[];
 
-type updateCommandOptions = { namespace?: string };
+type UpdateCommandOptions = { namespace?: string };
 
-type updateEndpointVariants = `update` | `update/${NAMESPACE}`;
+type UpdateEndpointVariants = `update` | `update/${NAMESPACE}`;
 
 type UpdateCommandResponse = { updated: number };
 export class UpdateCommand<TMetadata> extends Command<UpdateCommandResponse> {
-  constructor(payload: Payload<TMetadata>, opts?: updateCommandOptions) {
-    let endpoint: updateEndpointVariants = "update";
+  constructor(payload: Payload<TMetadata>, opts?: UpdateCommandOptions) {
+    let endpoint: UpdateEndpointVariants = "update";
 
     if (opts?.namespace) {
       endpoint = `${endpoint}/${opts.namespace}`;

@@ -134,7 +134,21 @@ export class Index<TIndexMetadata extends Dict = Dict> {
   update = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpdateCommand<TMetadata>>,
     options?: { namespace?: string }
-  ) => new UpdateCommand<TMetadata>(args, options).exec(this.client);
+  ) => {
+    if (Array.isArray(args)) {
+      let successfulUpdates = 0;
+      const promises = args.map((element) => {
+        const command = new UpdateCommand<TMetadata>(element, options);
+
+        return command.exec(this.client).then(() => {
+          successfulUpdates++;
+        });
+      });
+
+      return Promise.all(promises).then(() => ({ updated: successfulUpdates }));
+    }
+    return new UpdateCommand<TMetadata>(args, options).exec(this.client);
+  };
 
   /**
    * It's used for retrieving specific items from the index, optionally including
