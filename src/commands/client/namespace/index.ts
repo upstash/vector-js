@@ -52,7 +52,6 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {number|string} args.id - The unique identifier for the item being upserted.
    * @param {number[]} args.vector - The feature vector associated with the item.
    * @param {Dict} [args.metadata] - Optional metadata to be associated with the item.
-   * @param {string} [args.namespace] - The namespace to fetch the item from.
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
@@ -103,11 +102,19 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {FetchCommandOptions} args[1] - Options for the fetch operation.
    * @param {boolean} [args[1].includeMetadata=false] - Optionally include metadata of the fetched items.
    * @param {boolean} [args[1].includeVectors=false] - Optionally include feature vectors of the fetched items.
+   * @param {string} [args[1].namespace = ""] - The namespace of the index to fetch items from.
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
-  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) =>
-    new FetchCommand<TMetadata>(args).exec(this.client);
+  fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) => {
+    if (args[1]) {
+      args[1].namespace = this.namespace;
+    } else {
+      args[1] = { namespace: this.namespace };
+    }
+
+    return new FetchCommand<TMetadata>(args).exec(this.client);
+  };
 
   /**
    * Queries an index namespace with specified parameters.

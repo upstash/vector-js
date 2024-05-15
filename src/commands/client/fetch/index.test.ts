@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
 import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { sleep } from "bun";
 import { Index } from "../../../../index";
 
 const client = newHttpClient();
@@ -56,16 +57,35 @@ describe("FETCH", () => {
     expect(res).toEqual([mockData]);
   });
 
-  test("successfully fetches with the existing interface", async () => {
+  test("should fetch succesfully by index.fetch", async () => {
     const index = new Index({
       url: process.env.UPSTASH_VECTOR_REST_URL!,
       token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
     });
 
-    const res = await index.fetch([randomID()], { includeMetadata: true, namespace: "ns" });
+    const randomFetch = await index.fetch([randomID()], {
+      includeMetadata: true,
+      namespace: "test",
+    });
 
-    expect(res).toEqual([null]);
+    expect(randomFetch).toEqual([null]);
 
+    const mockData = {
+      id: randomID(),
+      vector: range(0, 384),
+      metadata: { hello: "world" },
+    };
 
+    await index.upsert(mockData, { namespace: "test" });
+
+    sleep(4000);
+
+    const fetchWithID = await index.fetch([mockData.id], {
+      includeMetadata: true,
+      includeVectors: true,
+      namespace: "test",
+    });
+
+    expect(fetchWithID).toEqual([mockData]);
   });
 });

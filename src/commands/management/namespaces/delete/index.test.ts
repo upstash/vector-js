@@ -20,6 +20,8 @@ describe("NAMESPACES->DELETE", () => {
 
     await new DeleteNamespaceCommand("test-namespace-delete").exec(client);
 
+    sleep(2000);
+
     const namespacesAfterDelete = await new ListNamespacesCommand().exec(client);
 
     expect(namespacesAfterDelete).not.toContain("test-namespace-delete");

@@ -39,11 +39,13 @@ describe("UPDATE", () => {
       token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
     });
 
-    await index.upsert([{
-      id: 'test',
-      vector: range(0, 384),
-      metadata: { upstash: "test-simple" },
-    }])
+    await index.upsert([
+      {
+        id: "test",
+        vector: range(0, 384),
+        metadata: { upstash: "test-simple" },
+      },
+    ]);
 
     sleep(5000);
 
