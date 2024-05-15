@@ -72,4 +72,47 @@ describe("NAMESPACE", () => {
 
     expect(res2.length).toEqual(0);
   });
+
+  test("should update vector in namespace", async () => {
+    const index = new Index({
+      url: process.env.UPSTASH_VECTOR_REST_URL!,
+      token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    });
+
+    const namespace = index.namespace("test-namespace-update");
+
+    await namespace.upsert([
+      {
+        id: "test-1",
+        vector: range(0, 384),
+        metadata: { upstash: "test-1-not-updated" },
+      },
+      {
+        id: "test-2",
+        vector: range(0, 384),
+        metadata: { upstash: "test-2-not-updated" },
+      },
+    ]);
+
+    sleep(5000);
+
+    const res = await namespace.update([
+      {
+        id: "test-1",
+        metadata: { upstash: "test-1-updated" },
+      },
+      {
+        id: "test-2",
+        metadata: { upstash: "test-2-updated" },
+      },
+    ]);
+
+    expect(res).toEqual({ updated: 2 });
+
+    sleep(2000);
+
+    const fetchData = await namespace.fetch(["test-1", "test-2"], { includeMetadata: true });
+
+    expect(fetchData[0]?.metadata?.upstash).toBe("test-1-updated");
+  });
 });

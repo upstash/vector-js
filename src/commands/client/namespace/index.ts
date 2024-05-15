@@ -82,8 +82,22 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @returns {string} A promise that resolves with the result of the update operation after the command is executed.
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
-    args: CommandArgs<typeof UpdateCommand<TMetadata>>
-  ) => new UpdateCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+    args: CommandArgs<typeof UpdateCommand<TMetadata>>,
+  ) => {
+    if (Array.isArray(args)) {
+      let successfulUpdates = 0;
+      const promises = args.map((element) => {
+        const command = new UpdateCommand<TMetadata>(element, { namespace: this.namespace });
+
+        return command.exec(this.client).then(() => {
+          successfulUpdates++;
+        });
+      });
+
+      return Promise.all(promises).then(() => ({ updated: successfulUpdates }));
+    }
+    return new UpdateCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+  };
 
   /**
    * It's used for retrieving specific items from the index namespace, optionally including
