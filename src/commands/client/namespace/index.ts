@@ -82,7 +82,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @returns {string} A promise that resolves with the result of the update operation after the command is executed.
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
-    args: CommandArgs<typeof UpdateCommand<TMetadata>>,
+    args: CommandArgs<typeof UpdateCommand<TMetadata>>
   ) => {
     if (Array.isArray(args)) {
       let successfulUpdates = 0;
