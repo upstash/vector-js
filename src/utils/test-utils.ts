@@ -1,7 +1,8 @@
-import { InfoCommand } from "@commands/client";
 import { sleep } from "bun";
+import { InfoCommand } from "../commands/client/info";
 import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, RetryConfig } from "../http";
+import { Index } from "../vector";
 
 export type NonArrayType<T> = T extends Array<infer U> ? U : T;
 
@@ -61,32 +62,23 @@ export const range = (start: number, end: number, step = 1) => {
   return result;
 };
 
-export const awaitUntilIndexed = async (
-  client: HttpClient,
-  namespace: string | null = null,
-  timeoutMillis = 10_000
-) => {
+export const awaitUntilIndexed = async (client: HttpClient | Index, timeoutMillis = 10_000) => {
   const start = performance.now();
 
+  const getInfo = async () => {
+    if (client instanceof HttpClient) {
+      const cmd = new InfoCommand();
+      return await cmd.exec(client);
+    }
+
+    return await client.info();
+  };
+
   do {
-    const info = await new InfoCommand().exec(client);
-
-    if (namespace === null) {
-      // check the total pending count if no namespace is provided
-      if (info.pendingVectorCount === 0) {
-        // OK, nothing more to index.
-        return;
-      }
-    } else {
-      const nsInfo = info.namespaces[namespace];
-      if (nsInfo === undefined) {
-        throw new Error(`Index does not have a namespace called '${namespace}'`);
-      }
-
-      if (nsInfo.pendingVectorCount === 0) {
-        // OK, nothing more to index.
-        return;
-      }
+    const info = await getInfo();
+    if (info.pendingVectorCount === 0) {
+      // OK, nothing more to index.
+      return;
     }
 
     // Not indexed yet, sleep a bit and check again if the timeout is not passed.

@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { ListNamespacesCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, randomID, range } from "@utils/test-utils";
-import { sleep } from "bun";
+import { awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -12,7 +11,7 @@ describe("NAMESPACES->LIST", () => {
       { namespace: "test-namespace-list" }
     ).exec(client);
 
-    sleep(2000);
+    await awaitUntilIndexed(client);
 
     const namespaces = await new ListNamespacesCommand().exec(client);
 

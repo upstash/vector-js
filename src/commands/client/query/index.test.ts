@@ -1,7 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { QueryCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, range, resetIndexes } from "@utils/test-utils";
-import { sleep } from "bun";
+import { awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -11,8 +10,8 @@ describe("QUERY", () => {
     const initialVector = range(0, 384);
     const initialData = { id: 33, vector: initialVector };
     await new UpsertCommand(initialData).exec(client);
-    //This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
-    await sleep(2000);
+
+    await awaitUntilIndexed(client);
 
     const res = await new QueryCommand<{ hello: "World" }>({
       includeVectors: true,
@@ -42,8 +41,9 @@ describe("QUERY", () => {
       },
     };
     await new UpsertCommand(initialData).exec(client);
-    //This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
-    await sleep(2000);
+
+    await awaitUntilIndexed(client);
+
     const res = await new QueryCommand<{
       city: string;
       population: number;
@@ -91,8 +91,9 @@ describe("QUERY", () => {
       },
     ];
     await new UpsertCommand(initialData).exec(client);
-    //This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
-    await sleep(2000);
+
+    await awaitUntilIndexed(client);
+
     const res = await new QueryCommand<{
       animal: string;
       tags: string[];
@@ -129,8 +130,9 @@ describe("QUERY", () => {
           metadata: { upstash: "test" },
         },
       ]).exec(embeddingClient);
-      //   This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
-      await sleep(5000);
+
+      await awaitUntilIndexed(embeddingClient);
+
       const res = await new QueryCommand({
         data: "Test1-2-3-4-5",
         topK: 1,
@@ -163,8 +165,9 @@ describe("QUERY", () => {
           metadata: { upstash: "Monster" },
         },
       ]).exec(embeddingClient);
-      //   This is needed for vector index insertion to happen. When run with other tests in parallel this tends to fail without sleep. But, standalone it should work without an issue.
-      await sleep(5000);
+
+      await awaitUntilIndexed(embeddingClient);
+
       const res = await new QueryCommand({
         data: "Test1-2-3-4-5",
         topK: 1,
