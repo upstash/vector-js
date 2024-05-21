@@ -11,7 +11,7 @@ describe("NAMESPACES->DELETE", () => {
       { namespace: "test-namespace-delete" }
     ).exec(client);
 
-    await awaitUntilIndexed(client, "test-namespace-delete");
+    await awaitUntilIndexed(client);
 
     const namespaces = await new ListNamespacesCommand().exec(client);
 
