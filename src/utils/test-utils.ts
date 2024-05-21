@@ -1,3 +1,5 @@
+import { InfoCommand } from "@commands/client";
+import { sleep } from "bun";
 import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, RetryConfig } from "../http";
 
@@ -57,4 +59,39 @@ export const range = (start: number, end: number, step = 1) => {
     result.push(i);
   }
   return result;
+};
+
+export const awaitUntilIndexed = async (
+  client: HttpClient,
+  namespace: string | null = null,
+  timeoutMillis = 10_000
+) => {
+  const start = performance.now();
+
+  do {
+    const info = await new InfoCommand().exec(client);
+
+    if (namespace === null) {
+      // check the total pending count if no namespace is provided
+      if (info.pendingVectorCount === 0) {
+        // OK, nothing more to index.
+        return;
+      }
+    } else {
+      const nsInfo = info.namespaces[namespace];
+      if (nsInfo === undefined) {
+        throw new Error(`Index does not have a namespace called '${namespace}'`);
+      }
+
+      if (nsInfo.pendingVectorCount === 0) {
+        // OK, nothing more to index.
+        return;
+      }
+    }
+
+    // Not indexed yet, sleep a bit and check again if the timeout is not passed.
+    await sleep(1000);
+  } while (performance.now() < start + timeoutMillis);
+
+  throw new Error(`Indexing is not completed in ${timeoutMillis} ms.`);
 };
