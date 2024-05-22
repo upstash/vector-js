@@ -129,7 +129,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
    * @param {string} [args.namespace] - The namespace to update the item in.
    *
-   * @returns {string} A promise that resolves with the result of the update operation after the command is executed.
+   * @returns {Promise<{updated: number}>} A promise that resolves with the result of the update operation after the command is executed.
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpdateCommand<TMetadata>>,
