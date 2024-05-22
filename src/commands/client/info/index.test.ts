@@ -1,7 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { UpsertCommand } from "@commands/index";
-import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
-import { sleep } from "bun";
+import { awaitUntilIndexed, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
 import { InfoCommand } from ".";
 
 const client = newHttpClient();
@@ -18,7 +17,9 @@ describe("INFO", () => {
 
     const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));
     await Promise.all(payloads);
-    await sleep(2000);
+
+    await awaitUntilIndexed(client);
+
     const res = await new InfoCommand().exec(client);
     expect(res.vectorCount).toBeGreaterThanOrEqual(vectorCount);
   });

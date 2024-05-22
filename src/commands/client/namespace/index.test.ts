@@ -1,7 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { range, resetIndexes } from "@utils/test-utils";
+import { awaitUntilIndexed, range, resetIndexes } from "@utils/test-utils";
 
-import { sleep } from "bun";
 import { Index } from "../../../../index";
 
 describe("NAMESPACE", () => {
@@ -27,7 +26,7 @@ describe("NAMESPACE", () => {
       metadata: { namespace: "namespace2" },
     });
 
-    sleep(10000);
+    await awaitUntilIndexed(index);
 
     const query1 = await namespace1.query({
       vector: range(0, 384),
@@ -55,14 +54,12 @@ describe("NAMESPACE", () => {
       metadata: { namespace: "test-namespace-reset" },
     });
 
-    sleep(5000);
+    await awaitUntilIndexed(index);
 
     const res = await namespace.fetch([1], { includeMetadata: true });
     expect(res.length).toEqual(1);
 
     await namespace.reset();
-
-    sleep(5000);
 
     const res2 = await namespace.query({
       vector: range(0, 384),

@@ -1,5 +1,8 @@
+import { sleep } from "bun";
+import { InfoCommand } from "../commands/client/info";
 import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, RetryConfig } from "../http";
+import { Index } from "../vector";
 
 export type NonArrayType<T> = T extends Array<infer U> ? U : T;
 
@@ -57,4 +60,30 @@ export const range = (start: number, end: number, step = 1) => {
     result.push(i);
   }
   return result;
+};
+
+export const awaitUntilIndexed = async (client: HttpClient | Index, timeoutMillis = 10_000) => {
+  const start = performance.now();
+
+  const getInfo = async () => {
+    if (client instanceof HttpClient) {
+      const cmd = new InfoCommand();
+      return await cmd.exec(client);
+    }
+
+    return await client.info();
+  };
+
+  do {
+    const info = await getInfo();
+    if (info.pendingVectorCount === 0) {
+      // OK, nothing more to index.
+      return;
+    }
+
+    // Not indexed yet, sleep a bit and check again if the timeout is not passed.
+    await sleep(1000);
+  } while (performance.now() < start + timeoutMillis);
+
+  throw new Error(`Indexing is not completed in ${timeoutMillis} ms.`);
 };

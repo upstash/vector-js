@@ -1,7 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
-import { sleep } from "bun";
+import { awaitUntilIndexed, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
 import { Index } from "../../../../index";
 
 const client = newHttpClient();
@@ -78,7 +77,7 @@ describe("FETCH", () => {
 
     await index.upsert(mockData, { namespace: "test" });
 
-    sleep(4000);
+    await awaitUntilIndexed(index);
 
     const fetchWithID = await index.fetch([mockData.id], {
       includeMetadata: true,
