@@ -84,31 +84,20 @@ describe("NAMESPACE", () => {
         vector: range(0, 384),
         metadata: { upstash: "test-1-not-updated" },
       },
-      {
-        id: "test-2",
-        vector: range(0, 384),
-        metadata: { upstash: "test-2-not-updated" },
-      },
     ]);
 
-    sleep(5000);
+    awaitUntilIndexed(index);
 
-    const res = await namespace.update([
-      {
-        id: "test-1",
-        metadata: { upstash: "test-1-updated" },
-      },
-      {
-        id: "test-2",
-        metadata: { upstash: "test-2-updated" },
-      },
-    ]);
+    const res = await namespace.update({
+      id: "test-1",
+      metadata: { upstash: "test-1-updated" },
+    });
 
-    expect(res).toEqual({ updated: 2 });
+    expect(res).toEqual({ updated: 1 });
 
-    sleep(2000);
+    awaitUntilIndexed(index);
 
-    const fetchData = await namespace.fetch(["test-1", "test-2"], { includeMetadata: true });
+    const fetchData = await namespace.fetch(["test-1"], { includeMetadata: true });
 
     expect(fetchData[0]?.metadata?.upstash).toBe("test-1-updated");
   });

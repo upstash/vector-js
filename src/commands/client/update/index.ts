@@ -21,8 +21,7 @@ type DataUpdatePayload = {
 type Payload<TMetadata> =
   | MetadataUpdatePayload<TMetadata>
   | VectorUpdatePayload
-  | DataUpdatePayload
-  | (MetadataUpdatePayload<TMetadata> | VectorUpdatePayload | DataUpdatePayload)[];
+  | DataUpdatePayload;
 
 type UpdateCommandOptions = { namespace?: string };
 
