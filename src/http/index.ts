@@ -28,22 +28,22 @@ export interface Requester {
 export type RetryConfig =
   | false
   | {
-      /**
-       * The number of retries to attempt before giving up.
-       *
-       * @default 5
-       */
-      retries?: number;
-      /**
-       * A backoff function receives the current retry cound and returns a number in milliseconds to wait before retrying.
-       *
-       * @default
-       * ```ts
-       * Math.exp(retryCount) * 50
-       * ```
-       */
-      backoff?: (retryCount: number) => number;
-    };
+    /**
+     * The number of retries to attempt before giving up.
+     *
+     * @default 5
+     */
+    retries?: number;
+    /**
+     * A backoff function receives the current retry cound and returns a number in milliseconds to wait before retrying.
+     *
+     * @default
+     * ```ts
+     * Math.exp(retryCount) * 50
+     * ```
+     */
+    backoff?: (retryCount: number) => number;
+  };
 
 export type RequesterConfig = {
   /**
@@ -105,7 +105,6 @@ export class HttpClient implements Requester {
   }
 
   public async request<TResult>(req: UpstashRequest): Promise<UpstashResponse<TResult>> {
-    // console.log(JSON.stringify(req.body))
     const requestOptions = {
       cache: this.options.cache,
       method: "POST",
