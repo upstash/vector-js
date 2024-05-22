@@ -56,7 +56,11 @@ describe("NAMESPACE", () => {
 
     await awaitUntilIndexed(index);
 
-    const res = await namespace.fetch([1], { includeMetadata: true });
+    const res = await namespace.query({
+      vector: range(0, 384),
+      topK: 3,
+      includeMetadata: true,
+    });
     expect(res.length).toEqual(1);
 
     await namespace.reset();
