@@ -90,7 +90,7 @@ describe("NAMESPACE", () => {
       },
     ]);
 
-    awaitUntilIndexed(index);
+    await awaitUntilIndexed(index);
 
     const res = await namespace.update({
       id: "test-1",
@@ -99,7 +99,7 @@ describe("NAMESPACE", () => {
 
     expect(res).toEqual({ updated: 1 });
 
-    awaitUntilIndexed(index);
+    await awaitUntilIndexed(index);
 
     const fetchData = await namespace.fetch(["test-1"], { includeMetadata: true });
 

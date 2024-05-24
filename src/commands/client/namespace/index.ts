@@ -67,8 +67,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * ```js
    * const updateArgs = {
    *   id: '123',
-   *   vector: [0.42, 0.87, ...],
-   *   metadata: { property1: 'value1', property2: 'value2' }
+   *   metadata: { updatedProperty: 'value1' }
    * };
    * const updateResult = await index.update(updateArgs);
    * console.log(updateResult); // Outputs the result of the update operation
@@ -79,7 +78,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {number[]} args.vector - The feature vector associated with the item.
    * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
    *
-   * @returns {Promise<{updated: number}>} A promise that resolves with the result of the update operation after the command is executed.
+   * @returns {Promise<{updated: number}>} A promise that returns the number of items successfully updated.
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpdateCommand<TMetadata>>
