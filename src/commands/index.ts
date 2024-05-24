@@ -3,6 +3,7 @@ export * from "./client/delete";
 export * from "./client/fetch";
 export * from "./client/query";
 export * from "./client/upsert";
+export * from "./client/update";
 export * from "./client/reset";
 export * from "./client/range";
 export * from "./client/info";

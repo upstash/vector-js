@@ -3,43 +3,23 @@ import { Command } from "@commands/command";
 
 type NoInfer<T> = T extends infer U ? U : never;
 
-type BasePayload = {
+type VectorPayload<TMetadata> = {
   id: number | string;
+  vector: number[];
+  metadata?: NoInfer<TMetadata>;
 };
 
-type ExtendedVectorPayload<TMetadata> = BasePayload &
-  (
-    | {
-        metadata: NoInfer<TMetadata>;
-        vector?: number[];
-        data?: never;
-      }
-    | {
-        metadata?: NoInfer<TMetadata>;
-        vector: number[];
-        data?: never;
-      }
-  );
-
-type ExtendedDataPayload<TMetadata> = BasePayload &
-  (
-    | {
-        metadata: NoInfer<TMetadata>;
-        data: string;
-        vector?: never;
-      }
-    | {
-        metadata?: NoInfer<TMetadata>;
-        data: string;
-        vector?: never;
-      }
-  );
+type DataPayload<TMetadata> = {
+  id: number | string;
+  data: string;
+  metadata?: NoInfer<TMetadata>;
+};
 
 type Payload<TMetadata> =
-  | ExtendedDataPayload<TMetadata>
-  | ExtendedVectorPayload<TMetadata>
-  | ExtendedDataPayload<TMetadata>[]
-  | ExtendedVectorPayload<TMetadata>[];
+  | VectorPayload<TMetadata>
+  | DataPayload<TMetadata>
+  | VectorPayload<TMetadata>[]
+  | DataPayload<TMetadata>[];
 
 type UpsertCommandOptions = { namespace?: string };
 

@@ -126,7 +126,7 @@ describe("QUERY", () => {
       await new UpsertCommand([
         {
           id: "hello-world",
-          data: "Test1-2-3-4-5",
+          data: "testing-plan-text",
           metadata: { upstash: "test" },
         },
       ]).exec(embeddingClient);
@@ -134,7 +134,7 @@ describe("QUERY", () => {
       await awaitUntilIndexed(embeddingClient);
 
       const res = await new QueryCommand({
-        data: "Test1-2-3-4-5",
+        data: "testing-plain-text",
         topK: 1,
         includeVectors: true,
         includeMetadata: true,
@@ -156,12 +156,12 @@ describe("QUERY", () => {
       await new UpsertCommand([
         {
           id: "hello-world",
-          data: "Test1-2-3-4-5",
+          data: "testing-bulk-data-original",
           metadata: { upstash: "Cookie" },
         },
         {
           id: "hello-world1",
-          data: "Test1-2-3-4-5-6",
+          data: "testing-bulk-data-secondary",
           metadata: { upstash: "Monster" },
         },
       ]).exec(embeddingClient);
@@ -169,7 +169,7 @@ describe("QUERY", () => {
       await awaitUntilIndexed(embeddingClient);
 
       const res = await new QueryCommand({
-        data: "Test1-2-3-4-5",
+        data: "testing-bulk-data-original",
         topK: 1,
         includeVectors: true,
         includeMetadata: true,

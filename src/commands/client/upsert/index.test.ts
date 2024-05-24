@@ -1,10 +1,15 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, range, resetIndexes } from "@utils/test-utils";
+import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { Index } from "../../../../index";
 
 const client = newHttpClient();
 
 describe("UPSERT", () => {
+  const index = new Index({
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+  });
   afterAll(async () => await resetIndexes());
 
   test("should add record successfully", async () => {
@@ -73,13 +78,13 @@ describe("UPSERT", () => {
       await new UpsertCommand([
         {
           id: "hello-world",
-          //@ts-expect-error Mixed usage of vector and data in the same upsert command is not allowed.
+
           data: "Test1-2-3-4-5",
           metadata: { upstash: "test" },
         },
         {
           id: "hello-world",
-
+          //@ts-expect-error Mixed usage of vector and data in the same upsert command is not allowed.
           vector: [1, 2, 3, 4],
           metadata: { upstash: "test" },
         },
@@ -107,6 +112,24 @@ describe("UPSERT", () => {
     ]).exec(embeddingClient);
 
     expect(resFetch[0]?.metadata).toEqual({ data: "testing data" });
+
+    expect(resUpsert).toEqual("Success");
+  });
+
+  test("should run with index.upsert in bulk", async () => {
+    const upsertData = [
+      {
+        id: randomID(),
+        vector: range(0, 384),
+        metadata: { upstash: "test-simple-1" },
+      },
+      {
+        id: randomID(),
+        vector: range(0, 384),
+        metadata: { upstash: "test-simple-2" },
+      },
+    ];
+    const resUpsert = await index.upsert(upsertData, { namespace: "test-namespace" });
 
     expect(resUpsert).toEqual("Success");
   });
