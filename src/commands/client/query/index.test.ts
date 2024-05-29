@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { QueryCommand, UpsertCommand } from "@commands/index";
-import { awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
+import { awaitUntilIndexed, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
 import { Index } from "@utils/test-utils";
 
 const client = newHttpClient();
@@ -184,6 +184,11 @@ describe("QUERY", () => {
 
 describe("QUERY with Index Client", () => {
   const index = new Index({
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+  });
+
+  const embeddingIndex = new Index({
     token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
   });
@@ -191,8 +196,9 @@ describe("QUERY with Index Client", () => {
   afterAll(async () => await resetIndexes());
 
   test("should query records successfully", async () => {
+    const ID = randomID();
     const initialVector = range(0, 384);
-    const initialData = { id: 33, vector: initialVector };
+    const initialData = { id: ID, vector: initialVector };
     await index.upsert(initialData);
 
     await awaitUntilIndexed(index);
@@ -205,7 +211,7 @@ describe("QUERY with Index Client", () => {
 
     expect(res).toEqual([
       {
-        id: "33",
+        id: ID,
         score: 1,
         vector: initialVector,
       },
@@ -215,7 +221,7 @@ describe("QUERY with Index Client", () => {
   test(
     "should query with plain text successfully",
     async () => {
-      index.upsert([
+      embeddingIndex.upsert([
         {
           id: "hello-world",
           data: "testing-plan-text",
@@ -223,9 +229,9 @@ describe("QUERY with Index Client", () => {
         },
       ]);
 
-      await awaitUntilIndexed(index);
+      await awaitUntilIndexed(embeddingIndex);
 
-      const res = await index.query({
+      const res = await embeddingIndex.query({
         data: "testing-plain-text",
         topK: 1,
         includeVectors: true,
@@ -238,10 +244,11 @@ describe("QUERY with Index Client", () => {
   );
 
   test("should narrow down the query results with filter", async () => {
+    const ID = randomID();
     const initialVector = range(0, 384);
     const initialData = [
       {
-        id: 1,
+        id: `1-${ID}`,
         vector: initialVector,
         metadata: {
           animal: "elephant",
@@ -250,7 +257,7 @@ describe("QUERY with Index Client", () => {
         },
       },
       {
-        id: 2,
+        id: `2-${ID}`,
         vector: initialVector,
         metadata: {
           animal: "tiger",
@@ -278,7 +285,7 @@ describe("QUERY with Index Client", () => {
 
     expect(res).toEqual([
       {
-        id: "2",
+        id: `2-${ID}`,
         score: 1,
         vector: initialVector,
         metadata: { animal: "tiger", tags: ["mammal"], diet: "carnivore" },
