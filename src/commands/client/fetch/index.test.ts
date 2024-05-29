@@ -55,20 +55,30 @@ describe("FETCH", () => {
 
     expect(res).toEqual([mockData]);
   });
+});
 
-  test("should fetch succesfully by index.fetch", async () => {
-    const index = new Index({
-      url: process.env.UPSTASH_VECTOR_REST_URL!,
-      token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
-    });
+describe("FETCH with Index Client", () => {
+  const index = new Index({
+    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+  });
 
-    const randomFetch = await index.fetch([randomID()], {
-      includeMetadata: true,
-      namespace: "test",
-    });
+  test("should fetch array of records by IDs succesfully", async () => {
+    const randomizedData = new Array(20)
+      .fill("")
+      .map(() => ({ id: randomID(), vector: range(0, 384) }));
 
-    expect(randomFetch).toEqual([null]);
+    await index.upsert(randomizedData);
 
+    await awaitUntilIndexed(index);
+
+    const IDs = randomizedData.map((x) => x.id);
+    const res = await index.fetch(IDs, { includeVectors: true });
+
+    expect(res).toEqual(randomizedData);
+  });
+
+  test("should fetch single record by ID", async () => {
     const mockData = {
       id: randomID(),
       vector: range(0, 384),
@@ -86,5 +96,14 @@ describe("FETCH", () => {
     });
 
     expect(fetchWithID).toEqual([mockData]);
+  });
+
+  test("should return null when ID does not exist", async () => {
+    const randomFetch = await index.fetch([randomID()], {
+      includeMetadata: true,
+      namespace: "test",
+    });
+
+    expect(randomFetch).toEqual([null]);
   });
 });

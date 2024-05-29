@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { DeleteCommand, UpsertCommand } from "@commands/index";
 import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { Index } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -45,5 +46,34 @@ describe("DELETE", () => {
     expect(res1).toEqual({
       deleted: 1,
     });
+  });
+});
+
+describe("DELETE with Index Client", () => {
+  const index = new Index({
+    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+  });
+
+  test("should delete single record succesfully", () => {
+    const initialVector = range(0, 384);
+    const id = randomID();
+
+    index.upsert({ id, vector: initialVector });
+
+    const deletionResult = index.delete(id);
+    expect(deletionResult).toBeTruthy();
+  });
+
+  test("should delete array of records successfully", async () => {
+    const initialVector = range(0, 384);
+    const idsToUpsert = [randomID(), randomID(), randomID()];
+
+    const upsertPromises = idsToUpsert.map((id) => index.upsert({ id, vector: initialVector }));
+
+    await Promise.all(upsertPromises);
+
+    const deletionResult = await index.delete(idsToUpsert);
+    expect(deletionResult).toBeTruthy();
   });
 });

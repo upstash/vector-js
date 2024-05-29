@@ -3,6 +3,7 @@ import { InfoCommand } from "../commands/client/info";
 import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, RetryConfig } from "../http";
 import { Index } from "../vector";
+export * from "../../index";
 
 export type NonArrayType<T> = T extends Array<infer U> ? U : T;
 
