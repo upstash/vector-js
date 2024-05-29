@@ -58,7 +58,7 @@ export const resetIndexes = async () => await new ResetCommand().exec(newHttpCli
 export const range = (start: number, end: number, step = 1) => {
   const result = [];
   for (let i = start; i < end; i += step) {
-    result.push(i);
+    result.push(Math.random());
   }
   return result;
 };
