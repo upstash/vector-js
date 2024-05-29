@@ -23,6 +23,7 @@ describe("RESET", () => {
 
     expect(res).toEqual(randomizedData);
 
+
     await new ResetCommand().exec(client);
     const resAfterReset = await new FetchCommand([
       randomizedData.map((x) => x.id),
