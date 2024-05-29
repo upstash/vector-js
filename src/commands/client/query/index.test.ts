@@ -16,6 +16,10 @@ describe("QUERY", () => {
     url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
   });
   afterAll(async () => await resetIndexes());
+  afterAll(async () => {
+    await index.reset();
+    await embeddingIndex.reset();
+  });
   test("should query records successfully", async () => {
     const initialVector = range(0, 384);
     const initialData = { id: 33, vector: initialVector };

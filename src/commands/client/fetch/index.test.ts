@@ -59,8 +59,8 @@ describe("FETCH", () => {
 
 describe("FETCH with Index Client", () => {
   const index = new Index({
-    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
   });
 
   test("should fetch array of records by IDs succesfully", async () => {

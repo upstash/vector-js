@@ -51,8 +51,11 @@ describe("DELETE", () => {
 
 describe("DELETE with Index Client", () => {
   const index = new Index({
-    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+  });
+  afterAll(async () => {
+    await index.reset();
   });
 
   test("should delete single record succesfully", () => {
