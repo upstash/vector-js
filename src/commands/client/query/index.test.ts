@@ -191,7 +191,6 @@ describe("QUERY", () => {
   );
 
   describe("with Index Client", () => {
-
     afterAll(async () => await resetIndexes());
 
     test("should query records successfully", async () => {
@@ -293,5 +292,3 @@ describe("QUERY", () => {
     });
   });
 });
-
-
