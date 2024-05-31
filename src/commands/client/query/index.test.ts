@@ -236,7 +236,7 @@ describe("with Index Client", () => {
   test(
     "should query with plain text successfully",
     async () => {
-      embeddingIndex.upsert([
+      await embeddingIndex.upsert([
         {
           id: "hello-world",
           data: "with-index-plain-text-query-test",
