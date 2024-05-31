@@ -14,7 +14,7 @@ const client = newHttpClient();
 describe("RANGE", () => {
   afterAll(async () => await resetIndexes());
 
-  test("should query records successfully", async () => {
+  test("should paginate records successfully", async () => {
     const randomizedData = new Array(20)
       .fill("")
       .map(() => ({ id: randomID(), vector: range(0, 384) }));
@@ -42,7 +42,7 @@ describe("RANGE with Index Client", () => {
   afterAll(async () => {
     await index.reset();
   });
-  test("should query records successfully", async () => {
+  test("should paginate records successfully", async () => {
     const randomizedData = new Array(20)
       .fill("")
       .map(() => ({ id: randomID(), vector: range(0, 384) }));
