@@ -193,8 +193,6 @@ describe("QUERY", () => {
     },
     { timeout: 20000 }
   );
-
-
 });
 
 describe("with Index Client", () => {
@@ -221,7 +219,6 @@ describe("with Index Client", () => {
       vector: initialVector,
       topK: 1,
     });
-
 
     expect(res).toEqual([
       {
