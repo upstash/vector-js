@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { QueryCommand, UpsertCommand } from "@commands/index";
-import { awaitUntilIndexed, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
 import { Index } from "@utils/test-utils";
 
 const client = newHttpClient();
@@ -15,7 +15,7 @@ describe("QUERY", () => {
     token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
   });
-  afterAll(async () => await resetIndexes());
+
   afterAll(async () => {
     await index.reset();
     await embeddingIndex.reset();
@@ -204,7 +204,11 @@ describe("with Index Client", () => {
     token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
   });
-  afterAll(async () => await resetIndexes());
+
+  afterAll(async () => {
+    await index.reset();
+    await embeddingIndex.reset();
+  });
 
   test("should query records successfully", async () => {
     const ID = randomID();
@@ -235,7 +239,7 @@ describe("with Index Client", () => {
       embeddingIndex.upsert([
         {
           id: "hello-world",
-          data: "testing-plan-text",
+          data: "with-index-plain-text-query-test",
           metadata: { upstash: "test" },
         },
       ]);
@@ -243,7 +247,7 @@ describe("with Index Client", () => {
       await awaitUntilIndexed(embeddingIndex);
 
       const res = await embeddingIndex.query({
-        data: "testing-plain-text",
+        data: "with-index-plain-text-query-test",
         topK: 1,
         includeVectors: true,
         includeMetadata: true,

@@ -64,8 +64,6 @@ export const range = (start: number, end: number, step = 1) => {
   return result;
 };
 
-
-
 export const awaitUntilIndexed = async (client: HttpClient | Index, timeoutMillis = 10_000) => {
   const start = performance.now();
 
