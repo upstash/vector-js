@@ -58,14 +58,17 @@ describe("DELETE with Index Client", () => {
     await index.reset();
   });
 
-  test("should delete single record succesfully", () => {
+  test("should delete single record succesfully", async () => {
     const initialVector = range(0, 384);
     const id = randomID();
 
     index.upsert({ id, vector: initialVector });
 
-    const deletionResult = index.delete(id);
-    expect(deletionResult).toBeTruthy();
+    const deletionResult = await index.delete(id);
+
+    expect(deletionResult).toEqual({
+      deleted: 1
+    });
   });
 
   test("should delete array of records successfully", async () => {
@@ -77,6 +80,8 @@ describe("DELETE with Index Client", () => {
     await Promise.all(upsertPromises);
 
     const deletionResult = await index.delete(idsToUpsert);
-    expect(deletionResult).toBeTruthy();
+    expect(deletionResult).toEqual({
+      deleted: 3,
+    })
   });
 });
