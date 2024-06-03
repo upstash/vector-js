@@ -1,6 +1,6 @@
 import { Dict } from "@commands/client/types";
 import { expectTypeOf, test } from "vitest";
-import { Index } from "../../../../index";
+import { Index } from "./../../../utils/test-utils";
 
 type Metadata = { genre: string; year: number };
 
