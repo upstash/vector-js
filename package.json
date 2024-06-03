@@ -16,8 +16,14 @@
       "netlify": "./dist/nodejs.mjs",
       "react-native": "./dist/nodejs.mjs",
       "wintercg": "./dist/nodejs.mjs",
-      "worker": "./dist/cloudflare.mjs",
-      "workerd": "./dist/cloudflare.mjs",
+      "worker": {
+        "import": "./dist/cloudflare.mjs",
+        "types": "./dist/cloudflare.d.ts"
+      },
+      "workerd": {
+        "import": "./dist/cloudflare.mjs",
+        "types": "./dist/cloudflare.d.ts"
+      },
       "node": "./dist/nodejs.mjs",
       "require": "./dist/nodejs.mjs",
       "import": "./dist/nodejs.mjs",
@@ -56,5 +62,5 @@
     "build": "tsup",
     "prepare": "husky install"
   },
-  "types": "./dist/index.d.ts"
+  "types": "./dist/nodejs.d.ts"
 }
