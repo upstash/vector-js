@@ -3,6 +3,7 @@ import { InfoCommand } from "../commands/client/info";
 import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, RetryConfig } from "../http";
 import { Index } from "../vector";
+export * from "../../index";
 
 export type NonArrayType<T> = T extends Array<infer U> ? U : T;
 
@@ -57,7 +58,8 @@ export const resetIndexes = async () => await new ResetCommand().exec(newHttpCli
 export const range = (start: number, end: number, step = 1) => {
   const result = [];
   for (let i = start; i < end; i += step) {
-    result.push(i);
+    const randomNum = Math.floor(Math.random() * (end - start + 1)) + start;
+    result.push(randomNum);
   }
   return result;
 };

@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpdateCommand, UpsertCommand } from "@commands/index";
-import { awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
+import { Index, awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -27,6 +27,39 @@ describe("UPDATE", () => {
       ["1"],
       { includeMetadata: true },
     ]).exec(client);
+
+    expect(fetchData[0]?.metadata?.upstash).toBe("test-update");
+  });
+});
+
+describe("UPDATE with Index Client", () => {
+  const index = new Index({
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+  });
+  afterAll(async () => {
+    await index.reset();
+  });
+
+  test("should update vector metadata", async () => {
+    await index.upsert({
+      id: 1,
+      vector: range(0, 384),
+      metadata: { upstash: "test-simple" },
+    });
+
+    await awaitUntilIndexed(index);
+
+    const res = await index.update({
+      id: 1,
+      metadata: { upstash: "test-update" },
+    });
+
+    expect(res).toEqual({ updated: 1 });
+
+    await awaitUntilIndexed(client, 5000);
+
+    const fetchData = await index.fetch(["1"], { includeMetadata: true });
 
     expect(fetchData[0]?.metadata?.upstash).toBe("test-update");
   });

@@ -1,11 +1,25 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { QueryCommand, UpsertCommand } from "@commands/index";
-import { awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
+import { awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
+import { Index } from "@utils/test-utils";
 
 const client = newHttpClient();
 
 describe("QUERY", () => {
-  afterAll(async () => await resetIndexes());
+  const index = new Index({
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+  });
+
+  const embeddingIndex = new Index({
+    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+  });
+
+  afterAll(async () => {
+    await index.reset();
+    await embeddingIndex.reset();
+  });
   test("should query records successfully", async () => {
     const initialVector = range(0, 384);
     const initialData = { id: 33, vector: initialVector };
@@ -179,4 +193,118 @@ describe("QUERY", () => {
     },
     { timeout: 20000 }
   );
+});
+
+describe("with Index Client", () => {
+  const index = new Index({
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+  });
+  const embeddingIndex = new Index({
+    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+  });
+
+  afterAll(async () => {
+    await index.reset();
+    await embeddingIndex.reset();
+  });
+
+  test("should query records successfully", async () => {
+    const ID = randomID();
+    const initialVector = range(0, 384);
+    const initialData = { id: ID, vector: initialVector };
+    await index.upsert(initialData);
+
+    await awaitUntilIndexed(index);
+
+    const res = await index.query<{ hello: "World" }>({
+      includeVectors: true,
+      vector: initialVector,
+      topK: 1,
+    });
+
+    expect(res).toEqual([
+      {
+        id: ID,
+        score: 1,
+        vector: initialVector,
+      },
+    ]);
+  });
+
+  test(
+    "should query with plain text successfully",
+    async () => {
+      await embeddingIndex.upsert([
+        {
+          id: "hello-world",
+          data: "with-index-plain-text-query-test",
+          metadata: { upstash: "test" },
+        },
+      ]);
+
+      await awaitUntilIndexed(embeddingIndex);
+
+      const res = await embeddingIndex.query({
+        data: "with-index-plain-text-query-test",
+        topK: 1,
+        includeVectors: true,
+        includeMetadata: true,
+      });
+
+      expect(res[0].metadata).toEqual({ upstash: "test" });
+    },
+    { timeout: 20000 }
+  );
+
+  test("should narrow down the query results with filter", async () => {
+    const ID = randomID();
+    const initialVector = range(0, 384);
+    const initialData = [
+      {
+        id: `1-${ID}`,
+        vector: initialVector,
+        metadata: {
+          animal: "elephant",
+          tags: ["mammal"],
+          diet: "herbivore",
+        },
+      },
+      {
+        id: `2-${ID}`,
+        vector: initialVector,
+        metadata: {
+          animal: "tiger",
+          tags: ["mammal"],
+          diet: "carnivore",
+        },
+      },
+    ];
+
+    await index.upsert(initialData);
+
+    await awaitUntilIndexed(index);
+
+    const res = await index.query<{
+      animal: string;
+      tags: string[];
+      diet: string;
+    }>({
+      vector: initialVector,
+      topK: 1,
+      filter: "tags[0] = 'mammal' AND diet = 'carnivore'",
+      includeVectors: true,
+      includeMetadata: true,
+    });
+
+    expect(res).toEqual([
+      {
+        id: `2-${ID}`,
+        score: 1,
+        vector: initialVector,
+        metadata: { animal: "tiger", tags: ["mammal"], diet: "carnivore" },
+      },
+    ]);
+  });
 });
