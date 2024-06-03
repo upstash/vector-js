@@ -6,6 +6,24 @@
     "type": "git",
     "url": "https://github.com/upstash/vector-js"
   },
+  "exports": {
+    ".": {
+      "browser": "./dist/nodejs.mjs",
+      "bun": "./dist/nodejs.mjs",
+      "deno": "./dist/nodejs.mjs",
+      "edge-light": "./dist/nodejs.mjs",
+      "edge-routine": "./dist/nodejs.mjs",
+      "netlify": "./dist/nodejs.mjs",
+      "react-native": "./dist/nodejs.mjs",
+      "wintercg": "./dist/nodejs.mjs",
+      "worker": "./dist/cloudflare.mjs",
+      "workerd": "./dist/cloudflare.mjs",
+      "node": "./dist/nodejs.mjs",
+      "require": "./dist/nodejs.mjs",
+      "import": "./dist/nodejs.mjs",
+      "types": "./dist/nodejs.d.ts"
+    }
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "devDependencies": {

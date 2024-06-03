@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
 import { awaitUntilIndexed, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
-import { Index } from "../../../../index";
+import { Index } from "@utils/test-utils";
 
 const client = newHttpClient();
 

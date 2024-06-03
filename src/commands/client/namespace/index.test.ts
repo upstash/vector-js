@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { awaitUntilIndexed, range, resetIndexes } from "@utils/test-utils";
 
-import { Index } from "../../../../index";
+import { Index } from "@utils/test-utils";
 
 describe("NAMESPACE", () => {
   afterAll(async () => await resetIndexes());
