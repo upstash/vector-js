@@ -87,7 +87,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    * Use this to automatically load connection secrets from your environment
    * variables. For instance when using the Vercel integration.
    *
-   * When used on the Cloudflare Workers, you can just pass the "env" context provided by Cloudflare. 
+   * When used on the Cloudflare Workers, you can just pass the "env" context provided by Cloudflare.
    * Else, this tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
    * your environment using `process.env`.
    */
