@@ -8,30 +8,18 @@
   },
   "exports": {
     ".": {
-      "browser": "./dist/nodejs.mjs",
-      "bun": "./dist/nodejs.mjs",
-      "deno": "./dist/nodejs.mjs",
-      "edge-light": "./dist/nodejs.mjs",
-      "edge-routine": "./dist/nodejs.mjs",
-      "netlify": "./dist/nodejs.mjs",
-      "react-native": "./dist/nodejs.mjs",
-      "wintercg": "./dist/nodejs.mjs",
       "worker": {
-        "import": "./dist/cloudflare.mjs",
-        "types": "./dist/cloudflare.d.ts"
+        "import": "./dist/cloudflare.mjs"
       },
       "workerd": {
-        "import": "./dist/cloudflare.mjs",
-        "types": "./dist/cloudflare.d.ts"
-      },
-      "node": "./dist/nodejs.mjs",
-      "require": "./dist/nodejs.mjs",
-      "import": "./dist/nodejs.mjs",
-      "types": "./dist/nodejs.d.ts"
+        "import": "./dist/cloudflare.mjs"
+      }
     }
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/nodejs.js",
+  "module": "./dist/nodejs.mjs",
+  "browser": "./dist/nodejs.mjs",
+  "types": "./dist/nodejs.d.ts",
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
     "@commitlint/cli": "^18.6.0",
@@ -61,6 +49,5 @@
     "fmt": "bunx biome check --apply ./src",
     "build": "tsup",
     "prepare": "husky install"
-  },
-  "types": "./dist/nodejs.d.ts"
+  }
 }

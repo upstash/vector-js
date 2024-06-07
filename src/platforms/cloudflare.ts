@@ -10,7 +10,7 @@ export type { Requester, UpstashRequest, UpstashResponse };
  * Connection credentials for upstash vector.
  * Get them from https://console.upstash.com/vector/<uuid>
  */
-export type IndexConfigCloudflare = {
+export type IndexConfig = {
   /**
    * UPSTASH_VECTOR_REST_URL
    */
@@ -47,7 +47,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    * const index = new Index();
    * ```
    */
-  constructor(config?: IndexConfigCloudflare) {
+  constructor(config?: IndexConfig) {
     const token =
       config?.token ??
       process.env.NEXT_PUBLIC_UPSTASH_VECTOR_REST_TOKEN ??
@@ -87,30 +87,44 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    * Use this to automatically load connection secrets from your environment
    * variables. For instance when using the Vercel integration.
    *
-   * This tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
+   * When used on the Cloudflare Workers, you can just pass the "env" context provided by Cloudflare. 
+   * Else, this tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
    * your environment using `process.env`.
    */
   static fromEnv(
     env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
-    config?: Omit<IndexConfigCloudflare, "url" | "token">
+    config?: Omit<IndexConfig, "url" | "token">
   ): Index {
-    // @ts-ignore These will be defined by cloudflare
-    const url = env?.UPSTASH_VECTOR_REST_URL ?? UPSTASH_VECTOR_REST_URL;
+    let url: string | undefined;
+    let token: string | undefined;
 
-    if (!url) {
-      throw new Error(
-        "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_URL`"
-      );
+    // "env" is for the cloudflare environment
+    if (env) {
+      url = env.UPSTASH_VECTOR_REST_URL;
+      if (!url) {
+        throw new Error(
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_URL`"
+        );
+      }
+
+      token = env.UPSTASH_VECTOR_REST_TOKEN;
+      if (!token) {
+        throw new Error(
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_TOKEN`"
+        );
+      }
+    } else {
+      url = process?.env.UPSTASH_VECTOR_REST_URL;
+      if (!url) {
+        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
+      }
+
+      token = process?.env.UPSTASH_VECTOR_REST_TOKEN;
+      if (!token) {
+        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
+      }
     }
 
-    // @ts-ignore These will be defined by cloudflare
-    const token = env?.UPSTASH_VECTOR_REST_TOKEN ?? UPSTASH_VECTOR_REST_TOKEN;
-
-    if (!token) {
-      throw new Error(
-        "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_TOKEN`"
-      );
-    }
     return new Index({ ...config, url, token });
   }
 }

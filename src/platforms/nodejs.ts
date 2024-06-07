@@ -113,18 +113,44 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    * Use this to automatically load connection secrets from your environment
    * variables. For instance when using the Vercel integration.
    *
-   * This tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
+   * When used on the Cloudflare Workers, you can just pass the "env" context provided by Cloudflare. 
+   * Else, this tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
    * your environment using `process.env`.
    */
-  static fromEnv(config?: Omit<IndexConfig, "url" | "token">): Index {
-    const url = process?.env.UPSTASH_VECTOR_REST_URL;
-    if (!url) {
-      throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
+  static fromEnv(
+    env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
+    config?: Omit<IndexConfig, "url" | "token">
+  ): Index {
+    let url: string | undefined;
+    let token: string | undefined;
+
+    // "env" is for the cloudflare environment
+    if (env) {
+      url = env.UPSTASH_VECTOR_REST_URL;
+      if (!url) {
+        throw new Error(
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_URL`"
+        );
+      }
+
+      token = env.UPSTASH_VECTOR_REST_TOKEN;
+      if (!token) {
+        throw new Error(
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_TOKEN`"
+        );
+      }
+    } else {
+      url = process?.env.UPSTASH_VECTOR_REST_URL;
+      if (!url) {
+        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
+      }
+
+      token = process?.env.UPSTASH_VECTOR_REST_TOKEN;
+      if (!token) {
+        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
+      }
     }
-    const token = process?.env.UPSTASH_VECTOR_REST_TOKEN;
-    if (!token) {
-      throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
-    }
+
     return new Index({ ...config, url, token });
   }
 }
