@@ -1,6 +1,6 @@
 {
   "name": "@upstash/vector",
-  "version": "v1.0.3",
+  "version": "1.1.3",
   "author": "Oguzhan Olguncu <oguzhan@upstash.com>",
   "repository": {
     "type": "git",
@@ -8,11 +8,24 @@
   },
   "exports": {
     ".": {
+      "import": "./dist/nodejs.mjs",
+      "require": "./dist/nodejs.js",
+      "types": "./dist/nodejs.d.ts",
+      "browser": "./dist/nodejs.mjs",
+      "bun": "./dist/nodejs.mjs",
+      "deno": "./dist/nodejs.mjs",
+      "edge-light": "./dist/nodejs.mjs",
+      "edge-routine": "./dist/nodejs.mjs",
+      "netlify": "./dist/nodejs.mjs",
+      "react-native": "./dist/nodejs.mjs",
+      "wintercg": "./dist/nodejs.mjs",
       "worker": {
-        "import": "./dist/cloudflare.mjs"
+        "import": "./dist/cloudflare.mjs",
+        "types": "./dist/cloudflare.d.ts"
       },
       "workerd": {
-        "import": "./dist/cloudflare.mjs"
+        "import": "./dist/cloudflare.mjs",
+        "types": "./dist/cloudflare.d.ts"
       }
     }
   },
