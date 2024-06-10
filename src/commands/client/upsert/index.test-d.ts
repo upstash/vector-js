@@ -1,7 +1,7 @@
 import { Dict } from "@commands/client/types";
 import { NonArrayType } from "@utils/test-utils";
-import { expectTypeOf, test } from "vitest";
 import { Index } from "@utils/test-utils";
+import { expectTypeOf, test } from "vitest";
 
 type Metadata = { genre: string; year: number };
 
