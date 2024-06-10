@@ -60,7 +60,8 @@ await index.upsert([{
   }
 }])
 
-//Upsert Data
+// Upsert Data as Plain Text. 
+// This data will be directly converted into embeddings.
 await index.upsert([{
   id: 'tokyo',
   data: "Tokyo is the capital of Japan.",
