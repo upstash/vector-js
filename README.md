@@ -60,6 +60,15 @@ await index.upsert([{
   }
 }])
 
+//Upsert Data
+await index.upsert([{
+  id: 'tokyo',
+  data: "Tokyo is the capital of Japan.",
+  metadata: {
+    text: 'Tokyo is the capital of Japan.'
+  }
+}])
+
 //Query Data
 const results = await index.query<Metadata>(
   {
