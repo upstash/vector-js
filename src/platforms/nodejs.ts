@@ -121,30 +121,15 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
     env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
     config?: Omit<IndexConfig, "url" | "token">
   ): Index {
-    let url: string | undefined;
-    let token: string | undefined;
+    const url = env?.UPSTASH_VECTOR_REST_URL || process?.env.UPSTASH_VECTOR_REST_URL;
+    const token = env?.UPSTASH_VECTOR_REST_TOKEN || process?.env.UPSTASH_VECTOR_REST_TOKEN;
 
-    // "env" is for the cloudflare environment
-    if (env) {
-      url = env.UPSTASH_VECTOR_REST_URL;
-      if (!url) {
-        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
-      }
+    if (!url) {
+      throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
+    }
 
-      token = env.UPSTASH_VECTOR_REST_TOKEN;
-      if (!token) {
-        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
-      }
-    } else {
-      url = process?.env.UPSTASH_VECTOR_REST_URL;
-      if (!url) {
-        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`");
-      }
-
-      token = process?.env.UPSTASH_VECTOR_REST_TOKEN;
-      if (!token) {
-        throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
-      }
+    if (!token) {
+      throw new Error("Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`");
     }
 
     return new Index({ ...config, url, token });
