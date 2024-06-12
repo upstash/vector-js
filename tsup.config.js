@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["./index.ts"],
+  entry: ["./src/platforms/nodejs.ts", "./src/platforms/cloudflare.ts"],
   format: ["cjs", "esm"],
   sourcemap: false,
   clean: true,

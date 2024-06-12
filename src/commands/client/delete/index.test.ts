@@ -67,7 +67,7 @@ describe("DELETE with Index Client", () => {
     const deletionResult = await index.delete(id);
 
     expect(deletionResult).toEqual({
-      deleted: 1
+      deleted: 1,
     });
   });
 
@@ -82,6 +82,6 @@ describe("DELETE with Index Client", () => {
     const deletionResult = await index.delete(idsToUpsert);
     expect(deletionResult).toEqual({
       deleted: 3,
-    })
+    });
   });
 });
