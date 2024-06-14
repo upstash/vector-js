@@ -7,13 +7,15 @@ type QueryCommandPayload = {
   filter?: string;
   includeVectors?: boolean;
   includeMetadata?: boolean;
+  includeData?: boolean;
 } & ({ vector: number[]; data?: never } | { data: string; vector?: never });
 
 export type QueryResult<TMetadata = Dict> = {
   id: number | string;
   score: number;
-  vector: number[];
+  vector?: number[];
   metadata?: TMetadata;
+  data?: string;
 };
 
 type QueryCommandOptions = { namespace?: string };

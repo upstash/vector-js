@@ -1,6 +1,13 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { FetchCommand, UpsertCommand } from "@commands/index";
-import { Index, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { QueryCommand, UpsertCommand } from "@commands/index";
+import {
+  Index,
+  awaitUntilIndexed,
+  newHttpClient,
+  randomID,
+  range,
+  resetIndexes,
+} from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -48,28 +55,18 @@ describe("UPSERT", () => {
   });
 
   test("should add plain text as data successfully", async () => {
-    const embeddingClient = newHttpClient(undefined, {
-      token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-      url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-    });
-
     const res = await new UpsertCommand([
       {
         id: "hello-world",
         data: "Test1-2-3-4-5",
         metadata: { upstash: "test" },
       },
-    ]).exec(embeddingClient);
+    ]).exec(client);
     expect(res).toEqual("Success");
   });
 
   test("should fail to upsert due to mixed usage of vector and plain text", () => {
     const throwable = async () => {
-      const embeddingClient = newHttpClient(undefined, {
-        token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-        url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-      });
-
       await new UpsertCommand([
         {
           id: "hello-world",
@@ -83,39 +80,17 @@ describe("UPSERT", () => {
           vector: [1, 2, 3, 4],
           metadata: { upstash: "test" },
         },
-      ]).exec(embeddingClient);
+      ]).exec(client);
     };
 
     expect(throwable).toThrow();
-  });
-
-  test("should add data as metadata, when no metadata is provided", async () => {
-    const embeddingClient = newHttpClient(undefined, {
-      token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-      url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-    });
-    const resUpsert = await new UpsertCommand({
-      id: "hello-world",
-      data: "testing data",
-    }).exec(embeddingClient);
-
-    const resFetch = await new FetchCommand([
-      ["hello-world"],
-      {
-        includeMetadata: true,
-      },
-    ]).exec(embeddingClient);
-
-    expect(resFetch[0]?.metadata).toEqual({ data: "testing data" });
-
-    expect(resUpsert).toEqual("Success");
   });
 });
 
 describe("UPSERT with Index Client", () => {
   const index = new Index({
-    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
   });
   afterAll(async () => await resetIndexes());
 
@@ -156,7 +131,9 @@ describe("UPSERT with Index Client", () => {
         metadata: { upstash: "test-simple-2" },
       },
     ];
-    const resUpsert = await index.upsert(upsertData, { namespace: "test-namespace" });
+    const resUpsert = await index.upsert(upsertData, {
+      namespace: "test-namespace",
+    });
 
     expect(resUpsert).toEqual("Success");
   });
@@ -191,5 +168,58 @@ describe("UPSERT with Index Client", () => {
     };
 
     expect(throwable).toThrow();
+  });
+});
+
+describe("Upsert with new data field", () => {
+  test("should add data to data field - /upsert-data", async () => {
+    const id = randomID();
+    const data = "testing data";
+
+    await new UpsertCommand({
+      id,
+      data,
+      metadata: { hello: "world" },
+    }).exec(client);
+    await awaitUntilIndexed(client);
+
+    const result = await new QueryCommand<{ hello: "world" }>({
+      data,
+      includeMetadata: true,
+      includeVectors: false,
+      includeData: true,
+      topK: 1,
+    }).exec(client);
+
+    expect(result).toEqual([
+      {
+        id,
+        data,
+        metadata: { hello: "world" },
+        score: 1,
+      },
+    ]);
+  });
+
+  test("should add data to data field - /upsert", async () => {
+    const id = randomID();
+    const data = "testing data";
+    await new UpsertCommand({
+      id,
+      vector: range(0, 384),
+      data,
+      metadata: { hello: "world" },
+    }).exec(client);
+    await awaitUntilIndexed(client);
+
+    const result = await new QueryCommand<{ hello: "world" }>({
+      vector: range(0, 384),
+      includeMetadata: true,
+      includeVectors: false,
+      includeData: true,
+      topK: 1,
+    }).exec(client);
+
+    expect(result.map((r) => r.data)).toEqual([data]);
   });
 });

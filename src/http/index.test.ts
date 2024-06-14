@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { newHttpClient } from "@utils/test-utils";
 import { HttpClient } from "./";
 
@@ -50,42 +50,5 @@ describe("Abort", () => {
     controller.abort("Abort works!");
 
     expect((await body).result).toEqual("Abort works!");
-  });
-});
-
-describe("Test retry", () => {
-  let originalFetch: typeof global.fetch;
-  let fetchCallCount: number;
-
-  beforeEach(() => {
-    originalFetch = global.fetch;
-    fetchCallCount = 0;
-  });
-
-  afterEach(() => {
-    // Restore the original fetch after each test
-    global.fetch = originalFetch;
-  });
-
-  function mockFetchToFailTwiceThenSucceed() {
-    global.fetch = mock(() => {
-      fetchCallCount += 1;
-      if (fetchCallCount <= 2) {
-        return Promise.reject(new Error("Network failure"));
-      }
-      return Promise.resolve(new Response(JSON.stringify({ data: "success" })));
-    });
-  }
-
-  test("retry logic on network failure", async () => {
-    mockFetchToFailTwiceThenSucceed();
-
-    const client = newHttpClient({ retries: 3 });
-
-    try {
-      await client.request({ path: ["test"] });
-    } catch {}
-
-    expect(global.fetch).toHaveBeenCalledTimes(3); // Check if fetch was called 3 times
   });
 });

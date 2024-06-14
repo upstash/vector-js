@@ -5,6 +5,7 @@ import { Command } from "@commands/command";
 type FetchCommandOptions = {
   includeMetadata?: boolean;
   includeVectors?: boolean;
+  includeData?: boolean;
   namespace?: string;
 };
 

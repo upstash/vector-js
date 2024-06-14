@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { DeleteCommand, UpsertCommand } from "@commands/index";
-import { newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
+import { awaitUntilIndexed, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
 import { Index } from "@utils/test-utils";
 
 const client = newHttpClient();
@@ -12,10 +12,10 @@ describe("DELETE", () => {
     const initialVector = range(0, 384);
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
-    const upsertPromises = idsToUpsert.map((id) =>
-      new UpsertCommand({ id, vector: initialVector }).exec(client)
+    await new UpsertCommand(idsToUpsert.map((x) => ({ id: x, vector: initialVector }))).exec(
+      client
     );
-    await Promise.all(upsertPromises);
+    await awaitUntilIndexed(client);
 
     const deletionResult = await new DeleteCommand(idsToUpsert).exec(client);
     expect(deletionResult).toBeTruthy();
@@ -25,10 +25,10 @@ describe("DELETE", () => {
     const initialVector = range(0, 384);
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
-    const upsertPromises = idsToUpsert.map((id) =>
-      new UpsertCommand({ id, vector: initialVector }).exec(client)
+    await new UpsertCommand(idsToUpsert.map((x) => ({ id: x, vector: initialVector }))).exec(
+      client
     );
-    await Promise.all(upsertPromises);
+    await awaitUntilIndexed(client);
 
     await new DeleteCommand(idsToUpsert).exec(client);
     const res1 = await new DeleteCommand(idsToUpsert).exec(client);
@@ -50,10 +50,7 @@ describe("DELETE", () => {
 });
 
 describe("DELETE with Index Client", () => {
-  const index = new Index({
-    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.UPSTASH_VECTOR_REST_URL!,
-  });
+  const index = new Index();
   afterAll(async () => {
     await index.reset();
   });
@@ -75,9 +72,7 @@ describe("DELETE with Index Client", () => {
     const initialVector = range(0, 384);
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
-    const upsertPromises = idsToUpsert.map((id) => index.upsert({ id, vector: initialVector }));
-
-    await Promise.all(upsertPromises);
+    await index.upsert(idsToUpsert.map((id) => ({ id, vector: initialVector })));
 
     const deletionResult = await index.delete(idsToUpsert);
     expect(deletionResult).toEqual({
