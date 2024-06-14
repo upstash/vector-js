@@ -1,24 +1,14 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { QueryCommand, UpsertCommand } from "@commands/index";
-import { awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
-import { Index } from "@utils/test-utils";
+import { Index, awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
 
 const client = newHttpClient();
 
 describe("QUERY", () => {
-  const index = new Index({
-    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.UPSTASH_VECTOR_REST_URL!,
-  });
-
-  const embeddingIndex = new Index({
-    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-  });
+  const index = new Index();
 
   afterAll(async () => {
     await index.reset();
-    await embeddingIndex.reset();
   });
   test("should query records successfully", async () => {
     const initialVector = range(0, 384);
@@ -132,27 +122,22 @@ describe("QUERY", () => {
   test(
     "should query with plain text successfully",
     async () => {
-      const embeddingClient = newHttpClient(undefined, {
-        token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-        url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-      });
-
       await new UpsertCommand([
         {
           id: "hello-world",
           data: "testing-plan-text",
           metadata: { upstash: "test" },
         },
-      ]).exec(embeddingClient);
+      ]).exec(client);
 
-      await awaitUntilIndexed(embeddingClient);
+      await awaitUntilIndexed(client);
 
       const res = await new QueryCommand({
         data: "testing-plain-text",
         topK: 1,
         includeVectors: true,
         includeMetadata: true,
-      }).exec(embeddingClient);
+      }).exec(client);
 
       expect(res[0].metadata).toEqual({ upstash: "test" });
     },
@@ -162,11 +147,6 @@ describe("QUERY", () => {
   test(
     "should upsert bulk data",
     async () => {
-      const embeddingClient = newHttpClient(undefined, {
-        token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-        url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-      });
-
       await new UpsertCommand([
         {
           id: "hello-world",
@@ -178,36 +158,74 @@ describe("QUERY", () => {
           data: "testing-bulk-data-secondary",
           metadata: { upstash: "Monster" },
         },
-      ]).exec(embeddingClient);
+      ]).exec(client);
 
-      await awaitUntilIndexed(embeddingClient);
+      await awaitUntilIndexed(client);
 
       const res = await new QueryCommand({
         data: "testing-bulk-data-original",
         topK: 1,
         includeVectors: true,
         includeMetadata: true,
-      }).exec(embeddingClient);
+      }).exec(client);
 
       expect(res[0].metadata).toEqual({ upstash: "Cookie" });
     },
     { timeout: 20000 }
   );
+
+  test("should return data field when includeData enabled", async () => {
+    const mockData = {
+      id: randomID(),
+      vector: range(0, 384),
+      data: "Shakuhachi",
+    };
+
+    await index.upsert(mockData);
+
+    await awaitUntilIndexed(index);
+
+    const result = await index.query({
+      includeMetadata: false,
+      vector: mockData.vector,
+      includeData: true,
+      includeVectors: false,
+      topK: 1,
+    });
+
+    const { vector: _vector, ...rest } = mockData;
+
+    expect(result).toEqual([{ ...rest, score: 1 }]);
+  });
+
+  test("should not return data field when includeData disabled", async () => {
+    const mockData = {
+      id: randomID(),
+      vector: range(0, 384),
+      data: "Shakuhachi",
+    };
+
+    await index.upsert(mockData);
+
+    await awaitUntilIndexed(index);
+
+    const result = await index.query({
+      includeMetadata: false,
+      vector: mockData.vector,
+      includeData: false,
+      includeVectors: false,
+      topK: 1,
+    });
+    const { data: _data, vector: _vector, ...rest } = mockData;
+    expect(result).toEqual([{ ...rest, score: 1 }]);
+  });
 });
 
-describe("with Index Client", () => {
-  const index = new Index({
-    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.UPSTASH_VECTOR_REST_URL!,
-  });
-  const embeddingIndex = new Index({
-    token: process.env.EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
-    url: process.env.EMBEDDING_UPSTASH_VECTOR_REST_URL!,
-  });
+describe("QUERY with Index Client", () => {
+  const index = new Index();
 
   afterAll(async () => {
     await index.reset();
-    await embeddingIndex.reset();
   });
 
   test("should query records successfully", async () => {
@@ -219,8 +237,8 @@ describe("with Index Client", () => {
     await awaitUntilIndexed(index);
 
     const res = await index.query<{ hello: "World" }>({
-      includeVectors: true,
       vector: initialVector,
+      includeVectors: true,
       topK: 1,
     });
 
@@ -236,7 +254,7 @@ describe("with Index Client", () => {
   test(
     "should query with plain text successfully",
     async () => {
-      await embeddingIndex.upsert([
+      await index.upsert([
         {
           id: "hello-world",
           data: "with-index-plain-text-query-test",
@@ -244,9 +262,9 @@ describe("with Index Client", () => {
         },
       ]);
 
-      await awaitUntilIndexed(embeddingIndex);
+      await awaitUntilIndexed(index);
 
-      const res = await embeddingIndex.query({
+      const res = await index.query({
         data: "with-index-plain-text-query-test",
         topK: 1,
         includeVectors: true,

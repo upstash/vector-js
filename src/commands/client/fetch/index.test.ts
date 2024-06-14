@@ -1,7 +1,13 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpsertCommand } from "@commands/index";
-import { awaitUntilIndexed, newHttpClient, randomID, range, resetIndexes } from "@utils/test-utils";
-import { Index } from "@utils/test-utils";
+import {
+  Index,
+  awaitUntilIndexed,
+  newHttpClient,
+  randomID,
+  range,
+  resetIndexes,
+} from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -73,7 +79,10 @@ describe("FETCH with Index Client", () => {
     await awaitUntilIndexed(index);
 
     const IDs = randomizedData.map((x) => x.id);
-    const res = await index.fetch(IDs, { includeVectors: true });
+    const res = await index.fetch(IDs, {
+      includeVectors: true,
+      includeData: true,
+    });
 
     expect(res).toEqual(randomizedData);
   });
@@ -105,5 +114,46 @@ describe("FETCH with Index Client", () => {
     });
 
     expect(randomFetch).toEqual([null]);
+  });
+
+  test("should return data field when includeData enabled", async () => {
+    const mockData = {
+      id: randomID(),
+      vector: range(0, 384),
+      metadata: { hello: "world" },
+      data: "Shakuhachi",
+    };
+
+    await index.upsert(mockData);
+
+    await awaitUntilIndexed(index);
+
+    const fetchWithID = await index.fetch([mockData.id], {
+      includeMetadata: true,
+      includeData: true,
+      includeVectors: true,
+    });
+
+    expect(fetchWithID).toEqual([mockData]);
+  });
+
+  test("should not return data field when includeData disabled", async () => {
+    const mockData = {
+      id: randomID(),
+      vector: range(0, 384),
+      metadata: { hello: "world" },
+      data: "Shakuhachi",
+    };
+
+    await index.upsert(mockData);
+
+    await awaitUntilIndexed(index);
+
+    const fetchWithID = await index.fetch([mockData.id], {
+      includeMetadata: true,
+      includeVectors: true,
+    });
+    const { data: _data, ...mockDataWithoutData } = mockData;
+    expect(fetchWithID).toEqual([mockDataWithoutData]);
   });
 });

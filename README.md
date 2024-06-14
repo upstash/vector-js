@@ -47,7 +47,7 @@ const index = new Index<Metadata>({
   token: "<UPSTASH_VECTOR_REST_TOKEN>",
 });
 
-//Upsert Data
+//Upsert data
 await index.upsert([{
   id: 'upstash-rocks',
   vector: [
@@ -60,17 +60,21 @@ await index.upsert([{
   }
 }])
 
-// Upsert Data as Plain Text. 
-// This data will be directly converted into embeddings.
+// Upsert data as plain text.
 await index.upsert([{
   id: 'tokyo',
   data: "Tokyo is the capital of Japan.",
-  metadata: {
-    text: 'Tokyo is the capital of Japan.'
-  }
 }])
 
-//Query Data
+//Upsert data alongside with your embedding
+await index.upsert([{
+  id: 'tokyo',
+  data: "Tokyo is the capital of Japan.",
+  vector: [......]
+}])
+
+
+//Query data
 const results = await index.query<Metadata>(
   {
     vector: [
@@ -86,9 +90,28 @@ const results = await index.query<Metadata>(
   }
 )
 
+//Query with your data
+const results = await index.query(
+  {
+    data: "Where is the capital of Japan",
+    topK: 1,
+  },
+)
+
+//Query with your data
+const results = await index.query(
+  {
+    vector: [
+      ... // query embedding
+    ],
+    includeData: true, // Returns data associated with your vector.
+    topK: 1,
+  },
+)
+
 // If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
-//Update Data
+//Update data
 await index.upsert(
   {
     id: "upstash-rocks",
@@ -111,6 +134,9 @@ await index.delete(["id-1", "id-2", "id-3"]);
 
 //Fetch records by their IDs
 await index.fetch(["id-1", "id-2"], {namespace: "example-namespace"});
+
+//Fetch records by their IDs
+await index.fetch(["id-1", "id-2"], {namespace: "example-namespace", includeData:true});
 
 //Fetch records with range
 await index.range(
@@ -233,11 +259,7 @@ Make sure you have Bun.js installed and have those relevant keys with specific v
 
 ```bash
 
-## Vector dimension should be 2
+## Vector dimension should be 3842
 UPSTASH_VECTOR_REST_URL="XXXXX"
 UPSTASH_VECTOR_REST_TOKEN="XXXXX"
-
-## Vector dimension should be 384
-EMBEDDING_UPSTASH_VECTOR_REST_URL="XXXXX"
-EMBEDDING_UPSTASH_VECTOR_REST_TOKEN="XXXXX"
 ```

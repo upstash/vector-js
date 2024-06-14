@@ -34,34 +34,21 @@ export class UpsertCommand<TMetadata> extends Command<string> {
     let endpoint: UpsertEndpointVariants = "upsert";
 
     if (Array.isArray(payload)) {
-      const hasData = payload.some((p) => "data" in p && p.data);
-      if (hasData) {
-        endpoint = "upsert-data";
-
-        for (const p of payload) {
-          if (!("metadata" in p) && "data" in p) {
-            p.metadata = {
-              data: p.data,
-            } as NoInfer<TMetadata & { data: string }>;
-          }
-        }
-      }
+      const isUpsert = payload.some((p) => isVectorPayload(p));
+      endpoint = isUpsert ? "upsert" : "upsert-data";
     } else {
-      if ("data" in payload) {
-        endpoint = "upsert-data";
-
-        if (!("metadata" in payload)) {
-          payload.metadata = {
-            data: payload.data,
-          } as NoInfer<TMetadata & { data: string }>;
-        }
-      }
+      endpoint = isVectorPayload(payload) ? "upsert" : "upsert-data";
     }
 
     if (opts?.namespace) {
       endpoint = `${endpoint}/${opts.namespace}`;
     }
-
     super(payload, endpoint);
   }
 }
+
+const isVectorPayload = <TMetadata>(
+  payload: VectorPayload<TMetadata> | DataPayload<TMetadata>
+): payload is VectorPayload<TMetadata> => {
+  return "vector" in payload;
+};
