@@ -27,7 +27,7 @@ describe("UPDATE", () => {
 
     expect(res).toEqual({ updated: 1 });
 
-    await awaitUntilIndexed(client, 5000);
+    await awaitUntilIndexed(client);
 
     const fetchData = await new FetchCommand<{ upstash: string }>([
       ["1"],
@@ -36,43 +36,43 @@ describe("UPDATE", () => {
 
     expect(fetchData[0]?.metadata?.upstash).toBe("test-update");
   });
-});
 
-test("should update vector data", async () => {
-  await new UpsertCommand({
-    id: 1,
-    data: "hello",
-    metadata: { upstash: "test-simple" },
-  }).exec(client);
-  await awaitUntilIndexed(client, 5000);
+  test("should update vector data", async () => {
+    await new UpsertCommand({
+      id: 1,
+      data: "hello",
+      metadata: { upstash: "test-simple" },
+    }).exec(client);
+    await awaitUntilIndexed(client);
 
-  const res = await new FetchCommand([
-    [1],
-    {
-      includeData: true,
-    },
-  ]).exec(client);
+    const res = await new FetchCommand([
+      [1],
+      {
+        includeData: true,
+      },
+    ]).exec(client);
 
-  expect(res.length).toEqual(1);
-  expect(res[0]?.data).toEqual("hello");
+    expect(res.length).toEqual(1);
+    expect(res[0]?.data).toEqual("hello");
 
-  const updated = await new UpdateCommand({ id: "1", data: "there" }).exec(
-    client
-  );
-  expect(updated).toEqual({ updated: 1 });
-  await awaitUntilIndexed(client, 5000);
+    const updated = await new UpdateCommand({ id: "1", data: "there" }).exec(
+      client
+    );
+    expect(updated).toEqual({ updated: 1 });
+    await awaitUntilIndexed(client);
 
-  const newRes = await new FetchCommand([
-    [1],
-    {
-      includeData: true,
-      includeMetadata: true,
-    },
-  ]).exec(client);
+    const newRes = await new FetchCommand([
+      [1],
+      {
+        includeData: true,
+        includeMetadata: true,
+      },
+    ]).exec(client);
 
-  expect(newRes.length).toEqual(1);
-  expect(newRes[0]?.data).toEqual("there");
-  expect(newRes[0]?.metadata).toEqual({ upstash: "test-simple" });
+    expect(newRes.length).toEqual(1);
+    expect(newRes[0]?.data).toEqual("there");
+    expect(newRes[0]?.metadata).toEqual({ upstash: "test-simple" });
+  });
 });
 
 describe("UPDATE with Index Client", () => {
