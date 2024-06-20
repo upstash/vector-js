@@ -1,12 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpdateCommand, UpsertCommand } from "@commands/index";
-import {
-  Index,
-  awaitUntilIndexed,
-  newHttpClient,
-  range,
-  resetIndexes,
-} from "@utils/test-utils";
+import { Index, awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -77,9 +71,7 @@ describe("UPDATE", () => {
     expect(res.length).toEqual(1);
     expect(res[0]?.data).toEqual("hello");
 
-    const updated = await new UpdateCommand({ id: "1", data: "there" }).exec(
-      client
-    );
+    const updated = await new UpdateCommand({ id: "1", data: "there" }).exec(client);
     await awaitUntilIndexed(client, 5000);
 
     expect(updated).toEqual({ updated: 1 });
