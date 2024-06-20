@@ -12,6 +12,7 @@ import {
 import { Dict } from "@commands/client/types";
 import { DeleteNamespaceCommand, ListNamespacesCommand } from "@commands/management";
 import { Requester } from "@http";
+import { QueryManyCommand } from "./commands";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
@@ -73,13 +74,52 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    * @param {string} [args.filter] - An optional filter string to be used in the query. The filter string is used to narrow down the query results.
    * @param {boolean} [args.includeVectors=false] - When set to true, includes the feature vectors of the returned items in the response.
    * @param {boolean} [args.includeMetadata=false] - When set to true, includes additional metadata of the returned items in the response.
+   * @param {boolean} [args.includeData=false] - When set to true, includes data - string - of the returned items in the response.
    *
-   * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
+   *  A promise that resolves with an array of query result objects when the request to query the index is completed.
    */
   query = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof QueryCommand>,
     options?: { namespace?: string }
   ) => new QueryCommand<TMetadata>(args, options).exec(this.client);
+
+  /**
+   * Queries an index with specified parameters.
+   * This method creates and executes a query command on an index based on the provided arguments.
+   *
+   * @example
+   * ```js
+   * await index.queryMany([
+   * {
+   *     topK: 3,
+   *     vector: [0.22, 0.66],
+   *     filter: "age >= 23 and (type = 'turtle' OR type = 'cat')",
+   * },
+   * {
+   *     topK: 3,
+   *     vector: [0.45, 0.52],
+   *     filter: "age >= 27 and (type = 'rabbit' OR type = 'dog')",
+   * },
+   * ]);
+   *
+   * ```
+   *
+   * @param {Object} args - The arguments for the query command.
+   * @param {number[]} args.vector - An array of numbers representing the feature vector for the query.
+   *                                This vector is utilized to find the most relevant items in the index.
+   * @param {number} args.topK - The desired number of top results to be returned, based on relevance or similarity to the query vector.
+   * @param {string} [args.filter] - An optional filter string to be used in the query. The filter string is used to narrow down the query results.
+   * @param {boolean} [args.includeVectors=false] - When set to true, includes the feature vectors of the returned items in the response.
+   * @param {boolean} [args.includeMetadata=false] - When set to true, includes additional metadata of the returned items in the response.
+   * @param {boolean} [args.includeData=false] - When set to true, includes additional metadata of the returned items in the response.
+   *
+   *  A promise that resolves with an array of arrays of query result objects,
+   *  where each inner array represents a group of results matching a specific query condition.
+   */
+  queryMany = <TMetadata extends Dict = TIndexMetadata>(
+    args: CommandArgs<typeof QueryManyCommand>,
+    options?: { namespace?: string }
+  ) => new QueryManyCommand<TMetadata>(args, options).exec(this.client);
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.

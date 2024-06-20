@@ -1,5 +1,5 @@
 export * from "./delete";
-export * from "./query";
+export * from "./query/query-single";
 export * from "./upsert";
 export * from "./fetch";
 export * from "./range";

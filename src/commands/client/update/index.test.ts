@@ -1,6 +1,12 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpdateCommand, UpsertCommand } from "@commands/index";
-import { Index, awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
+import {
+  Index,
+  awaitUntilIndexed,
+  newHttpClient,
+  range,
+  resetIndexes,
+} from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -50,7 +56,9 @@ test("should update vector data", async () => {
   expect(res.length).toEqual(1);
   expect(res[0]?.data).toEqual("hello");
 
-  const updated = await new UpdateCommand({ id: "1", data: "there" }).exec(client);
+  const updated = await new UpdateCommand({ id: "1", data: "there" }).exec(
+    client
+  );
   expect(updated).toEqual({ updated: 1 });
   await awaitUntilIndexed(client, 5000);
 
@@ -83,8 +91,6 @@ describe("UPDATE with Index Client", () => {
       metadata: { upstash: "test-simple" },
     });
 
-    await awaitUntilIndexed(index);
-
     const res = await index.update({
       id: 1,
       metadata: { upstash: "test-update" },
@@ -92,7 +98,7 @@ describe("UPDATE with Index Client", () => {
 
     expect(res).toEqual({ updated: 1 });
 
-    await awaitUntilIndexed(client, 5000);
+    await awaitUntilIndexed(client);
 
     const fetchData = await index.fetch(["1"], { includeMetadata: true });
 
