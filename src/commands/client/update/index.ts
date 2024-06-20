@@ -6,6 +6,7 @@ type NoInfer<T> = T extends infer U ? U : never;
 type MetadataUpdatePayload<TMetadata> = {
   id: string | number;
   metadata: NoInfer<TMetadata>;
+  metadataUpdateMode?: "PATCH" | "OVERWRITE";
 };
 
 type VectorUpdatePayload = {
