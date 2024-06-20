@@ -189,10 +189,11 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    * ```
    *
    * @param {...CommandArgs<typeof FetchCommand>} args - The arguments for the fetch command.
-   * @param {(number[]|string[])} args[0] - An array of IDs of the items to be fetched.
-   * @param {FetchCommandOptions} args[1] - Options for the fetch operation.
-   * @param {boolean} [args[1].includeMetadata=false] - Optionally include metadata of the fetched items.
-   * @param {boolean} [args[1].includeVectors=false] - Optionally include feature vectors of the fetched items.
+   * @param {(number[]|string[])} args - An array of IDs of the items to be fetched.
+   * @param {FetchCommandOptions} args - Options for the fetch operation.
+   * @param {boolean} [args.includeMetadata=false] - Optionally include metadata of the fetched items.
+   * @param {boolean} [args.includeVectors=false] - Optionally include feature vectors of the fetched items.
+   * @param {boolean} [args.metadataUpdateMode="OVERWRITE"] - Specifies whether to overwrite or patch the metadata values.
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
