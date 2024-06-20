@@ -325,4 +325,68 @@ describe("QUERY with Index Client", () => {
       },
     ]);
   });
+
+  test("should query in batches", async () => {
+    const ID = randomID();
+    const initialData = [
+      {
+        id: `1-${ID}`,
+        vector: range(0, 384),
+        metadata: {
+          animal: "elephant",
+          tags: ["mammal"],
+          diet: "herbivore",
+        },
+      },
+      {
+        id: `2-${ID}`,
+        vector: range(0, 384),
+        metadata: {
+          animal: "tiger",
+          tags: ["mammal"],
+          diet: "carnivore",
+        },
+      },
+    ];
+
+    await index.upsert(initialData);
+
+    await awaitUntilIndexed(index);
+
+    const res = await index.query<{
+      animal: string;
+      tags: string[];
+      diet: string;
+    }>([
+      {
+        vector: initialData[0].vector,
+        topK: 1,
+        filter: "tags[0] = 'mammal' AND diet = 'carnivore'",
+        includeVectors: true,
+        includeMetadata: true,
+      },
+      {
+        vector: initialData[1].vector,
+        topK: 1,
+        filter: "tags[0] = 'mammal' AND diet = 'herbivore'",
+        includeVectors: true,
+        includeMetadata: true,
+      },
+    ]);
+
+    expect(res).toEqual([
+      {
+        id: `1-${ID}`,
+        score: 1,
+        vector: initialData[0].vector,
+        metadata: { animal: "tiger", tags: ["mammal"], diet: "carnivore" },
+      },
+      {
+        id: `2-${ID}`,
+        score: 1,
+        vector: initialData[1].vector,
+        metadata: { animal: "tiger", tags: ["mammal"], diet: "carnivore" },
+      },
+    ]);
+  });
 });

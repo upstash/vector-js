@@ -27,11 +27,12 @@ type QueryEndpointVariants =
   | `query-data/${NAMESPACE}`;
 
 export class QueryCommand<TMetadata> extends Command<QueryResult<TMetadata>[]> {
-  constructor(payload: QueryCommandPayload, options?: QueryCommandOptions) {
+  constructor(payload: QueryCommandPayload[] | QueryCommandPayload, options?: QueryCommandOptions) {
     let endpoint: QueryEndpointVariants = "query";
 
-    if ("data" in payload) {
-      endpoint = "query-data";
+    if (Array.isArray(payload)) {
+      const hasData = payload.some((p) => p.data);
+      endpoint = hasData ? "query-data" : "query";
     }
 
     if (options?.namespace) {
