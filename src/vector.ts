@@ -4,6 +4,7 @@ import {
   InfoCommand,
   Namespace,
   QueryCommand,
+  QueryManyCommand,
   RangeCommand,
   ResetCommand,
   UpdateCommand,
@@ -12,7 +13,6 @@ import {
 import { Dict } from "@commands/client/types";
 import { DeleteNamespaceCommand, ListNamespacesCommand } from "@commands/management";
 import { Requester } from "@http";
-import { QueryManyCommand } from "./commands";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
