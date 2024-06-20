@@ -111,7 +111,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    * @param {string} [args.filter] - An optional filter string to be used in the query. The filter string is used to narrow down the query results.
    * @param {boolean} [args.includeVectors=false] - When set to true, includes the feature vectors of the returned items in the response.
    * @param {boolean} [args.includeMetadata=false] - When set to true, includes additional metadata of the returned items in the response.
-   * @param {boolean} [args.includeData=false] - When set to true, includes additional metadata of the returned items in the response.
+   * @param {boolean} [args.includeData=false] - When set to true, includes data - string - of the returned items in the response.
    *
    *  A promise that resolves with an array of arrays of query result objects,
    *  where each inner array represents a group of results matching a specific query condition.
