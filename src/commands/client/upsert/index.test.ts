@@ -172,6 +172,7 @@ describe("UPSERT with Index Client", () => {
 });
 
 describe("Upsert with new data field", () => {
+  afterAll(async () => await resetIndexes());
   test("should add data to data field - /upsert-data", async () => {
     const id = randomID();
     const data = "testing data";
