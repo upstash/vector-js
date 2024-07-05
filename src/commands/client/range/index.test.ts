@@ -17,7 +17,7 @@ describe("RANGE", () => {
   test("should paginate records successfully", async () => {
     const randomizedData = new Array(20)
       .fill("")
-      .map(() => ({ id: randomID(), vector: range(0, 384) }));
+      .map(() => ({ id: randomID(), data: "Test data" }));
 
     const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));
     await Promise.all(payloads);
@@ -27,9 +27,9 @@ describe("RANGE", () => {
     const res = await new RangeCommand({
       cursor: 0,
       limit: 5,
-      includeVectors: true,
+      includeData: true,
     }).exec(client);
-    expect(res.nextCursor).toBe("5");
+    expect(res.vectors[0].data).toEqual("Test data");
   });
 });
 

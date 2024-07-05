@@ -64,6 +64,7 @@ describe("FETCH", () => {
 });
 
 describe("FETCH with Index Client", () => {
+  afterAll(async () => await resetIndexes());
   const index = new Index({
     token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.UPSTASH_VECTOR_REST_URL!,
