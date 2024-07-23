@@ -27,6 +27,14 @@
         "import": "./dist/cloudflare.mjs",
         "types": "./dist/cloudflare.d.ts"
       }
+    },
+    "./cloudflare": {
+      "import": "./dist/cloudflare.mjs",
+      "types": "./dist/cloudflare.d.ts"
+    },
+    "./nodejs": {
+      "import": "./dist/nodejs.mjs",
+      "types": "./dist/nodejs.d.ts"
     }
   },
   "main": "./dist/nodejs.js",
