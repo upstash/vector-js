@@ -76,6 +76,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
       retry: config?.retry,
       headers: { authorization: `Bearer ${token}` },
       signal: config?.signal,
+      cache: config?.cache === false ? undefined : config?.cache,
     });
 
     super(client);
