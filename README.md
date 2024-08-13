@@ -233,7 +233,7 @@ We have a [Discord](upstash.com/discord) for common problems. If you can't find 
 
 ## Docs
 
-See [the documentation](https://upstash.com/docs/oss/sdks/ts/vector/overview) for details.
+See [the documentation](https://upstash.com/docs/vector/sdks/ts/getting-started) for details.
 
 ## Contributing
 
