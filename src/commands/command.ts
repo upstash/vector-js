@@ -1,7 +1,7 @@
-import { Dict } from "@commands/client/types";
+import type { Dict } from "@commands/client/types";
 import { UpstashError } from "@error/index";
-import { Requester } from "@http";
-import { NAMESPACE } from "./client/types";
+import type { Requester } from "@http";
+import type { NAMESPACE } from "./client/types";
 
 const ENDPOINTS = [
   "upsert",

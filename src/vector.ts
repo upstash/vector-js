@@ -10,10 +10,10 @@ import {
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
-import { ResumableQuery, ResumableQueryPayload } from "@commands/client/resumable-query";
-import { Dict } from "@commands/client/types";
+import { ResumableQuery, type ResumableQueryPayload } from "@commands/client/resumable-query";
+import type { Dict } from "@commands/client/types";
 import { DeleteNamespaceCommand, ListNamespacesCommand } from "@commands/management";
-import { Requester } from "@http";
+import type { Requester } from "@http";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
@@ -144,16 +144,19 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    *   includeMetadata: true,
    *   includeVectors: true
    * }, { namespace: 'my-namespace' });
-   * 
+   *
    * const firstBatch = await fetchNext(10);
    * const secondBatch = await fetchNext(10);
    * await stop(); // End the query session
    */
-  resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(args: ResumableQueryPayload, options?: { namespace?: string }) => {
+  resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(
+    args: ResumableQueryPayload,
+    options?: { namespace?: string }
+  ) => {
     const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, options?.namespace);
     await resumableQuery.start();
     return resumableQuery;
-  }
+  };
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.

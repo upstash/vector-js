@@ -1,5 +1,5 @@
 import type { NAMESPACE, Vector } from "@commands/client/types";
-import { Dict } from "@commands/client/types";
+import type { Dict } from "@commands/client/types";
 import { Command } from "@commands/command";
 
 type FetchCommandOptions = {

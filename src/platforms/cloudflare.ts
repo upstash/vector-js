@@ -1,8 +1,14 @@
-import { HttpClient, Requester, RequesterConfig, UpstashRequest, UpstashResponse } from "@http";
+import {
+  HttpClient,
+  type Requester,
+  type RequesterConfig,
+  type UpstashRequest,
+  type UpstashResponse,
+} from "@http";
 import * as core from "./../vector";
 
 export type * from "@commands/types";
-import { Dict } from "@commands/client/types";
+import type { Dict } from "@commands/client/types";
 
 export type { Requester, UpstashRequest, UpstashResponse };
 

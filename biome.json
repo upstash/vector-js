@@ -4,9 +4,6 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "nursery": {
-        "useAwait": "error"
-      },
       "recommended": true,
       "a11y": {
         "noSvgWithoutTitle": "off"
@@ -25,7 +22,8 @@
         "noDelete": "off"
       },
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "useAwait": "error"
       }
     },
     "ignore": ["node_modules", "dist"]
@@ -42,7 +40,7 @@
   },
   "javascript": {
     "formatter": {
-      "trailingComma": "es5"
+      "trailingCommas": "es5"
     }
   }
 }

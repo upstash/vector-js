@@ -1,5 +1,5 @@
-import { Dict } from "@commands/client/types";
-import { NonArrayType } from "@utils/test-utils";
+import type { Dict } from "@commands/client/types";
+import type { NonArrayType } from "@utils/test-utils";
 import { Index } from "@utils/test-utils";
 import { expectTypeOf, test } from "vitest";
 

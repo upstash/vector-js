@@ -1,4 +1,4 @@
-import { Dict } from "@commands/client/types";
+import type { Dict } from "@commands/client/types";
 import { Index } from "@utils/test-utils";
 import { expectTypeOf, test } from "vitest";
 

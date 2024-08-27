@@ -19,8 +19,7 @@ describe("UPSERT", () => {
     expect(res).toEqual("Success");
   });
 
-  // biome-ignore lint/nursery/useAwait: required to test bad payloads
-  test("should return an error when vector is missing", async () => {
+  test("should return an error when vector is missing", () => {
     const throwable = async () => {
       //@ts-ignore
       await new UpsertCommand({ id: 1 }).exec(client);
@@ -99,8 +98,7 @@ describe("UPSERT with Index Client", () => {
     expect(res).toEqual("Success");
   });
 
-  // biome-ignore lint/nursery/useAwait: required to test bad payloads
-  test("should return an error when vector is missing", async () => {
+  test("should return an error when vector is missing", () => {
     const throwable = async () => {
       //@ts-ignore
       await new UpsertCommand({ id: 1 }).exec(client);

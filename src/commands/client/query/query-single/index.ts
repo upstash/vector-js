@@ -1,5 +1,5 @@
 import { Command } from "@commands/command";
-import {
+import type {
   QueryCommandOptions,
   QueryCommandPayload,
   QueryEndpointVariants,
