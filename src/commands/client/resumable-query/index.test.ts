@@ -36,10 +36,15 @@ describe("RESUMABLE QUERY", () => {
 		await expect(async () => {
 			await fetchNext(5);
 		}).toThrow("Resumable query has not been started. Call start() first.");
-
 	});
 
 	test("should resume query", async () => {
+		for (let i = 0; i < 5; i++) {
+			await index.upsert({ id: randomID(), vector: range(0, 384) });
+		}
+
+		await awaitUntilIndexed(index);
+
 		const { fetchNext, stop } = await index.resumableQuery({
 			maxIdle: 3600,
 			topK: 50,
@@ -48,17 +53,22 @@ describe("RESUMABLE QUERY", () => {
 			includeVectors: true,
 		})
 
-		const res1 = await fetchNext(5);
+		const res1 = await fetchNext(2);
+		const res2 = await fetchNext(2);
 
-		const res2 = await fetchNext(5);
+		expect(res1.length).toBe(2);
+		expect(res2.length).toBe(2);
 
-		expect(res1.length).toBe(5);
-		expect(res2.length).toBe(5);
 		expect(res1).not.toEqual(res2);
 		await stop()
 	});
 
 	test("should start resumable query with data", async () => {
+		for (let i = 0; i < 5; i++) {
+			await index.upsert({ id: randomID(), vector: range(0, 384) });
+		}
+
+		await awaitUntilIndexed(index);
 		const { fetchNext } = await index.resumableQuery({
 			maxIdle: 3600,
 			topK: 50,
@@ -67,8 +77,9 @@ describe("RESUMABLE QUERY", () => {
 			includeVectors: true,
 		})
 
-		const res = await fetchNext(5);
+		const res = await fetchNext(2);
 
-		expect(res.length).toBe(5);
+		expect(res.length).toBe(2);
 	})
+
 });
