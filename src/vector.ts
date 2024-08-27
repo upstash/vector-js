@@ -10,6 +10,7 @@ import {
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
+import { ResumableQuery, ResumableQueryPayload } from "@commands/client/resumable-query";
 import { Dict } from "@commands/client/types";
 import { DeleteNamespaceCommand, ListNamespacesCommand } from "@commands/management";
 import { Requester } from "@http";
@@ -120,6 +121,12 @@ export class Index<TIndexMetadata extends Dict = Dict> {
     args: CommandArgs<typeof QueryManyCommand>,
     options?: { namespace?: string }
   ) => new QueryManyCommand<TMetadata>(args, options).exec(this.client);
+
+  resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(args: ResumableQueryPayload, options?: { namespace?: string }) => {
+    const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, options?.namespace);
+    await resumableQuery.start();
+    return resumableQuery;
+  }
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.
