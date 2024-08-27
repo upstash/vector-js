@@ -67,7 +67,7 @@
   "license": "MIT",
   "scripts": {
     "test": "bun test src --coverage --bail --coverageSkipTestFiles=[test-utils.ts] --timeout 20000 && vitest run --typecheck",
-    "fmt": "bunx biome check --write ./src",
+    "fmt": "bunx biome check --apply ./src",
     "build": "tsup",
     "prepare": "husky install"
   }
