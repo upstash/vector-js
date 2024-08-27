@@ -5,7 +5,7 @@ import { sleep } from "bun";
 
 const client = newHttpClient();
 
-describe("QUERY", () => {
+describe("RESUMABLE QUERY", () => {
 	const index = new Index();
 	test("should start query successfully", async () => {
 		const { start } = await index.resumableQuery({
