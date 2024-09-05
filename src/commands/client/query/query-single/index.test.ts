@@ -141,7 +141,7 @@ describe("QUERY", () => {
 
       expect(res[0].metadata).toEqual({ upstash: "test" });
     },
-    { timeout: 20000 }
+    { timeout: 20000 },
   );
 
   test(
@@ -171,7 +171,7 @@ describe("QUERY", () => {
 
       expect(res[0].metadata).toEqual({ upstash: "Cookie" });
     },
-    { timeout: 20000 }
+    { timeout: 20000 },
   );
 
   test("should return data field when includeData enabled", async () => {
@@ -273,7 +273,7 @@ describe("QUERY with Index Client", () => {
 
       expect(res[0].metadata).toEqual({ upstash: "test" });
     },
-    { timeout: 20000 }
+    { timeout: 20000 },
   );
 
   test("should narrow down the query results with filter", async () => {

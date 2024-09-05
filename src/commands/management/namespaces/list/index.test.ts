@@ -8,7 +8,7 @@ describe("NAMESPACES->LIST", () => {
   test("should return the list of namespaces", async () => {
     await new UpsertCommand(
       { id: randomID(), vector: range(0, 384) },
-      { namespace: "test-namespace-list" }
+      { namespace: "test-namespace-list" },
     ).exec(client);
 
     await awaitUntilIndexed(client);

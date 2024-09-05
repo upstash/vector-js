@@ -37,10 +37,5 @@
   },
   "organizeImports": {
     "enabled": true
-  },
-  "javascript": {
-    "formatter": {
-      "trailingCommas": "es5"
-    }
   }
 }

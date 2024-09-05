@@ -74,7 +74,7 @@ describe("RESUMABLE QUERY", () => {
       expect(result3).not.toEqual(result2);
       await stop();
     },
-    { timeout: 10000 }
+    { timeout: 10000 },
   );
 
   test(
@@ -106,6 +106,6 @@ describe("RESUMABLE QUERY", () => {
 
       await stop();
     },
-    { timeout: 10000 }
+    { timeout: 10000 },
   );
 });

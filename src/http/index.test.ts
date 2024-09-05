@@ -20,7 +20,7 @@ describe(new URL("", import.meta.url).pathname, () => {
         });
         expect(hasThrown).toBeTrue();
       },
-      { timeout: 20000 }
+      { timeout: 20000 },
     );
   });
 

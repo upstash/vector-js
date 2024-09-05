@@ -100,7 +100,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    */
   static fromEnv(
     env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
-    config?: Omit<IndexConfig, "url" | "token">
+    config?: Omit<IndexConfig, "url" | "token">,
   ): Index {
     let url: string | undefined;
     let token: string | undefined;
@@ -110,14 +110,14 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
       url = env.UPSTASH_VECTOR_REST_URL;
       if (!url) {
         throw new Error(
-          "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_URL`"
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_URL`",
         );
       }
 
       token = env.UPSTASH_VECTOR_REST_TOKEN;
       if (!token) {
         throw new Error(
-          "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_TOKEN`"
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_TOKEN`",
         );
       }
     }

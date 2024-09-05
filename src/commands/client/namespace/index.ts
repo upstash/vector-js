@@ -56,7 +56,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
    */
   upsert = <TMetadata extends Dict = TIndexMetadata>(
-    args: CommandArgs<typeof UpsertCommand<TMetadata>>
+    args: CommandArgs<typeof UpsertCommand<TMetadata>>,
   ) => new UpsertCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /*
@@ -81,7 +81,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @returns {Promise<{updated: number}>} A promise that returns the number of items successfully updated.
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
-    args: CommandArgs<typeof UpdateCommand<TMetadata>>
+    args: CommandArgs<typeof UpdateCommand<TMetadata>>,
   ) => new UpdateCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**

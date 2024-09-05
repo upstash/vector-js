@@ -125,7 +125,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    */
   static fromEnv(
     env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
-    config?: Omit<IndexConfig, "url" | "token">
+    config?: Omit<IndexConfig, "url" | "token">,
   ): Index {
     const url = env?.UPSTASH_VECTOR_REST_URL || process?.env.UPSTASH_VECTOR_REST_URL;
     const token = env?.UPSTASH_VECTOR_REST_TOKEN || process?.env.UPSTASH_VECTOR_REST_TOKEN;

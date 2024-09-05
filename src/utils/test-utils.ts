@@ -9,7 +9,7 @@ export type NonArrayType<T> = T extends Array<infer U> ? U : T;
 
 export const newHttpClient = (
   retry?: RetryConfig | undefined,
-  altToken?: { url: string; token: string }
+  altToken?: { url: string; token: string },
 ) => {
   const url = process.env.UPSTASH_VECTOR_REST_URL;
   if (!url) {

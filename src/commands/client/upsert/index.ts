@@ -48,7 +48,7 @@ export class UpsertCommand<TMetadata> extends Command<string> {
 }
 
 const isVectorPayload = <TMetadata>(
-  payload: VectorPayload<TMetadata> | DataPayload<TMetadata>
+  payload: VectorPayload<TMetadata> | DataPayload<TMetadata>,
 ): payload is VectorPayload<TMetadata> => {
   return "vector" in payload;
 };

@@ -36,6 +36,6 @@ describe("RESET", () => {
 
       expect(resAfterReset).toEqual(new Array(20).fill(null));
     },
-    { timeout: 30000 }
+    { timeout: 30000 },
   );
 });
