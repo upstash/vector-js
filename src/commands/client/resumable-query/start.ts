@@ -1,8 +1,9 @@
 import { Command } from "@commands/command";
 import type { ResumableQueryEndpointVariants, ResumableQueryPayload } from ".";
+import { QueryResult } from "@commands/types";
 
-export type StartResumableQueryResult = { uuid: string; scores: number[] };
-export class StartResumableQueryCommand extends Command<StartResumableQueryResult> {
+export type StartResumableQueryResult<TMetadata> = { uuid: string; scores: QueryResult[] };
+export class StartResumableQueryCommand<TMetadata> extends Command<StartResumableQueryResult<TMetadata>> {
   constructor(payload: ResumableQueryPayload, namespace?: string) {
     let endpoint: ResumableQueryEndpointVariants = "resumable-query";
 

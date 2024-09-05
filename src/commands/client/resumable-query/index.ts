@@ -17,12 +17,12 @@ export type ResumableQueryPayload = { maxIdle: number } & QueryCommandPayload;
 export class ResumableQuery<TMetadata extends Dict<unknown>> {
   private uuid?: string;
 
-  start: () => Promise<StartResumableQueryResult>;
+  start: () => Promise<StartResumableQueryResult<TMetadata>>;
   fetchNext: (additionalK: number) => Promise<QueryResult[]>;
   stop: () => Promise<string>;
 
   constructor(payload: ResumableQueryPayload, client: Requester, namespace?: string) {
-    this.start = async (): Promise<StartResumableQueryResult> => {
+    this.start = async (): Promise<StartResumableQueryResult<TMetadata>> => {
       const result = await new StartResumableQueryCommand(payload, namespace).exec(client);
       this.uuid = result.uuid;
       return result;

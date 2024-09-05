@@ -40,30 +40,19 @@ describe("RESUMABLE QUERY", () => {
 	});
 
 	test("should resume query", async () => {
-		await index.upsert([
-			{
-				id: 1,
-				vector: range(0, 384),
-				metadata: {
-					animal: "elephant",
-					tags: ["mammal"],
-					diet: "herbivore",
+		const VECTORS_TO_UPSERT = 4
+		for (let i = 0; i < VECTORS_TO_UPSERT; i++) {
+			await index.upsert([
+				{
+					id: i,
+					vector: range(0, 384),
 				},
-			},
-			{
-				id: 2,
-				vector: range(0, 384),
-				metadata: {
-					animal: "tiger",
-					tags: ["mammal"],
-					diet: "carnivore",
-				},
-			},
-		]);
+			]);
+		}
 
 		await awaitUntilIndexed(index);
 
-		const { fetchNext, stop } = await index.resumableQuery({
+		const { fetchNext, stop, result } = await index.resumableQuery({
 			maxIdle: 3600,
 			topK: 2,
 			vector: range(0, 384),
@@ -71,40 +60,31 @@ describe("RESUMABLE QUERY", () => {
 			includeVectors: true,
 		});
 
-		const res1 = await fetchNext(1);
-		const res2 = await fetchNext(1);
+		expect(result.length).toBe(2);
 
-		expect(res1.length).toBe(1);
-		expect(res2.length).toBe(1);
+		const result2 = await fetchNext(1);
+		const result3 = await fetchNext(1);
 
-		expect(res1).not.toEqual(res2);
+		expect(result2.length).toBe(1);
+		expect(result3.length).toBe(1);
+
+		expect(result3).not.toEqual(result2);
 		await stop();
-	});
+	}, { timeout: 10000 });
 
 	test("should start resumable query with data", async () => {
-		await index.upsert([
-			{
-				id: 1,
-				vector: range(0, 384),
-				metadata: {
-					animal: "elephant",
-					tags: ["mammal"],
-					diet: "herbivore",
+		const VECTORS_TO_UPSERT = 4
+		for (let i = 0; i < VECTORS_TO_UPSERT; i++) {
+			await index.upsert([
+				{
+					id: i,
+					vector: range(0, 384),
 				},
-			},
-			{
-				id: 2,
-				vector: range(0, 384),
-				metadata: {
-					animal: "tiger",
-					tags: ["mammal"],
-					diet: "carnivore",
-				},
-			},
-		]);
+			]);
+		}
 
 		await awaitUntilIndexed(index);
-		const { fetchNext } = await index.resumableQuery({
+		const { fetchNext, result, stop } = await index.resumableQuery({
 			maxIdle: 3600,
 			topK: 2,
 			data: "testing it",
@@ -112,8 +92,11 @@ describe("RESUMABLE QUERY", () => {
 			includeVectors: true,
 		});
 
+		expect(result.length).toBe(2);
 		const res = await fetchNext(1);
 
 		expect(res.length).toBe(1);
-	});
+
+		await stop();
+	}, { timeout: 10000 });
 });
