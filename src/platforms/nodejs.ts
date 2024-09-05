@@ -1,16 +1,8 @@
-import {
-  HttpClient,
-  type Requester,
-  type RequesterConfig,
-  type UpstashRequest,
-  type UpstashResponse,
-} from "@http";
+import { HttpClient, type Requester, type RequesterConfig } from "@http";
 import * as core from "./../vector";
 
 export type * from "@commands/types";
 import type { Dict } from "@commands/client/types";
-
-export type { Requester, UpstashRequest, UpstashResponse };
 
 /**
  * Connection credentials for upstash vector.
@@ -74,7 +66,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    */
   constructor(requesters?: Requester);
   constructor(configOrRequester?: IndexConfig | Requester) {
-    if (typeof configOrRequester !== "undefined" && "request" in configOrRequester) {
+    if (configOrRequester !== undefined && "request" in configOrRequester) {
       super(configOrRequester);
       return;
     }
@@ -125,7 +117,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    */
   static fromEnv(
     env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
-    config?: Omit<IndexConfig, "url" | "token">,
+    config?: Omit<IndexConfig, "url" | "token">
   ): Index {
     const url = env?.UPSTASH_VECTOR_REST_URL || process?.env.UPSTASH_VECTOR_REST_URL;
     const token = env?.UPSTASH_VECTOR_REST_TOKEN || process?.env.UPSTASH_VECTOR_REST_TOKEN;
@@ -141,3 +133,5 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
     return new Index({ ...config, url, token });
   }
 }
+
+export { type UpstashRequest, type UpstashResponse, type Requester } from "@http";

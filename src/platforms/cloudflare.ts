@@ -1,16 +1,8 @@
-import {
-  HttpClient,
-  type Requester,
-  type RequesterConfig,
-  type UpstashRequest,
-  type UpstashResponse,
-} from "@http";
+import { HttpClient, type RequesterConfig } from "@http";
 import * as core from "./../vector";
 
 export type * from "@commands/types";
 import type { Dict } from "@commands/client/types";
-
-export type { Requester, UpstashRequest, UpstashResponse };
 
 /**
  * Connection credentials for upstash vector.
@@ -100,7 +92,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    */
   static fromEnv(
     env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
-    config?: Omit<IndexConfig, "url" | "token">,
+    config?: Omit<IndexConfig, "url" | "token">
   ): Index {
     let url: string | undefined;
     let token: string | undefined;
@@ -110,14 +102,14 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
       url = env.UPSTASH_VECTOR_REST_URL;
       if (!url) {
         throw new Error(
-          "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_URL`",
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_URL`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_URL`"
         );
       }
 
       token = env.UPSTASH_VECTOR_REST_TOKEN;
       if (!token) {
         throw new Error(
-          "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_TOKEN`",
+          "Unable to find environment variable: `UPSTASH_VECTOR_REST_TOKEN`. Please add it via `wrangler secret put UPSTASH_VECTOR_REST_TOKEN`"
         );
       }
     }
@@ -125,3 +117,5 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
     return new Index({ ...config, url, token });
   }
 }
+
+export { type Requester, type UpstashRequest, type UpstashResponse } from "@http";

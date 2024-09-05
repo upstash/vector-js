@@ -81,7 +81,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    */
   query = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof QueryCommand>,
-    options?: { namespace?: string },
+    options?: { namespace?: string }
   ) => new QueryCommand<TMetadata>(args, options).exec(this.client);
 
   /**
@@ -119,7 +119,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    */
   queryMany = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof QueryManyCommand>,
-    options?: { namespace?: string },
+    options?: { namespace?: string }
   ) => new QueryManyCommand<TMetadata>(args, options).exec(this.client);
 
   /**
@@ -151,7 +151,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    */
   resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(
     args: ResumableQueryPayload,
-    options?: { namespace?: string },
+    options?: { namespace?: string }
   ) => {
     const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, options?.namespace);
     const initialQuery = await resumableQuery.start();
@@ -182,7 +182,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    */
   upsert = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpsertCommand<TMetadata>>,
-    options?: { namespace?: string },
+    options?: { namespace?: string }
   ) => new UpsertCommand<TMetadata>(args, options).exec(this.client);
 
   /*
@@ -210,7 +210,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpdateCommand<TMetadata>>,
-    options?: { namespace?: string },
+    options?: { namespace?: string }
   ) => new UpdateCommand<TMetadata>(args, options).exec(this.client);
 
   /**
@@ -275,7 +275,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    */
   range = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof RangeCommand>,
-    options?: { namespace?: string },
+    options?: { namespace?: string }
   ) => new RangeCommand<TMetadata>(args, options).exec(this.client);
 
   /**

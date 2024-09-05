@@ -3,7 +3,7 @@
 > [!NOTE]  
 > **This project is in GA Stage.**
 >
-> The Upstash Professional Support fully covers this project. It receives regular updates, and bug fixes. 
+> The Upstash Professional Support fully covers this project. It receives regular updates, and bug fixes.
 > The Upstash team is committed to maintaining and improving its functionality.
 
 `@upstash/vector` is an HTTP/REST based client for Typescript, built on top of [Upstash REST API](https://upstash.com/docs/vector/api/endpoints/).

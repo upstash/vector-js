@@ -8,7 +8,7 @@ describe("NAMESPACES->DELETE", () => {
   test("should return the list of namespaces", async () => {
     await new UpsertCommand(
       { id: randomID(), vector: range(0, 384) },
-      { namespace: "test-namespace-delete" },
+      { namespace: "test-namespace-delete" }
     ).exec(client);
 
     await awaitUntilIndexed(client);

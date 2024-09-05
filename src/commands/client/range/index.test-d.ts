@@ -5,9 +5,9 @@ import { expectTypeOf, test } from "vitest";
 type Metadata = { genre: string; year: number };
 
 test("case 1: no metadata is provided, any object should be expected", () => {
-  const index = new Index();
+  const _index = new Index();
 
-  type RetrievedRangeVector = Awaited<ReturnType<typeof index.range>>["vectors"][number];
+  type RetrievedRangeVector = Awaited<ReturnType<typeof _index.range>>["vectors"][number];
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedRangeVector>["metadata"]>;
 
@@ -15,9 +15,9 @@ test("case 1: no metadata is provided, any object should be expected", () => {
 });
 
 test("case 2: index-level metadata is provided, index-level metadata should be expected", () => {
-  const index = new Index<Metadata>();
+  const _index = new Index<Metadata>();
 
-  type RetrievedRangeVector = Awaited<ReturnType<typeof index.range<Metadata>>>["vectors"][number];
+  type RetrievedRangeVector = Awaited<ReturnType<typeof _index.range<Metadata>>>["vectors"][number];
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedRangeVector>["metadata"]>;
 
@@ -25,12 +25,12 @@ test("case 2: index-level metadata is provided, index-level metadata should be e
 });
 
 test("case 3: index-level and command-level metadata are provided, command-level metadata should be expected", () => {
-  const index = new Index<Metadata>();
+  const _index = new Index<Metadata>();
 
   type OverrideMetadata = { director: string };
 
   type RetrievedRangeVector = Awaited<
-    ReturnType<typeof index.range<OverrideMetadata>>
+    ReturnType<typeof _index.range<OverrideMetadata>>
   >["vectors"][number];
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedRangeVector>["metadata"]>;
@@ -39,9 +39,9 @@ test("case 3: index-level and command-level metadata are provided, command-level
 });
 
 test("case 4: command-level metadata is provided, command-level metadata should be expected", () => {
-  const index = new Index();
+  const _index = new Index();
 
-  type RetrievedRangeVector = Awaited<ReturnType<typeof index.range<Metadata>>>["vectors"][number];
+  type RetrievedRangeVector = Awaited<ReturnType<typeof _index.range<Metadata>>>["vectors"][number];
 
   type RetrievedMetadata = NonNullable<NonNullable<RetrievedRangeVector>["metadata"]>;
 

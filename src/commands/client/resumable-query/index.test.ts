@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 
-import { Index, awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
+import { Index, awaitUntilIndexed, range } from "@utils/test-utils";
 import { sleep } from "bun";
 
 describe("RESUMABLE QUERY", () => {
@@ -74,7 +74,7 @@ describe("RESUMABLE QUERY", () => {
       expect(result3).not.toEqual(result2);
       await stop();
     },
-    { timeout: 10000 },
+    { timeout: 10_000 }
   );
 
   test(
@@ -106,6 +106,6 @@ describe("RESUMABLE QUERY", () => {
 
       await stop();
     },
-    { timeout: 10000 },
+    { timeout: 10_000 }
   );
 });

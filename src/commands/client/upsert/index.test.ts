@@ -20,15 +20,15 @@ describe("UPSERT", () => {
   });
 
   test("should return an error when vector is missing", () => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
-      //@ts-ignore
+      //@ts-expect-error Missing vector field in upsert command.
       await new UpsertCommand({ id: 1 }).exec(client);
     };
     expect(throwable).toThrow();
   });
 
   test("should add data successfully with a metadata", async () => {
-    //@ts-ignore
     const res = await new UpsertCommand({
       id: 1,
       vector: range(0, 384),
@@ -65,6 +65,7 @@ describe("UPSERT", () => {
   });
 
   test("should fail to upsert due to mixed usage of vector and plain text", () => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
       await new UpsertCommand([
         {
@@ -99,15 +100,15 @@ describe("UPSERT with Index Client", () => {
   });
 
   test("should return an error when vector is missing", () => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
-      //@ts-ignore
+      //@ts-expect-error Missing vector field in upsert command.
       await new UpsertCommand({ id: 1 }).exec(client);
     };
     expect(throwable).toThrow();
   });
 
   test("should add data successfully with a metadata", async () => {
-    //@ts-ignore
     const res = await new UpsertCommand({
       id: 1,
       vector: range(0, 384),
@@ -148,6 +149,7 @@ describe("UPSERT with Index Client", () => {
   });
 
   test("should fail to upsert due to mixed usage of vector and plain text", () => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
       await index.upsert([
         {

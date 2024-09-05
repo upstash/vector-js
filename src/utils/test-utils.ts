@@ -9,7 +9,7 @@ export type NonArrayType<T> = T extends Array<infer U> ? U : T;
 
 export const newHttpClient = (
   retry?: RetryConfig | undefined,
-  altToken?: { url: string; token: string },
+  altToken?: { url: string; token: string }
 ) => {
   const url = process.env.UPSTASH_VECTOR_REST_URL;
   if (!url) {
@@ -46,7 +46,7 @@ export function randomID(): string {
 
   const s: string[] = [];
   for (let i = 0; i < bytes.byteLength; i++) {
-    s.push(String.fromCharCode(bytes[i]));
+    s.push(String.fromCodePoint(bytes[i]));
   }
   return btoa(s.join(""));
 }

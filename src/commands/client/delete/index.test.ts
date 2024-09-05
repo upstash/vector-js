@@ -13,7 +13,7 @@ describe("DELETE", () => {
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
     await new UpsertCommand(idsToUpsert.map((x) => ({ id: x, vector: initialVector }))).exec(
-      client,
+      client
     );
     await awaitUntilIndexed(client);
 
@@ -26,7 +26,7 @@ describe("DELETE", () => {
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
     await new UpsertCommand(idsToUpsert.map((x) => ({ id: x, vector: initialVector }))).exec(
-      client,
+      client
     );
     await awaitUntilIndexed(client);
 

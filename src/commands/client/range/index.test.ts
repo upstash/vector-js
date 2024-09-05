@@ -15,7 +15,7 @@ describe("RANGE", () => {
   afterAll(async () => await resetIndexes());
 
   test("should paginate records successfully", async () => {
-    const randomizedData = new Array(20)
+    const randomizedData = Array.from({ length: 20 })
       .fill("")
       .map(() => ({ id: randomID(), data: "Test data" }));
 
@@ -43,7 +43,7 @@ describe("RANGE with Index Client", () => {
     await index.reset();
   });
   test("should paginate records successfully", async () => {
-    const randomizedData = new Array(20)
+    const randomizedData = Array.from({ length: 20 })
       .fill("")
       .map(() => ({ id: randomID(), vector: range(0, 384) }));
 
