@@ -23,7 +23,9 @@ export class ResumableQuery<TMetadata extends Dict<unknown>> {
 
   constructor(payload: ResumableQueryPayload, client: Requester, namespace?: string) {
     this.start = async (): Promise<StartResumableQueryResult<TMetadata>> => {
-      const result = await new StartResumableQueryCommand<TMetadata>(payload, namespace).exec(client);
+      const result = await new StartResumableQueryCommand<TMetadata>(payload, namespace).exec(
+        client
+      );
       this.uuid = result.uuid;
       return result;
     };
