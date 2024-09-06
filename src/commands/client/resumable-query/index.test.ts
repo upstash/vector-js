@@ -39,7 +39,7 @@ describe("RESUMABLE QUERY", () => {
 
     await expect(async () => {
       await fetchNext(5);
-    }).toThrow("Resumable query has not been started. Call start() first.");
+    }).toThrow("The resumable query has already been stopped. Please start another resumable query.");
   });
 
   test(
