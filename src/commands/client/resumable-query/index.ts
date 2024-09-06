@@ -32,7 +32,9 @@ export class ResumableQuery<TMetadata extends Dict<unknown>> {
 
     this.fetchNext = (additionalK: number): Promise<QueryResult<TMetadata>[]> => {
       if (!this.uuid) {
-        throw new Error("The resumable query has already been stopped. Please start another resumable query.");
+        throw new Error(
+          "The resumable query has already been stopped. Please start another resumable query."
+        );
       }
       return new ResumeQueryCommand<TMetadata>({ uuid: this.uuid, additionalK }).exec(client);
     };

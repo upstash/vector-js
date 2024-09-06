@@ -9,7 +9,6 @@ describe("RESUMABLE QUERY", () => {
     await index.reset();
   });
   test("should start query successfully", async () => {
-
     const { result, stop } = await index.resumableQuery({
       maxIdle: 3600,
       topK: 50,
@@ -21,7 +20,6 @@ describe("RESUMABLE QUERY", () => {
     expect(result).toBeDefined();
 
     await stop();
-
   });
   test("should stop query successfully", async () => {
     const { fetchNext, stop } = await index.resumableQuery({
@@ -39,7 +37,9 @@ describe("RESUMABLE QUERY", () => {
 
     await expect(async () => {
       await fetchNext(5);
-    }).toThrow("The resumable query has already been stopped. Please start another resumable query.");
+    }).toThrow(
+      "The resumable query has already been stopped. Please start another resumable query."
+    );
   });
 
   test(

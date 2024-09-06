@@ -155,7 +155,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
   ) => {
     const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, options?.namespace);
     const initialQuery = await resumableQuery.start();
-    const { fetchNext, stop } = resumableQuery
+    const { fetchNext, stop } = resumableQuery;
     return { fetchNext, stop, result: initialQuery.scores };
   };
 

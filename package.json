@@ -73,6 +73,6 @@
     "fmt": "prettier --write .",
     "lint": "tsc && eslint \"src/**/*.{js,ts,tsx}\" --quiet --fix",
     "build": "tsup",
-    "prepare": "husky"
+    "prepare": "husky install"
   }
 }
