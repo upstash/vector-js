@@ -9,7 +9,7 @@ describe("RESUMABLE QUERY", () => {
     await index.reset();
   });
   test("should start query successfully", async () => {
-    const { start } = await index.resumableQuery({
+    const { start, stop } = await index.resumableQuery({
       maxIdle: 3600,
       topK: 50,
       vector: range(0, 384),
@@ -20,6 +20,7 @@ describe("RESUMABLE QUERY", () => {
     const res = await start();
 
     expect(res).toBeDefined();
+    await stop();
   });
   test("should stop query successfully", async () => {
     const { fetchNext, stop } = await index.resumableQuery({
