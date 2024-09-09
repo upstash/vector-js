@@ -83,7 +83,7 @@ const results = await index.query<Metadata>(
       ... // query embedding
     ],
     includeVectors: true,
-    includeMetadata: true
+    includeMetadata: true,
     topK: 1,
     filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
   },
@@ -210,7 +210,7 @@ const results = await namespace.query<Metadata>(
       ... // query embedding
     ],
     includeVectors: true,
-    includeMetadata: true
+    includeMetadata: true,
     topK: 1,
     filter: "genre = 'fantasy' and title = 'Lord of the Rings'"
   },
