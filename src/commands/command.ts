@@ -20,7 +20,9 @@ const ENDPOINTS = [
 
 export type EndpointVariants =
   | (typeof ENDPOINTS)[number]
-  | `${(typeof ENDPOINTS)[number]}/${NAMESPACE}`;
+  | `${(typeof ENDPOINTS)[number]}/${NAMESPACE}`
+  | `reset?all`; // here to make sure that reset?all/<namespace> is invalid
+
 /**
  * TResult is the raw data returned from upstash, which may need to be transformed or parsed.
  */

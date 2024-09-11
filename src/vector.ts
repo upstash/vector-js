@@ -7,6 +7,7 @@ import {
   QueryManyCommand,
   RangeCommand,
   ResetCommand,
+  ResetCommandOptions,
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
@@ -201,17 +202,35 @@ export class Index<TIndexMetadata extends Dict = Dict> {
     new FetchCommand<TMetadata>(args).exec(this.client);
 
   /**
-   * It's used for wiping an entire index.
+   * It's used for wiping the index.
+   *
+   * By default, resets the default namespace:
    *
    * @example
    * ```js
    * await index.reset();
-   * console.log('Index has been reset');
+   * console.log('Default namespace has been reset');
+   * ```
+   *
+   * To reset a namespace, call reset like:
+   *
+   * @example
+   * ```js
+   * await index.reset({ namespace: "ns" });
+   * console.log('Namespace ns has been reset');
+   * ```
+   *
+   * If you want to reset all namespaces, call reset like:
+   *
+   * @example
+   * ```js
+   * await index.reset({ all: true });
+   * console.log('All namespaces have been reset');
    * ```
    *
    * @returns {Promise<string>} A promise that resolves with the result of the reset operation after the command is executed.
    */
-  reset = (options?: { namespace?: string }) => new ResetCommand(options).exec(this.client);
+  reset = (options?: ResetCommandOptions) => new ResetCommand(options).exec(this.client);
 
   /**
    * Retrieves a range of items from the index.
