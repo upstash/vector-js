@@ -137,7 +137,7 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    * @param {string} [options.namespace] - The namespace to query within.
    * @returns {Promise<ResumableQuery<TMetadata>>} A promise that resolves to a ResumableQuery object.
    * @example
-   * const { start, fetchNext, stop } = await index.resumableQuery({
+   * const { result, fetchNext, stop } = await index.resumableQuery({
    *   maxIdle: 3600,
    *   topK: 50,
    *   vector: [0.1, 0.2, 0.3, ...],
