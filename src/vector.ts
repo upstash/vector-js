@@ -246,9 +246,9 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    * const rangeResults = await index.range(rangeArgs);
    * console.log(rangeResults); // Outputs the result of the range operation
    * ```
-   * 
+   *
    * You can also pass a namespace like:
-   * 
+   *
    * ```js
    * const rangeResults = await index.range(rangeArgs, { namespace: "ns" });
    * ```
