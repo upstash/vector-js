@@ -1,9 +1,9 @@
-import { Dict } from "@commands/client/types";
+import type { Dict } from "@commands/client/types";
 import { UpstashError } from "@error/index";
-import { Requester } from "@http";
-import { NAMESPACE } from "./client/types";
+import type { Requester } from "@http";
+import type { NAMESPACE } from "./client/types";
 
-const ENDPOINTS = [
+const _ENDPOINTS = [
   "upsert",
   "update",
   "query",
@@ -12,6 +12,10 @@ const ENDPOINTS = [
   "reset",
   "range",
   "info",
+  "resumable-query",
+  "resumable-query-data",
+  "resumable-query-next",
+  "resumable-query-end",
   "upsert-data",
   "query-data",
   "list-namespaces",
@@ -19,8 +23,8 @@ const ENDPOINTS = [
 ] as const;
 
 export type EndpointVariants =
-  | (typeof ENDPOINTS)[number]
-  | `${(typeof ENDPOINTS)[number]}/${NAMESPACE}`;
+  | (typeof _ENDPOINTS)[number]
+  | `${(typeof _ENDPOINTS)[number]}/${NAMESPACE}`;
 /**
  * TResult is the raw data returned from upstash, which may need to be transformed or parsed.
  */
@@ -46,8 +50,8 @@ export class Command<TResult> {
       throw new UpstashError(error);
     }
 
-    if (typeof result === "undefined") {
-      throw new Error("Request did not return a result");
+    if (result === undefined) {
+      throw new TypeError("Request did not return a result");
     }
 
     return result;

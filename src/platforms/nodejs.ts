@@ -1,10 +1,8 @@
-import { HttpClient, Requester, RequesterConfig, UpstashRequest, UpstashResponse } from "@http";
+import { HttpClient, type Requester, type RequesterConfig } from "@http";
 import * as core from "./../vector";
 
 export type * from "@commands/types";
-import { Dict } from "@commands/client/types";
-
-export type { Requester, UpstashRequest, UpstashResponse };
+import type { Dict } from "@commands/client/types";
 
 /**
  * Connection credentials for upstash vector.
@@ -68,7 +66,7 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    */
   constructor(requesters?: Requester);
   constructor(configOrRequester?: IndexConfig | Requester) {
-    if (typeof configOrRequester !== "undefined" && "request" in configOrRequester) {
+    if (configOrRequester !== undefined && "request" in configOrRequester) {
       super(configOrRequester);
       return;
     }
@@ -135,3 +133,5 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
     return new Index({ ...config, url, token });
   }
 }
+
+export { type UpstashRequest, type UpstashResponse, type Requester } from "@http";

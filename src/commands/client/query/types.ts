@@ -1,4 +1,4 @@
-import { Dict, NAMESPACE } from "../types";
+import type { Dict, NAMESPACE } from "../types";
 
 export type QueryCommandPayload = {
   topK: number;

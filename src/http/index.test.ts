@@ -20,7 +20,7 @@ describe(new URL("", import.meta.url).pathname, () => {
         });
         expect(hasThrown).toBeTrue();
       },
-      { timeout: 20000 }
+      { timeout: 20_000 }
     );
   });
 
@@ -49,6 +49,7 @@ describe("Abort", () => {
     });
     controller.abort("Abort works!");
 
-    expect((await body).result).toEqual("Abort works!");
+    const bodyResponse = await body;
+    expect(bodyResponse.result).toEqual("Abort works!");
   });
 });

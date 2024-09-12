@@ -1,8 +1,8 @@
 import { sleep } from "bun";
 import { InfoCommand } from "../commands/client/info";
 import { ResetCommand } from "../commands/client/reset";
-import { HttpClient, RetryConfig } from "../http";
-import { Index } from "../vector";
+import { HttpClient, type RetryConfig } from "../http";
+import type { Index } from "../vector";
 export * from "../platforms/nodejs";
 
 export type NonArrayType<T> = T extends Array<infer U> ? U : T;
@@ -46,12 +46,12 @@ export function randomID(): string {
 
   const s: string[] = [];
   for (let i = 0; i < bytes.byteLength; i++) {
-    s.push(String.fromCharCode(bytes[i]));
+    s.push(String.fromCodePoint(bytes[i]));
   }
   return btoa(s.join(""));
 }
 
-export const randomFloat = () => parseFloat((Math.random() * 10).toFixed(1));
+export const randomFloat = () => Number.parseFloat((Math.random() * 10).toFixed(1));
 
 export const resetIndexes = async () => await new ResetCommand().exec(newHttpClient());
 

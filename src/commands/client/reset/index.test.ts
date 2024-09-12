@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import type { FetchResult } from "@commands/index";
 import { FetchCommand, ResetCommand, UpsertCommand } from "@commands/index";
 import { awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
 
@@ -8,7 +9,7 @@ describe("RESET", () => {
   test(
     "should flush indexes successfully",
     async () => {
-      const randomizedData = new Array(20)
+      const randomizedData = Array.from({ length: 20 })
         .fill("")
         .map(() => ({ id: randomID(), vector: range(0, 384) }));
 
@@ -34,8 +35,8 @@ describe("RESET", () => {
         },
       ]).exec(client);
 
-      expect(resAfterReset).toEqual(new Array(20).fill(null));
+      expect(resAfterReset).toEqual(Array.from({ length: 20 }).fill(null) as FetchResult[]);
     },
-    { timeout: 30000 }
+    { timeout: 30_000 }
   );
 });
