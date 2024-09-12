@@ -7,9 +7,9 @@ import {
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
-import { Dict } from "@commands/client/types";
-import { Requester } from "@http";
-import { CommandArgs } from "../../../vector";
+import type { Dict } from "@commands/client/types";
+import type { Requester } from "@http";
+import type { CommandArgs } from "../../../vector";
 
 export class Namespace<TIndexMetadata extends Dict = Dict> {
   protected client: Requester;

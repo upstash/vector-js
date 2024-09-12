@@ -10,10 +10,12 @@ describe("INFO", () => {
 
   test("should return vectorCount successfully", async () => {
     const vectorCount = 20;
-    const randomizedData = new Array(vectorCount).fill("").map(() => ({
-      id: randomID(),
-      vector: range(0, 384),
-    }));
+    const randomizedData = Array.from({ length: vectorCount })
+      .fill("")
+      .map(() => ({
+        id: randomID(),
+        vector: range(0, 384),
+      }));
 
     const payloads = randomizedData.map((data) => new UpsertCommand(data).exec(client));
     await Promise.all(payloads);

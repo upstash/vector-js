@@ -11,9 +11,10 @@ import {
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
-import { Dict } from "@commands/client/types";
+import { ResumableQuery, type ResumableQueryPayload } from "@commands/client/resumable-query";
+import type { Dict } from "@commands/client/types";
 import { DeleteNamespaceCommand, ListNamespacesCommand } from "@commands/management";
-import { Requester } from "@http";
+import type { Requester } from "@http";
 
 export type CommandArgs<TCommand extends new (_args: any) => any> =
   ConstructorParameters<TCommand>[0];
@@ -121,6 +122,43 @@ export class Index<TIndexMetadata extends Dict = Dict> {
     args: CommandArgs<typeof QueryManyCommand>,
     options?: { namespace?: string }
   ) => new QueryManyCommand<TMetadata>(args, options).exec(this.client);
+
+  /**
+   * Initializes a resumable query operation on the vector database.
+   * This method allows for querying large result sets in multiple chunks or implementing pagination.
+   *
+   * @template TMetadata
+   * @param {ResumableQueryPayload} args - The arguments for the resumable query.
+   * @param {number} args.maxIdle - The maximum idle time in seconds before the query session expires.
+   * @param {number} args.topK - The number of top results to return in each fetch operation.
+   * @param {number[]} args.vector - The query vector used for similarity search.
+   * @param {boolean} [args.includeMetadata] - Whether to include metadata in the query results.
+   * @param {boolean} [args.includeVectors] - Whether to include vectors in the query results.
+   * @param {Object} [options] - Additional options for the query.
+   * @param {string} [options.namespace] - The namespace to query within.
+   * @returns {Promise<ResumableQuery<TMetadata>>} A promise that resolves to a ResumableQuery object.
+   * @example
+   * const { result, fetchNext, stop } = await index.resumableQuery({
+   *   maxIdle: 3600,
+   *   topK: 50,
+   *   vector: [0.1, 0.2, 0.3, ...],
+   *   includeMetadata: true,
+   *   includeVectors: true
+   * }, { namespace: 'my-namespace' });
+   *
+   * const firstBatch = await fetchNext(10);
+   * const secondBatch = await fetchNext(10);
+   * await stop(); // End the query session
+   */
+  resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(
+    args: ResumableQueryPayload,
+    options?: { namespace?: string }
+  ) => {
+    const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, options?.namespace);
+    const initialQuery = await resumableQuery.start();
+    const { fetchNext, stop } = resumableQuery;
+    return { fetchNext, stop, result: initialQuery.scores };
+  };
 
   /**
    * Upserts (Updates and Inserts) specific items into the index.

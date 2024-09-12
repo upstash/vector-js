@@ -15,7 +15,7 @@ describe("FETCH", () => {
   afterAll(async () => await resetIndexes());
 
   test("should fetch records successfully", async () => {
-    const randomizedData = new Array(20)
+    const randomizedData = Array.from({ length: 20 })
       .fill("")
       .map(() => ({ id: randomID(), vector: range(0, 384) }));
 
@@ -71,7 +71,7 @@ describe("FETCH with Index Client", () => {
   });
 
   test("should fetch array of records by IDs succesfully", async () => {
-    const randomizedData = new Array(20)
+    const randomizedData = Array.from({ length: 20 })
       .fill("")
       .map(() => ({ id: randomID(), vector: range(0, 384) }));
 

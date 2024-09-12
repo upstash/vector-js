@@ -21,9 +21,9 @@ export type UpstashResponse<TResult> = {
   error?: string;
 };
 
-export interface Requester {
+export type Requester = {
   request: <TResult = unknown>(req: UpstashRequest) => Promise<UpstashResponse<TResult>>;
-}
+};
 
 export type RetryConfig =
   | false
@@ -91,17 +91,16 @@ export class HttpClient implements Requester {
       ...config.headers,
     };
 
-    if (typeof config?.retry === "boolean" && config?.retry === false) {
-      this.retry = {
-        attempts: 1,
-        backoff: () => 0,
-      };
-    } else {
-      this.retry = {
-        attempts: config?.retry?.retries ?? 5,
-        backoff: config?.retry?.backoff ?? ((retryCount) => Math.exp(retryCount) * 50),
-      };
-    }
+    this.retry =
+      typeof config?.retry === "boolean" && config?.retry === false
+        ? {
+            attempts: 1,
+            backoff: () => 0,
+          }
+        : {
+            attempts: config?.retry?.retries ?? 5,
+            backoff: config?.retry?.backoff ?? ((retryCount) => Math.exp(retryCount) * 50),
+          };
   }
 
   public async request<TResult>(req: UpstashRequest): Promise<UpstashResponse<TResult>> {
@@ -120,7 +119,7 @@ export class HttpClient implements Requester {
       try {
         res = await fetch([this.baseUrl, ...(req.path ?? [])].join("/"), requestOptions);
         break;
-      } catch (err) {
+      } catch (error_) {
         if (this.options.signal?.aborted) {
           const myBlob = new Blob([
             JSON.stringify({ result: this.options.signal.reason ?? "Aborted" }),
@@ -132,7 +131,7 @@ export class HttpClient implements Requester {
           res = new Response(myBlob, myOptions);
           break;
         }
-        error = err as Error;
+        error = error_ as Error;
         await new Promise((r) => setTimeout(r, this.retry.backoff(i)));
       }
     }
