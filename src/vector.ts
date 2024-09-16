@@ -1,3 +1,5 @@
+import type {
+  ResetCommandOptions} from "@commands/client";
 import {
   DeleteCommand,
   FetchCommand,
@@ -7,7 +9,6 @@ import {
   QueryManyCommand,
   RangeCommand,
   ResetCommand,
-  ResetCommandOptions,
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
