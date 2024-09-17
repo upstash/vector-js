@@ -1,5 +1,4 @@
-import type {
-  ResetCommandOptions} from "@commands/client";
+import type { ResetCommandOptions } from "@commands/client";
 import {
   DeleteCommand,
   FetchCommand,

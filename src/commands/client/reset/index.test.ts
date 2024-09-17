@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { FetchCommand, ResetCommand, UpsertCommand } from "@commands/index";
+import { FetchCommand, type FetchResult, ResetCommand, UpsertCommand } from "@commands/index";
 import { Index, awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
 
 const client = newHttpClient();
@@ -34,7 +34,7 @@ describe("RESET", () => {
         },
       ]).exec(client);
 
-      expect(resAfterReset).toEqual([]);
+      expect(resAfterReset).toEqual(Array.from({ length: 20 }).fill(null) as FetchResult[]);
     },
     { timeout: 30_000 }
   );
@@ -47,7 +47,9 @@ describe("RESET", () => {
     });
 
     const vectorCount = 5;
-    const vectorIds = Array.from({ length: vectorCount }).fill("").map((_, index) => `vector-${index}`);
+    const vectorIds = Array.from({ length: vectorCount })
+      .fill("")
+      .map((_, index) => `vector-${index}`);
 
     beforeEach(async () => {
       // insert vertors to the default namespace and to the two namespaces
