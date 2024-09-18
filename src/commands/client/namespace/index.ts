@@ -147,10 +147,11 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @example
    * ```js
    * await index.namespace("ns").delete('test-id')
+   * // { deleted: 1 }
    * ```
    *
    * @param id - List of ids or single id
-   * @returns A promise that resolves when the request to delete the index is completed.
+   * @returns Number of deleted vectors like `{ deleted: number }`. The number will be 0 if no vectors are deleted.
    */
   delete = (args: CommandArgs<typeof DeleteCommand>) =>
     new DeleteCommand(args, { namespace: this.namespace }).exec(this.client);

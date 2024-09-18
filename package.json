@@ -46,7 +46,7 @@
     "@commitlint/config-conventional": "^18.6.0",
     "@typescript-eslint/eslint-plugin": "^8.4.0",
     "bun-types": "latest",
-    "eslint": "8.56",
+    "eslint": "9.10.0",
     "eslint-plugin-unicorn": "^55.0.0",
     "husky": "^8.0.3",
     "prettier": "^3.3.3",

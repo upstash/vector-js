@@ -1,3 +1,4 @@
+import type { ResetCommandOptions } from "@commands/client";
 import {
   DeleteCommand,
   FetchCommand,
@@ -7,7 +8,6 @@ import {
   QueryManyCommand,
   RangeCommand,
   ResetCommand,
-  ResetCommandOptions,
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
@@ -47,11 +47,12 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    *
    * @example
    * ```js
-   * await index.delete('test-id')
+   * const result = await index.delete('test-id');
+   * // { deleted: 1 }
    * ```
    *
    * @param id - List of ids or single id
-   * @returns A promise that resolves when the request to delete the index is completed.
+   * @returns Number of deleted vectors like `{ deleted: number }`. The number will be 0 if no vectors are deleted.
    */
   delete = (args: CommandArgs<typeof DeleteCommand>, options?: { namespace?: string }) =>
     new DeleteCommand(args, options).exec(this.client);
