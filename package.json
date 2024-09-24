@@ -9,37 +9,19 @@
   "exports": {
     ".": {
       "import": "./dist/nodejs.mjs",
-      "require": "./dist/nodejs.js",
-      "types": "./dist/nodejs.d.ts",
-      "browser": "./dist/nodejs.mjs",
-      "bun": "./dist/nodejs.mjs",
-      "deno": "./dist/nodejs.mjs",
-      "edge-light": "./dist/nodejs.mjs",
-      "edge-routine": "./dist/nodejs.mjs",
-      "netlify": "./dist/nodejs.mjs",
-      "react-native": "./dist/nodejs.mjs",
-      "wintercg": "./dist/nodejs.mjs",
-      "worker": {
-        "import": "./dist/cloudflare.mjs",
-        "types": "./dist/cloudflare.d.ts"
-      },
-      "workerd": {
-        "import": "./dist/cloudflare.mjs",
-        "types": "./dist/cloudflare.d.ts"
-      }
+      "require": "./dist/nodejs.js"
     },
     "./cloudflare": {
       "import": "./dist/cloudflare.mjs",
-      "types": "./dist/cloudflare.d.ts"
+      "require": "./dist/cloudflare.js"
     },
     "./nodejs": {
       "import": "./dist/nodejs.mjs",
-      "types": "./dist/nodejs.d.ts"
+      "require": "./dist/nodejs.js"
     }
   },
   "main": "./dist/nodejs.js",
   "module": "./dist/nodejs.mjs",
-  "browser": "./dist/nodejs.mjs",
   "types": "./dist/nodejs.d.ts",
   "devDependencies": {
     "@commitlint/cli": "^18.6.0",
