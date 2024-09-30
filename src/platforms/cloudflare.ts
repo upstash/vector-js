@@ -46,14 +46,18 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    * ```
    */
   constructor(config?: IndexConfig) {
+    const safeProcess = (typeof process === "undefined" ? {} : process) as Record<
+      string,
+      string | undefined
+    >;
     const token =
       config?.token ??
-      process.env.NEXT_PUBLIC_UPSTASH_VECTOR_REST_TOKEN ??
-      process.env.UPSTASH_VECTOR_REST_TOKEN;
+      safeProcess.NEXT_PUBLIC_UPSTASH_VECTOR_REST_TOKEN ??
+      safeProcess.UPSTASH_VECTOR_REST_TOKEN;
     const url =
       config?.url ??
-      process.env.NEXT_PUBLIC_UPSTASH_VECTOR_REST_URL ??
-      process.env.UPSTASH_VECTOR_REST_URL;
+      safeProcess.NEXT_PUBLIC_UPSTASH_VECTOR_REST_URL ??
+      safeProcess.UPSTASH_VECTOR_REST_URL;
 
     if (!token) {
       throw new Error("UPSTASH_VECTOR_REST_TOKEN is missing!");
