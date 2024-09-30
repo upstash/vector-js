@@ -41,6 +41,7 @@ describe("DELETE", () => {
     const initialVector = range(0, 384);
     const id = randomID();
     await new UpsertCommand({ id, vector: initialVector }).exec(client);
+    await awaitUntilIndexed(client);
 
     const res1 = await new DeleteCommand(id).exec(client);
     expect(res1).toEqual({
@@ -60,6 +61,7 @@ describe("DELETE with Index Client", () => {
     const id = randomID();
 
     index.upsert({ id, vector: initialVector });
+    await awaitUntilIndexed(client);
 
     const deletionResult = await index.delete(id);
 
@@ -73,6 +75,7 @@ describe("DELETE with Index Client", () => {
     const idsToUpsert = [randomID(), randomID(), randomID()];
 
     await index.upsert(idsToUpsert.map((id) => ({ id, vector: initialVector })));
+    await awaitUntilIndexed(client);
 
     const deletionResult = await index.delete(idsToUpsert);
     expect(deletionResult).toEqual({
