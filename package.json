@@ -54,7 +54,7 @@
     "test": "bun test src --coverage --bail --coverageSkipTestFiles=[test-utils.ts] --timeout 20000",
     "fmt": "prettier --write .",
     "lint": "tsc && eslint \"src/**/*.{js,ts,tsx}\" --quiet --fix",
-    "build": "tsup",
+    "build": "tsup && cp package.json README.md LICENSE dist/",
     "prepare": "husky install"
   }
 }
