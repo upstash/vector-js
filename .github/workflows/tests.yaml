@@ -76,3 +76,5 @@ jobs:
       - name: Run tests
         run: bun test
         working-directory: examples/cloudflare-workers
+        env:
+          DEPLOYMENT_URL: http://127.0.0.1:8787
