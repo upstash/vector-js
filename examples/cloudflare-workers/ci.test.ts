@@ -7,11 +7,11 @@ if (!deploymentURL) {
 
 test("the server is running", async () => {
 	const res = await fetch(deploymentURL);
-	console.log(await res.text());
+
 	if (res.status !== 200) {
 		console.log(await res.text());
 	}
 	expect(res.status).toEqual(200);
-});
+}, { timeout: 10000 });
 
 

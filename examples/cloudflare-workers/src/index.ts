@@ -8,6 +8,7 @@ export default {
     const index = new Index({
       url: env.UPSTASH_VECTOR_REST_URL,
       token: env.UPSTASH_VECTOR_REST_TOKEN,
+      cache: false,
     })
 
     await new Promise(r => setTimeout(r, 1000));
