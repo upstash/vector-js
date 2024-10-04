@@ -51,7 +51,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "test": "bun test src --coverage --bail --coverageSkipTestFiles=[test-utils.ts] --timeout 20000 && vitest run --typecheck --typecheck.include \"src/**/*.{js,ts,tsx}\"",
+    "test": "bun test src --coverage --bail --coverageSkipTestFiles=[test-utils.ts] --timeout 20000 && vitest run --typecheck.enabled --typecheck.include \"src/**/*.{js,ts,tsx}\"",
     "fmt": "prettier --write .",
     "lint": "tsc && eslint \"src/**/*.{js,ts,tsx}\" --quiet --fix",
     "build": "tsup",
