@@ -53,13 +53,13 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: npm install
+        run: bun install
 
       - name: Build
         run: bun run build
 
       - name: Install example
-        run: npm install @upstash/vector@../../dist
+        run: bun add @upstash/vector@../../dist
         working-directory: examples/cloudflare-workers
 
       - name: Add environment
@@ -69,13 +69,10 @@ jobs:
           echo "UPSTASH_VECTOR_REST_TOKEN = \"$UPSTASH_VECTOR_REST_TOKEN\"" >> ./wrangler.toml
         working-directory: examples/cloudflare-workers
 
-      - name: Wait before starting example
-        run: sleep 5
-
       - name: Start example
-        run: npm run start
+        run: bun dev &
         working-directory: examples/cloudflare-workers
 
       - name: Run tests
-        run: npm run test
+        run: bun test
         working-directory: examples/cloudflare-workers
