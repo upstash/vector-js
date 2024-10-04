@@ -127,6 +127,9 @@ jobs:
 
   release:
     name: Release
+    concurrency: release
+    needs:
+      - cloudflare-workers-local
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -158,5 +161,4 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > .npmrc
 
       - name: Publish release candidate
-        if: "github.event.release.prerelease"
         run: npm publish --access public --tag=canary
