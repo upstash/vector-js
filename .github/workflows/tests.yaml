@@ -138,7 +138,7 @@ jobs:
       - name: Set env
         run: |
           echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo "VERSION=${GITHUB_SHA}"
+          echo "VERSION=${GITHUB_REF#refs/*/}"
 
       - name: Setup Node
         uses: actions/setup-node@v2
