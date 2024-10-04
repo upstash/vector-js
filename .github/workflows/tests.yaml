@@ -59,7 +59,7 @@ jobs:
         run: bun run build
 
       - name: Install example
-        run: bun add @upstash/vector@../../dist
+        run: bun add @upstash/vector@../..
         working-directory: examples/cloudflare-workers
 
       - name: Add environment
@@ -70,7 +70,7 @@ jobs:
         working-directory: examples/cloudflare-workers
 
       - name: Start example
-        run: bun dev &
+        run: bun dev
         working-directory: examples/cloudflare-workers
 
       - name: Run tests

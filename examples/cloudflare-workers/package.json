@@ -18,7 +18,7 @@
     "bun-types": "latest"
   },
   "dependencies": {
-    "@upstash/vector": "file:../../dist"
+    "@upstash/vector": "../.."
   },
   "module": "index.ts",
   "type": "module"
