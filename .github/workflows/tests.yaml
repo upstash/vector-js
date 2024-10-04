@@ -36,3 +36,35 @@ jobs:
 
       - name: Run Build
         run: bun run build
+
+  cloudflare-workers-local:
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v3
+      - name: Setup nodejs
+        uses: actions/setup-node@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install example
+        run: npm install @upstash/vector@../../dist
+        working-directory: examples/cloudflare-workers
+
+      - name: Add environment
+        run: |
+          echo '[vars]' >> wrangler.toml
+          echo "UPSTASH_VECTOR_REST_URL = \"$UPSTASH_VECTOR_REST_URL\"" >> ./wrangler.toml
+          echo "UPSTASH_VECTOR_REST_TOKEN = \"$UPSTASH_VECTOR_REST_TOKEN\"" >> ./wrangler.toml
+        working-directory: examples/cloudflare-workers
+
+      - name: Start example
+        run: npm run start
+        working-directory: examples/cloudflare-workers
+
+      - name: Run tests
+        run: npm run test ci.test.ts
+        working-directory: examples/cloudflare-workers

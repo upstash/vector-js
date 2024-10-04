@@ -1,9 +1,9 @@
-import { Index } from "@upstash/vector/cloudflare";
+import { Index } from "@upstash/vector";
 
 const id = "my-id"
 
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
+  async fetch(request, env, ctx): Promise<Response> {
 
     const index = new Index({
       url: env.UPSTASH_VECTOR_REST_URL,
@@ -22,5 +22,5 @@ export default {
       JSON.stringify({ data, id: result[0]?.id }),
       { status: 200 }
     )
-	},
+  },
 } satisfies ExportedHandler<Env>;
