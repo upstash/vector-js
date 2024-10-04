@@ -61,6 +61,8 @@ jobs:
           echo "UPSTASH_VECTOR_REST_TOKEN = \"$UPSTASH_VECTOR_REST_TOKEN\"" >> ./wrangler.toml
         working-directory: examples/cloudflare-workers
 
+      - name: Wait before starting example
+        run: sleep 5
       - name: Start example
         run: npm run start
         working-directory: examples/cloudflare-workers
