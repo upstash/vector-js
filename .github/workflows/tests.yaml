@@ -47,8 +47,16 @@ jobs:
       - name: Setup nodejs
         uses: actions/setup-node@v3
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
       - name: Install dependencies
         run: npm install
+
+      - name: Build
+        run: bun run build
 
       - name: Install example
         run: npm install @upstash/vector@../../dist
@@ -63,6 +71,7 @@ jobs:
 
       - name: Wait before starting example
         run: sleep 5
+
       - name: Start example
         run: npm run start
         working-directory: examples/cloudflare-workers
