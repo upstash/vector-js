@@ -66,5 +66,5 @@ jobs:
         working-directory: examples/cloudflare-workers
 
       - name: Run tests
-        run: npm run test ci.test.ts
+        run: npm run test
         working-directory: examples/cloudflare-workers

@@ -41,7 +41,7 @@
   },
   "description": "An HTTP/REST based Vector DB client built on top of Upstash REST API.",
   "files": [
-    "./*"
+    "dist"
   ],
   "homepage": "https://upstash.com/vector",
   "keywords": [

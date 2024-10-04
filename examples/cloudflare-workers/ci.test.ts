@@ -1,6 +1,7 @@
-import test from "node:test";
-import assert from "node:assert";
+import { test, assert, describe } from "vitest";
 
-test("Hello World!", async () => {
-	assert.equal("Hello World!", "Hello World!");
+describe('TEST', () => {
+	test("Hello World!", async () => {
+		assert.equal("Hello World!", "Hello World!");
+	})
 })
