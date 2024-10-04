@@ -8,7 +8,7 @@ const index = new Index({
 
 const id = "my-id"
 
-export const GET = async () => { 
+export const GET = async () => {
   await index.upsert({
     id,
     data: "hello world"
@@ -21,7 +21,7 @@ export const GET = async () => {
   console.log(`length: ${result.length}`);
   const data = result[0]?.data
   console.log(`data: ${data}`);
-  
+
   return new NextResponse(
     JSON.stringify({ data, id: result[0]?.id }),
     { status: 200 }
