@@ -17,6 +17,6 @@
     "wrangler": "^3.60.3"
   },
   "dependencies": {
-    "@upstash/vector": "^1.1.6"
+    "@upstash/vector": "file:../../dist"
   }
 }
