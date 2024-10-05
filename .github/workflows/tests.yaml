@@ -31,8 +31,8 @@ jobs:
       - name: Run Lint
         run: bun run fmt
 
-      # - name: Run tests
-      #   run: bun run test
+      - name: Run tests
+        run: bun run test
 
       - name: Run Build
         run: bun run build
