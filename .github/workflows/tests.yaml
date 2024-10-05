@@ -222,6 +222,7 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
           VERCEL_PROJECT_ID: "prj_MWdHzEWUMU4b1DmVGIMu3v8lhdoO"
+        working-directory: examples/nextjs
 
       - name: Install dependencies
         run: bun install
