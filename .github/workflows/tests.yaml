@@ -185,9 +185,7 @@ jobs:
       - name: Deploy
         run: |
           bun add @upstash/vector@${{needs.release.outputs.version}}
-          DEPLOYMENT_URL=$(npx vercel --token=${{ secrets.VERCEL_TOKEN }} \
-            -e UPSTASH_VECTOR_REST_URL=${{ secrets.UPSTASH_VECTOR_REST_URL }} \
-            -e UPSTASH_VECTOR_REST_TOKEN=${{ secrets.UPSTASH_VECTOR_REST_TOKEN }})
+          DEPLOYMENT_URL=$(npx vercel --token=${{ secrets.VERCEL_TOKEN }} --env UPSTASH_VECTOR_REST_URL=${{ secrets.UPSTASH_VECTOR_REST_URL }} --env UPSTASH_VECTOR_REST_TOKEN=${{ secrets.UPSTASH_VECTOR_REST_TOKEN }})
           echo "DEPLOYMENT_URL=${DEPLOYMENT_URL}" >> $GITHUB_ENV
         env:
           VERCEL_ORG_ID: ${{secrets.VERCEL_TEAM_ID}}
