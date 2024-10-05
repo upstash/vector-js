@@ -18,9 +18,8 @@ export const GET = async () => {
 
   const result = await index.fetch([id], { includeData: true })
 
-  console.log(`length:: ${result.length}`);
   const data = result[0]?.data
-  console.log(`data: ${data}`);
+
 
   return new NextResponse(
     JSON.stringify({ data, id: result[0]?.id }),
