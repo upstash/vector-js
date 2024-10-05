@@ -182,13 +182,9 @@ jobs:
         with:
           bun-version: latest
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
       - name: Deploy
         run: |
-          pnpm add @upstash/vector@${{needs.release.outputs.version}}
+          bun add @upstash/vector@${{needs.release.outputs.version}}
           DEPLOYMENT_URL=$(npx vercel --token=${{ secrets.VERCEL_TOKEN }})
           echo "DEPLOYMENT_URL=${DEPLOYMENT_URL}" >> $GITHUB_ENV
         env:
@@ -199,6 +195,7 @@ jobs:
       - name: Test
         run: bun test examples/nextjs/ci.test.ts
         working-directory: examples/nextjs
+
   release:
     name: Release
     concurrency: release

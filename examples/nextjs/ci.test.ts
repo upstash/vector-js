@@ -1,4 +1,4 @@
-// import { test, expect, } from "bun:test";
+import { test, expect, } from "bun:test";
 
 const deploymentURL = process.env.DEPLOYMENT_URL ?? "http://127.0.0.1:8787";
 if (!deploymentURL) {
