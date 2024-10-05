@@ -237,3 +237,6 @@ jobs:
 
       - name: Publish release candidate
         run: npm publish --access public --tag=canary
+
+      - name: Sleep
+        run: sleep 5
