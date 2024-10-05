@@ -18,7 +18,7 @@ export const GET = async () => {
 
   const result = await index.fetch([id], { includeData: true })
 
-  console.log(`length: ${result.length}`);
+  console.log(`length:: ${result.length}`);
   const data = result[0]?.data
   console.log(`data: ${data}`);
 
