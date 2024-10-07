@@ -9,10 +9,7 @@ const index = new Index({
 const id = "my-id"
 
 export const GET = async () => {
-  await index.upsert({
-    id,
-    data: "hello world"
-  })
+  await index.upsert({ id, vector: [1, 2, 3] })
 
   await new Promise(r => setTimeout(r, 1000));
 
