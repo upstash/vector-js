@@ -11,7 +11,6 @@ export default {
       cache: false,
     })
 
-    await index.upsert({ id, vector: [1, 2, 3] })
 
     await new Promise(r => setTimeout(r, 1000));
 

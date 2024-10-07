@@ -9,8 +9,6 @@ const index = new Index({
 const id = "my-id"
 
 export const GET = async () => {
-  await index.upsert({ id, vector: [1, 2, 3] })
-
   await new Promise(r => setTimeout(r, 1000));
 
   const result = await index.fetch([id], { includeData: true })
