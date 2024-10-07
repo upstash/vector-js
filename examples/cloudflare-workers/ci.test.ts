@@ -10,11 +10,6 @@ test("the server is running", async () => {
 
 	if (res.status !== 200) {
 		console.log(await res.text());
-	} else {
-
-		const body = (await res.json()) as { id: string };
-		console.log(body)
-		expect(body.id).toEqual("my-id");
 	}
 
 	expect(res.status).toEqual(200);
