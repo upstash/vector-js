@@ -15,7 +15,8 @@ export default defineConfig({
     typecheck: {
       include: ['src/**/*.ts', 'src/**/*.tsx', 'test/**/*.ts', 'test/**/*.tsx'],
       exclude: ['examples/**', '**/node_modules/**'],
-      ignoreSourceErrors: true,
+      // ignoreSourceErrors: true,
+      only: true,
     },
   },
 });
