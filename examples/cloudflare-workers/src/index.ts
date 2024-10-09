@@ -1,6 +1,7 @@
 import { Index } from "@upstash/vector";
 
-const id = "my-id"
+export const ID = "my-id"
+export const DATA = "foo"
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
@@ -10,11 +11,16 @@ export default {
       token: env.UPSTASH_VECTOR_REST_TOKEN,
       cache: false,
     })
-
-
+    
+    await index.upsert({
+      id: ID,
+      data: DATA
+    })
+    
+    // wait for indexing
     await new Promise(r => setTimeout(r, 1000));
 
-    const result = await index.fetch([id], { includeData: true })
+    const result = await index.fetch([ID], { includeData: true })
 
     console.log(`length: ${result.length}`);
     const data = result[0]?.data
