@@ -1,0 +1,5 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "upstash-vector"
+main = "src/index.ts"
+compatibility_date = "2024-09-25"
+compatibility_flags = ["nodejs_compat"]
