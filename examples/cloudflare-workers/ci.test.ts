@@ -1,5 +1,5 @@
 import { test, expect, } from "bun:test";
-import { DATA, ID } from "./src/index"
+import { DATA, ID } from "./src/constants"
 
 const deploymentURL = process.env.DEPLOYMENT_URL ?? "http://127.0.0.1:8787";
 if (!deploymentURL) {

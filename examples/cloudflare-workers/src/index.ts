@@ -1,7 +1,5 @@
 import { Index } from "@upstash/vector";
-
-export const ID = "my-id"
-export const DATA = "foo"
+import { ID, DATA } from "./constants"
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {

@@ -1,13 +1,11 @@
 import { Index } from "@upstash/vector";
 import { NextResponse } from "next/server";
+import { DATA, ID } from "../constants";
 
 const index = new Index({
   url: process.env.UPSTASH_VECTOR_REST_URL,
   token: process.env.UPSTASH_VECTOR_REST_TOKEN,
 })
-
-export const ID = "my-id"
-export const DATA = "foo"
 
 export const GET = async () => {
     
