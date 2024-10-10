@@ -23,7 +23,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-2 mt-4">
             <a
               className="inline-flex items-center gap-1 px-3 py-2 bg-gray-100 rounded-md hover:bg-emerald-100"
-              href="https://upstash.com/docs/qstash/overall/getstarted"
+              href="https://upstash.com/docs/vector/overall/getstarted"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@ export default function Home() {
             </a>
             <a
               className="inline-flex items-center gap-1 px-3 py-2 bg-gray-100 rounded-md hover:bg-emerald-100"
-              href="https://github.com/upstash/qstash-js/tree/main/examples/nextjs"
+              href="https://github.com/upstash/vector-js/tree/master/examples/nextjs"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
