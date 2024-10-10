@@ -1,11 +1,7 @@
-import { Index } from "@upstash/vector";
+
 import { NextResponse } from "next/server";
 import { DATA, ID } from "../constants";
-
-const index = new Index({
-  url: process.env.UPSTASH_VECTOR_REST_URL,
-  token: process.env.UPSTASH_VECTOR_REST_TOKEN,
-})
+import { index } from "./vector";
 
 export const GET = async () => {
     
