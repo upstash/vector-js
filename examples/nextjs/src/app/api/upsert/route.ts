@@ -3,8 +3,8 @@ import { UpsertPayload, UpsertResponse } from "./types";
 import { index } from "../vector";
 
 const ID_PREFIX = "vector-id"
-const getRandomId = () => {
-  return `${ID_PREFIX}-${Math.ceil(Math.random() * 1000)}`
+const getId = (text: string) => {
+  return `${ID_PREFIX}-${text.charCodeAt(0)}`
 }
 
 export const POST = async (request: NextRequest) => {
@@ -13,7 +13,7 @@ export const POST = async (request: NextRequest) => {
   // upsert data
   const payload = texts.map(text => {
     return {
-      id: getRandomId(),
+      id: getId(text),
       data: text,
     }
   })

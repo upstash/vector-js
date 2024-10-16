@@ -6,25 +6,16 @@ export default function UploadData() {
   const [inputFields, setInputFields] = useState([
     { text: 'The sky is clear and blue today.' },
     { text: 'I love learning about machine learning and artificial intelligence.' },
-    { text: 'The sun sets beautifully over the mountains.' },
-    { text: 'She enjoys reading books on deep learning and neural networks.' },
+    { text: 'Sun sets beautifully over the mountains.' },
+    { text: 'He enjoys reading books on deep learning and neural networks.' },
     { text: 'Clouds are forming in the sky as the day progresses.' },
   ]);
+  const [pending, setPending] = useState(false)
   const [response, setResponse] = useState<string[]>([])
 
   const handleInputChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const newInputFields = [...inputFields];
     newInputFields[index].text = event.target.value;
-    setInputFields(newInputFields);
-  };
-
-  const handleAddField = () => {
-    setInputFields([...inputFields, { text: '' }]);
-  };
-
-  const handleRemoveField = (index: number) => {
-    const newInputFields = [...inputFields];
-    newInputFields.splice(index, 1);
     setInputFields(newInputFields);
   };
 
@@ -35,6 +26,8 @@ export default function UploadData() {
       alert('Please fill in at least one valid field.');
       return;
     }
+
+    setPending(true)
 
     
     try {
@@ -51,6 +44,8 @@ export default function UploadData() {
       setResponse(result.map(({id}) => id))
     } catch (error) {
       console.error('Error uploading data:', error);
+    } finally {
+      setPending(false)
     }
   };
 
@@ -76,8 +71,9 @@ export default function UploadData() {
       <div className="flex gap-2 mt-2 justify-end">
 
         <button
+          disabled={pending}
           onClick={handleSendData}
-          className="p-2 bg-green-500 text-white rounded-md px-3"
+          className={`p-2 bg-green-500 text-white rounded-md px-3 ${pending && "bg-gray-300"}`}
         >
           Upsert
         </button>

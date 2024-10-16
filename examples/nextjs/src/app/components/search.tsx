@@ -5,13 +5,14 @@ import { SearchResponse } from '../api/search/types';
 export default function QueryData() {
   const [query, setQuery] = useState('artificial intelligence');
   const [results, setResults] = useState<{ id: string; data: string }[] | null>(null);    
+  const [pending, setPending] = useState(false)
 
   const handleSearch = async () => {
     if (!query.trim()) {
       alert('Please enter a valid query.');
       return;
     }
-
+    setPending(true)
     try {
       const res = await fetch('/api/search', {
         method: 'POST',
@@ -23,6 +24,8 @@ export default function QueryData() {
     } catch (error) {
       console.error('Error querying data:', error);
       setResults(null);
+    } finally {
+      setPending(false)
     }
   };
 
@@ -41,8 +44,9 @@ export default function QueryData() {
           placeholder="Enter query"
         />
         <button
+          disabled={pending}
           onClick={handleSearch}
-          className="p-2 bg-green-500 text-white rounded-md"
+          className={`p-2 bg-green-500 text-white rounded-md px-3 ${pending && "bg-gray-300"}`}
         >
           Search
         </button>
