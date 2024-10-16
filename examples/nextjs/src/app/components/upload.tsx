@@ -57,35 +57,19 @@ export default function UploadData() {
   return (
     <div>
       <h2 className="text-lg text-balance opacity-60">
-        We will start by upserting data to the index. Enter your data below and click the Upsert button.
+        We will start by upserting data to the index.
       </h2>
       
       {inputFields.map((field, index) => (
         <div key={index} className="flex items-center gap-1 mt-2">
           <input
+            disabled={true}
             type="text"
             value={field.text}
             onChange={(e) => handleInputChange(index, e)}
             className="flex-1 p-2 border rounded-md"
             placeholder={`Input ${index + 1}`}
           />
-          <button
-            onClick={() => handleRemoveField(index)}
-            className="group p-2 hover:bg-red-400 rounded-md"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="icon icon-tabler icons-tabler-outline icon-tabler-x text-red-400 group-hover:text-white"
-            ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
-          </button>
         </div>
       ))}
 
@@ -96,24 +80,6 @@ export default function UploadData() {
           className="p-2 bg-green-500 text-white rounded-md px-3"
         >
           Upsert
-        </button>
-
-        <button
-          onClick={handleAddField}
-          className="group p-2 hover:bg-blue-400 rounded-md border-blue-400 border"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="icon icon-tabler icons-tabler-outline icon-tabler-plus  text-blue-400 group-hover:text-white"
-          ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
         </button>
       </div>
       
