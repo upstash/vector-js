@@ -1,9 +1,8 @@
 name: NPM Package Retention
 
 on:
-  # schedule:
-  #   - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
-  workflow_dispatch: # Allow manual trigger only
+  schedule:
+    - cron: "0 0 * * 0" # Run weekly on Sunday at midnight
 
 jobs:
   cleanup:
@@ -34,7 +33,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-    #   - name: Run retention script
-    #     env:
-    #       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-    #     run: python .github/scripts/npm_retention.py
+      - name: Run retention script
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: python .github/scripts/npm_retention.py
