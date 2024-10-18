@@ -25,6 +25,7 @@ def get_package_versions():
     output = run_npm_command(["npm", "view", PACKAGE_NAME, "versions", "--json"])
     if output:
         return json.loads(output)
+    print("Warning: No package version returned.")
     return []
 
 
@@ -32,6 +33,7 @@ def get_version_details(version):
     output = run_npm_command(["npm", "view", f"{PACKAGE_NAME}@{version}", "--json"])
     if output:
         return json.loads(output)
+    print("Warning: No version detail returned.")
     return {}
 
 
