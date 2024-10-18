@@ -6,7 +6,7 @@ import subprocess
 import re
 
 PACKAGE_NAME = "@upstash/vector"
-DAYS_TO_KEEP = 9
+DAYS_TO_KEEP = 7
 CI_VERSIONS_TO_KEEP = 5
 NPM_TOKEN = os.environ.get("NPM_TOKEN")
 
