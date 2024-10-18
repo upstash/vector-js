@@ -6,7 +6,7 @@ import subprocess
 import re
 
 PACKAGE_NAME = "@upstash/vector"
-DAYS_TO_KEEP = 14
+DAYS_TO_KEEP = 9
 CI_VERSIONS_TO_KEEP = 5
 NPM_TOKEN = os.environ.get("NPM_TOKEN")
 
@@ -26,6 +26,13 @@ def get_package_versions():
     if output:
         return json.loads(output)
     return []
+
+
+def get_version_details(version):
+    output = run_npm_command(["npm", "view", f"{PACKAGE_NAME}@{version}", "--json"])
+    if output:
+        return json.loads(output)
+    return {}
 
 
 def parse_ci_version_date(version):
@@ -59,6 +66,7 @@ def deprecate_package_version(version):
 
 def apply_retention_policy():
     versions = get_package_versions()
+
     now = datetime.utcnow()
     retention_date = now - timedelta(days=DAYS_TO_KEEP)
 
@@ -68,6 +76,10 @@ def apply_retention_policy():
         if is_ci_version(version):
             ci_date = parse_ci_version_date(version)
             if ci_date:
+                version_details = get_version_details(version)
+                if version_details.get("deprecated"):
+                    print(f"Skipping deprecated version: {version}")
+                    continue
                 ci_versions.append((version, ci_date))
             else:
                 print(f"Warning: Could not parse date from CI version: {version}")
@@ -82,10 +94,12 @@ def apply_retention_policy():
             versions_to_keep.append(version)
         else:
             versions_to_deprecate.append(version)
+            print(f"Deprecating version: {version}")
 
-    version_deprecated = deprecate_package_version(version)
-    if not version_deprecated:
-        print(f"Failed to delete or deprecate version: {version}")
+    for version in versions_to_deprecate:
+        version_deprecated = deprecate_package_version(version)
+        if not version_deprecated:
+            print(f"Failed to delete or deprecate version: {version}")
 
     print(f"Keeping {len(versions_to_keep)} CI versions:")
     for version in versions_to_keep:
