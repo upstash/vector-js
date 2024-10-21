@@ -186,6 +186,10 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
+      - name: Install @upstash/vector canary version
+        run: npm install @upstash/vector@${{needs.release.outputs.version}}
+        working-directory: examples/nextjs
+
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         env:
