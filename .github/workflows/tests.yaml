@@ -167,6 +167,11 @@ jobs:
   nextjs-deployed:
     concurrency: nextjs-deployed
     runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
+      VERCEL_PROJECT_ID: "prj_TmF7Y5rOxDXmq7FmuzCpL41ol7zo"
+      UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
+      UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
     needs:
       - release
     steps:
@@ -192,9 +197,6 @@ jobs:
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
-          VERCEL_PROJECT_ID: "prj_MWdHzEWUMU4b1DmVGIMu3v8lhdoO"
         working-directory: examples/nextjs
 
       - name: Install dependencies
@@ -203,11 +205,6 @@ jobs:
 
       - name: Build Project
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
-          VERCEL_PROJECT_ID: "prj_MWdHzEWUMU4b1DmVGIMu3v8lhdoO"
-          UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
-          UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
         working-directory: examples/nextjs
 
       - name: Deploy to Vercel
@@ -216,17 +213,11 @@ jobs:
             --env UPSTASH_VECTOR_REST_URL=${{ secrets.UPSTASH_VECTOR_REST_URL }} \
             --env UPSTASH_VECTOR_REST_TOKEN=${{ secrets.UPSTASH_VECTOR_REST_TOKEN }})
           echo "DEPLOYMENT_URL=${DEPLOYMENT_URL}" >> $GITHUB_ENV
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
-          VERCEL_PROJECT_ID: "prj_MWdHzEWUMU4b1DmVGIMu3v8lhdoO"
         working-directory: examples/nextjs
 
       - name: Test
         run: bun test ci.test.ts
         working-directory: examples/nextjs
-        env:
-          UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
-          UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
 
   release:
     name: Release
