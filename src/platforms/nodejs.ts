@@ -135,3 +135,4 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
 }
 
 export { type UpstashRequest, type UpstashResponse, type Requester } from "@http";
+export { QueryMode, FusionAlgorithm, WeightingStrategy } from "@commands/client/query";

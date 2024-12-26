@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { QueryCommand, QueryMode, UpsertCommand, WeightingStrategy } from "@commands/index";
+import { QueryCommand, UpsertCommand, WeightingStrategy } from "@commands/index";
 import {
   Index,
   awaitUntilIndexed,
