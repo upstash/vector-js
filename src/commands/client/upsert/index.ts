@@ -1,4 +1,4 @@
-import type { NAMESPACE, RawSparseVector } from "@commands/client/types";
+import type { NAMESPACE, SparseVector } from "@commands/client/types";
 import { Command } from "@commands/command";
 
 type NoInfer<T> = T extends infer U ? U : never;
@@ -6,7 +6,7 @@ type NoInfer<T> = T extends infer U ? U : never;
 type VectorPayload<TMetadata> = {
   id: number | string;
   vector?: number[];
-  sparseVector?: RawSparseVector;
+  sparseVector?: SparseVector;
   metadata?: NoInfer<TMetadata>;
 };
 

@@ -1,4 +1,4 @@
-import type { Dict, NAMESPACE, RawSparseVector } from "../types";
+import type { Dict, NAMESPACE, SparseVector } from "../types";
 
 export type QueryCommandPayload = {
   topK: number;
@@ -10,7 +10,7 @@ export type QueryCommandPayload = {
   fusionAlgorithm?: FusionAlgorithm;
   queryMode?: QueryMode;
 } & (
-  | { vector?: number[]; sparseVector?: RawSparseVector; data?: never }
+  | { vector?: number[]; sparseVector?: SparseVector; data?: never }
   | { data: string; vector?: never; sparseVector?: never }
 );
 
@@ -18,7 +18,7 @@ export type QueryResult<TMetadata = Dict> = {
   id: number | string;
   score: number;
   vector?: number[];
-  sparseVector?: RawSparseVector;
+  sparseVector?: SparseVector;
   metadata?: TMetadata;
   data?: string;
 };

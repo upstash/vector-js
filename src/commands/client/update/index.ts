@@ -1,4 +1,4 @@
-import type { NAMESPACE, RawSparseVector } from "@commands/client/types";
+import type { NAMESPACE, SparseVector } from "@commands/client/types";
 import { Command } from "@commands/command";
 import { UpstashError } from "@error/index";
 
@@ -13,7 +13,7 @@ type MetadataUpdatePayload<TMetadata> = {
 type VectorUpdatePayload = {
   id: string | number;
   vector?: number[];
-  sparseVector?: RawSparseVector;
+  sparseVector?: SparseVector;
 };
 
 type DataUpdatePayload = {
