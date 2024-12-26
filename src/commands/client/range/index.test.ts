@@ -38,6 +38,14 @@ describe("RANGE with Index Client", () => {
     token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.UPSTASH_VECTOR_REST_URL!,
   });
+  const sparseIndex = new Index({
+    token: process.env.SPARSE_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.SPARSE_UPSTASH_VECTOR_REST_URL!,
+  });
+  const hybridIndex = new Index({
+    token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
+  });
 
   afterAll(async () => {
     await index.reset();
@@ -58,5 +66,123 @@ describe("RANGE with Index Client", () => {
     });
 
     expect(res.nextCursor).toBe("5");
+  });
+
+  test("should use range for sparse", async () => {
+    const namespace = "range-sparse";
+
+    const vectors: ConstructorParameters<typeof UpsertCommand>[0] = Array.from(
+      { length: 20 },
+      (_, i) => ({
+        id: `id-${i}`,
+        sparseVector: [
+          [Math.floor(Math.random() * 11), Math.floor(Math.random() * 11)],
+          [Math.random(), Math.random()],
+        ],
+        metadata: { meta: i },
+        data: `data-${i}`,
+      })
+    );
+
+    await sparseIndex.upsert(vectors, { namespace });
+    await awaitUntilIndexed(sparseIndex);
+
+    let res = await sparseIndex.range(
+      {
+        cursor: "",
+        limit: 4,
+        includeVectors: true,
+        includeMetadata: true,
+        includeData: true,
+      },
+      {
+        namespace,
+      }
+    );
+
+    // Initial batch assertions
+    expect(res.vectors.length).toBe(4);
+    expect(res.nextCursor).not.toBe("");
+
+    for (let i = 0; i < 4; i++) {
+      const vector = res.vectors[i];
+      expect(vector.id).toBe(`id-${i}`);
+      expect(vector.metadata).toEqual({ meta: i });
+      expect(vector.data).toBe(`data-${i}`);
+      expect(vector.sparseVector).not.toBeNull();
+    }
+
+    // Paginate through remaining results
+    while (res.nextCursor !== "") {
+      res = await sparseIndex.range(
+        {
+          cursor: res.nextCursor,
+          limit: 8,
+          includeVectors: true,
+        },
+        { namespace }
+      );
+      expect(res.vectors.length).toBe(8);
+    }
+  });
+
+  test("should use range for hybrid", async () => {
+    const namespace = "range-hybrid";
+
+    const vectors: ConstructorParameters<typeof UpsertCommand>[0] = Array.from(
+      { length: 20 },
+      (_, i) => ({
+        id: `id-${i}`,
+        vector: [Math.random(), Math.random()],
+        sparseVector: [
+          [Math.floor(Math.random() * 11), Math.floor(Math.random() * 11)],
+          [Math.random(), Math.random()],
+        ],
+        metadata: { meta: i },
+        data: `data-${i}`,
+      })
+    );
+
+    await hybridIndex.upsert(vectors, { namespace });
+    await awaitUntilIndexed(hybridIndex);
+
+    let res = await hybridIndex.range(
+      {
+        cursor: "",
+        limit: 4,
+        includeVectors: true,
+        includeMetadata: true,
+        includeData: true,
+      },
+      {
+        namespace,
+      }
+    );
+
+    // Initial batch assertions
+    expect(res.vectors.length).toBe(4);
+    expect(res.nextCursor).not.toBe("");
+
+    for (let i = 0; i < 4; i++) {
+      const vector = res.vectors[i];
+      expect(vector.id).toBe(`id-${i}`);
+      expect(vector.metadata).toEqual({ meta: i });
+      expect(vector.data).toBe(`data-${i}`);
+      expect(vector.sparseVector).not.toBeNull();
+      expect(vector.vector).not.toBeNull();
+    }
+
+    // Paginate through remaining results
+    while (res.nextCursor !== "") {
+      res = await hybridIndex.range(
+        {
+          cursor: res.nextCursor,
+          limit: 8,
+          includeVectors: true,
+        },
+        { namespace }
+      );
+      expect(res.vectors.length).toBe(8);
+    }
   });
 });

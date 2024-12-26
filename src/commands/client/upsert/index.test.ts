@@ -4,6 +4,8 @@ import {
   Index,
   awaitUntilIndexed,
   newHttpClient,
+  populateHybridIndex,
+  populateSparseIndex,
   randomID,
   range,
   resetIndexes,
@@ -22,7 +24,6 @@ describe("UPSERT", () => {
   test("should return an error when vector is missing", () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
-      //@ts-expect-error Missing vector field in upsert command.
       await new UpsertCommand({ id: 1 }).exec(client);
     };
     expect(throwable).toThrow();
@@ -102,7 +103,6 @@ describe("UPSERT with Index Client", () => {
   test("should return an error when vector is missing", () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
-      //@ts-expect-error Missing vector field in upsert command.
       await new UpsertCommand({ id: 1 }).exec(client);
     };
     expect(throwable).toThrow();
@@ -173,6 +173,16 @@ describe("UPSERT with Index Client", () => {
 
 describe("Upsert with new data field", () => {
   afterAll(async () => await resetIndexes());
+
+  const sparseIndex = new Index({
+    token: process.env.SPARSE_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.SPARSE_UPSTASH_VECTOR_REST_URL!,
+  });
+  const hybridIndex = new Index({
+    token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
+  });
+
   test("should add data to data field - /upsert-data", async () => {
     const id = randomID();
     const data = "testing data";
@@ -222,5 +232,39 @@ describe("Upsert with new data field", () => {
     }).exec(client);
 
     expect(result.map((r) => r.data)).toEqual([data]);
+  });
+
+  test("should upsert to sparse", async () => {
+    const namespace = "upsert-sparse";
+
+    // populate will upsert vectors
+    const mockData = await populateSparseIndex(sparseIndex, namespace);
+
+    const result = await sparseIndex.fetch(mockData.map((vector) => vector.id) as string[], {
+      includeVectors: true,
+      namespace,
+    });
+
+    expect(result).toBe(
+      // @ts-expect-error will be updated after running with actual index
+      "TODO: update after using idnex"
+    );
+  });
+
+  test("should upsert to hybrid", async () => {
+    const namespace = "upsert-hybrid";
+
+    // populate will upsert vectors
+    const mockData = await populateHybridIndex(hybridIndex, namespace);
+
+    const result = await hybridIndex.fetch(mockData.map((vector) => vector.id) as string[], {
+      includeVectors: true,
+      namespace,
+    });
+
+    expect(result).toBe(
+      // @ts-expect-error will be updated after running with actual index
+      "TODO: update after using idnex"
+    );
   });
 });

@@ -1,11 +1,12 @@
-import type { NAMESPACE } from "@commands/client/types";
+import type { NAMESPACE, RawSparseVector } from "@commands/client/types";
 import { Command } from "@commands/command";
 
 type NoInfer<T> = T extends infer U ? U : never;
 
 type VectorPayload<TMetadata> = {
   id: number | string;
-  vector: number[];
+  vector?: number[];
+  sparseVector?: RawSparseVector;
   metadata?: NoInfer<TMetadata>;
 };
 
@@ -50,5 +51,6 @@ export class UpsertCommand<TMetadata> extends Command<string> {
 const isVectorPayload = <TMetadata>(
   payload: VectorPayload<TMetadata> | DataPayload<TMetadata>
 ): payload is VectorPayload<TMetadata> => {
-  return "vector" in payload;
+  // TODO: fix field name
+  return "vector" in payload || "sparseVector" in payload;
 };

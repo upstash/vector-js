@@ -1,6 +1,14 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { QueryCommand, UpsertCommand } from "@commands/index";
-import { Index, awaitUntilIndexed, newHttpClient, randomID, range } from "@utils/test-utils";
+import { QueryCommand, QueryMode, UpsertCommand, WeightingStrategy } from "@commands/index";
+import {
+  Index,
+  awaitUntilIndexed,
+  newHttpClient,
+  populateHybridIndex,
+  populateSparseIndex,
+  randomID,
+  range,
+} from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -223,6 +231,14 @@ describe("QUERY", () => {
 
 describe("QUERY with Index Client", () => {
   const index = new Index();
+  const sparseIndex = new Index({
+    token: process.env.SPARSE_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.SPARSE_UPSTASH_VECTOR_REST_URL!,
+  });
+  const hybridIndex = new Index({
+    token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
+  });
 
   afterAll(async () => {
     await index.reset();
@@ -324,5 +340,163 @@ describe("QUERY with Index Client", () => {
         metadata: { animal: "tiger", tags: ["mammal"], diet: "carnivore" },
       },
     ]);
+  });
+
+  test("should query sparse index", async () => {
+    const namespace = "query-sparse";
+    await populateSparseIndex(sparseIndex, namespace);
+
+    const result = await sparseIndex.query(
+      {
+        sparseVector: [
+          [0, 1, 3],
+          [0.1, 0.5, 0.1],
+        ],
+        topK: 5,
+        includeVectors: true,
+        includeMetadata: true,
+        includeData: true,
+        weightingStrategy: WeightingStrategy.IDF,
+      },
+      {
+        namespace,
+      }
+    );
+
+    expect(result).toEqual([
+      {
+        id: "id0",
+        score: expect.any(Number),
+        metadata: undefined,
+        data: undefined,
+        sparseVector: [
+          [0, 1],
+          [0.1, 0.2],
+        ],
+      },
+      {
+        id: "id1",
+        score: expect.any(Number),
+        metadata: { key: "value" },
+        data: undefined,
+        sparseVector: [
+          [0, 1],
+          [0.2, 0.3],
+        ],
+      },
+      {
+        id: "id2",
+        score: expect.any(Number),
+        metadata: { key: "value" },
+        data: "data",
+        sparseVector: [
+          [0, 1],
+          [0.3, 0.4],
+        ],
+      },
+      // @ts-expect-error checking an index that doesn't exist
+      undefined,
+    ]);
+  });
+
+  test("should query hybrid index", async () => {
+    const namespace = "query-hybrid";
+    await populateHybridIndex(hybridIndex, namespace);
+
+    const result = await hybridIndex.query(
+      {
+        vector: [1, 2],
+        sparseVector: [
+          [0, 1, 3],
+          [0.1, 0.5, 0.1],
+        ],
+        topK: 5,
+        includeVectors: true,
+        includeMetadata: true,
+        includeData: true,
+      },
+      {
+        namespace,
+      }
+    );
+
+    expect(result).toEqual([
+      {
+        id: "id0",
+        score: expect.any(Number),
+        metadata: undefined,
+        data: undefined,
+        vector: [0.1, 0.2],
+        sparseVector: [
+          [0, 1],
+          [0.1, 0.2],
+        ],
+      },
+      {
+        id: "id1",
+        score: expect.any(Number),
+        metadata: { key: "value" },
+        data: undefined,
+        vector: [0.2, 0.3],
+        sparseVector: [
+          [0, 1],
+          [0.2, 0.3],
+        ],
+      },
+      {
+        id: "id2",
+        score: expect.any(Number),
+        metadata: { key: "value" },
+        data: "data",
+        vector: [0.3, 0.4],
+        sparseVector: [
+          [0, 1],
+          [0.3, 0.4],
+        ],
+      },
+      // @ts-expect-error checking an index that doesn't exist
+      undefined,
+    ]);
+  });
+
+  test("should query hybrid index with query mode", async () => {
+    const namespace = "query-hybrid-query-mode";
+    await hybridIndex.upsert(
+      [
+        {
+          id: "id0",
+          data: "hello",
+        },
+        {
+          id: "id0",
+          data: "hello world",
+        },
+        {
+          id: "id0",
+          data: "hello world upstash",
+        },
+      ],
+      {
+        namespace,
+      }
+    );
+
+    const result = await hybridIndex.query(
+      {
+        data: "upstash",
+        topK: 3,
+        includeData: true,
+        // queryMode: QueryMode.SPARSE,
+        includeVectors: true,
+      },
+      {
+        namespace,
+      }
+    );
+
+    expect(result).toEqual(
+      // @ts-expect-error update after actual index
+      "TODO: update after test"
+    );
   });
 });

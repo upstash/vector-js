@@ -1,10 +1,25 @@
 import { afterAll, describe, expect, test } from "bun:test";
 
-import { Index, awaitUntilIndexed, range } from "@utils/test-utils";
+import {
+  Index,
+  awaitUntilIndexed,
+  populateHybridIndex,
+  populateSparseIndex,
+  range,
+} from "@utils/test-utils";
 import { sleep } from "bun";
+import { FusionAlgorithm, WeightingStrategy } from "../query/types";
 
 describe("RESUMABLE QUERY", () => {
   const index = new Index();
+  const sparseIndex = new Index({
+    token: process.env.SPARSE_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.SPARSE_UPSTASH_VECTOR_REST_URL!,
+  });
+  const hybridIndex = new Index({
+    token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
+  });
   afterAll(async () => {
     await index.reset();
   });
@@ -110,4 +125,123 @@ describe("RESUMABLE QUERY", () => {
     },
     { timeout: 10_000 }
   );
+
+  test("should use resumable query for sparse index", async () => {
+    // Mock hybrid index object
+    const namespace = "resumable-sparse";
+    await populateSparseIndex(sparseIndex, namespace);
+    // Assertion logic
+    const { result, fetchNext, stop } = await sparseIndex.resumableQuery(
+      {
+        sparseVector: [[0], [0.1]],
+        topK: 2,
+        includeVectors: true,
+        includeMetadata: true,
+        includeData: true,
+        weightingStrategy: WeightingStrategy.IDF,
+        fusionAlgorithm: FusionAlgorithm.DBSF,
+        maxIdle: 3600,
+      },
+      {
+        namespace,
+      }
+    );
+
+    try {
+      expect(result.length).toBe(2);
+
+      // Validate first result
+      expect(result[0].id).toBe("id0");
+      expect(result[0].vector).toBeUndefined();
+      expect(result[0].sparseVector).toEqual([
+        [0, 1],
+        [0.3, 0.1],
+      ]);
+
+      // Validate second result
+      expect(result[1].id).toBe("id1");
+      expect(result[1].metadata).toEqual({ key: "value" });
+      expect(result[1].vector).toBeUndefined();
+      expect(result[1].sparseVector).toEqual([
+        [0, 2],
+        [0.2, 0.1],
+      ]);
+
+      // Fetch next result
+      const nextResult = await fetchNext(1);
+      expect(nextResult.length).toBe(1);
+
+      // Validate next result
+      expect(nextResult[0].id).toBe("id2");
+      expect(nextResult[0].metadata).toEqual({ key: "value" });
+      expect(nextResult[0].data).toBe("data");
+      expect(nextResult[0].vector).toBeUndefined();
+      expect(nextResult[0].sparseVector).toEqual([
+        [0, 3],
+        [0.1, 0.1],
+      ]);
+    } finally {
+      await stop();
+    }
+  });
+
+  test("should use resumable query for hybrid index", async () => {
+    // Mock hybrid index object
+    const namespace = "resumable-hybrid";
+    await populateHybridIndex(hybridIndex, namespace);
+    // Assertion logic
+    const { result, fetchNext, stop } = await hybridIndex.resumableQuery(
+      {
+        vector: [0.1, 0.1],
+        sparseVector: [[0], [0.1]],
+        topK: 2,
+        includeVectors: true,
+        includeMetadata: true,
+        includeData: true,
+        weightingStrategy: WeightingStrategy.IDF,
+        fusionAlgorithm: FusionAlgorithm.DBSF,
+        maxIdle: 3600,
+      },
+      {
+        namespace,
+      }
+    );
+
+    try {
+      expect(result.length).toBe(2);
+
+      // Validate first result
+      expect(result[0].id).toBe("id0");
+      expect(result[0].vector).toEqual([0.9, 0.9]);
+      expect(result[0].sparseVector).toEqual([
+        [0, 1],
+        [0.3, 0.1],
+      ]);
+
+      // Validate second result
+      expect(result[1].id).toBe("id1");
+      expect(result[1].metadata).toEqual({ key: "value" });
+      expect(result[1].vector).toEqual([0.8, 0.9]);
+      expect(result[1].sparseVector).toEqual([
+        [0, 2],
+        [0.2, 0.1],
+      ]);
+
+      // Fetch next result
+      const nextResult = await fetchNext(1);
+      expect(nextResult.length).toBe(1);
+
+      // Validate next result
+      expect(nextResult[0].id).toBe("id2");
+      expect(nextResult[0].metadata).toEqual({ key: "value" });
+      expect(nextResult[0].data).toBe("data");
+      expect(nextResult[0].vector).toEqual([0.7, 0.9]);
+      expect(nextResult[0].sparseVector).toEqual([
+        [0, 3],
+        [0.1, 0.1],
+      ]);
+    } finally {
+      await stop();
+    }
+  });
 });

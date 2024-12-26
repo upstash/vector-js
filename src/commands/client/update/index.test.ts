@@ -1,6 +1,14 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { FetchCommand, UpdateCommand, UpsertCommand } from "@commands/index";
-import { Index, awaitUntilIndexed, newHttpClient, range, resetIndexes } from "@utils/test-utils";
+import {
+  Index,
+  awaitUntilIndexed,
+  newHttpClient,
+  populateHybridIndex,
+  populateSparseIndex,
+  range,
+  resetIndexes,
+} from "@utils/test-utils";
 
 const client = newHttpClient();
 
@@ -95,8 +103,18 @@ describe("UPDATE with Index Client", () => {
     token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.UPSTASH_VECTOR_REST_URL!,
   });
+
+  const sparseIndex = new Index({
+    token: process.env.SPARSE_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.SPARSE_UPSTASH_VECTOR_REST_URL!,
+  });
+  const hybridIndex = new Index({
+    token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
+  });
+
   afterAll(async () => {
-    await index.reset();
+    await resetIndexes();
   });
 
   test("should update vector metadata", async () => {
@@ -138,5 +156,77 @@ describe("UPDATE with Index Client", () => {
     const fetchData = await index.fetch(["1"], { includeMetadata: true });
 
     expect(fetchData[0]?.metadata?.upstashRocks).toBe("test-update");
+  });
+
+  test("should update sparse index", async () => {
+    const namespace = "update-sparse";
+    await populateSparseIndex(sparseIndex, namespace);
+
+    const { updated } = await sparseIndex.update(
+      {
+        id: "id1",
+        sparseVector: [
+          [6, 7],
+          [0.5, 0.6],
+        ],
+      },
+      {
+        namespace,
+      }
+    );
+
+    expect(updated).toBe(1);
+
+    const res = await sparseIndex.fetch(["id1"], {
+      includeVectors: true,
+      namespace,
+    });
+
+    // Assert fetch results
+    expect(res.length).toBe(1);
+    expect(res[0]).not.toBeNull();
+    const vector = res[0]!;
+    expect(vector.id).toBe("id1");
+    expect(vector.sparseVector).toEqual([
+      [6, 7],
+      [0.5, 0.6],
+    ]);
+  });
+
+  test("should update hybrid index", async () => {
+    const namespace = "update-hybrid";
+    await populateHybridIndex(hybridIndex, namespace);
+
+    const { updated } = await hybridIndex.update(
+      {
+        id: "id1",
+        vector: [0.5, 0.6],
+        sparseVector: [
+          [6, 7],
+          [0.5, 0.6],
+        ],
+      },
+      {
+        namespace,
+      }
+    );
+
+    expect(updated).toBe(1);
+
+    const res = await sparseIndex.fetch(["id1"], {
+      includeVectors: true,
+      namespace,
+    });
+
+    // Assert fetch results
+    expect(res.length).toBe(1);
+    expect(res[0]).not.toBeNull();
+    const vector = res[0]!;
+    expect(vector.id).toBe("id1");
+    expect(vector.vector).toEqual([0.5, 0.6]);
+    expect(vector.sparseVector).toEqual([
+      [6, 7],
+      [0.5, 0.6],
+    ]);
   });
 });
