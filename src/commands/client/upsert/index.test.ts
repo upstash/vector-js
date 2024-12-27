@@ -245,10 +245,29 @@ describe("Upsert with new data field", () => {
       namespace,
     });
 
-    expect(result).toBe(
-      // @ts-expect-error will be updated after running with actual index
-      "TODO: update after using idnex"
-    );
+    expect(result).toEqual([
+      {
+        id: "id0",
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+      {
+        id: "id1",
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+      },
+      {
+        id: "id2",
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
+      },
+    ]);
   });
 
   test("should upsert to hybrid", async () => {
@@ -262,9 +281,31 @@ describe("Upsert with new data field", () => {
       namespace,
     });
 
-    expect(result).toBe(
-      // @ts-expect-error will be updated after running with actual index
-      "TODO: update after using idnex"
-    );
+    expect(result).toEqual([
+      {
+        id: "id0",
+        vector: [0.1, 0.2],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+      {
+        id: "id1",
+        vector: [0.2, 0.3],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+      },
+      {
+        id: "id2",
+        vector: [0.3, 0.4],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
+      },
+    ]);
   });
 });

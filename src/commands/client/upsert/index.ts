@@ -51,6 +51,5 @@ export class UpsertCommand<TMetadata> extends Command<string> {
 const isVectorPayload = <TMetadata>(
   payload: VectorPayload<TMetadata> | DataPayload<TMetadata>
 ): payload is VectorPayload<TMetadata> => {
-  // TODO: fix field name
   return "vector" in payload || "sparseVector" in payload;
 };

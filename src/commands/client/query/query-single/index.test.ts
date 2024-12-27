@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { QueryCommand, UpsertCommand, WeightingStrategy } from "@commands/index";
+import { QueryCommand, QueryMode, UpsertCommand, WeightingStrategy } from "@commands/index";
 import {
   Index,
   awaitUntilIndexed,
@@ -239,6 +239,10 @@ describe("QUERY with Index Client", () => {
     token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
   });
+  const hybridWithEmbeddingIndex = new Index({
+    token: process.env.HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_URL!,
+  });
 
   afterAll(async () => {
     await index.reset();
@@ -348,10 +352,10 @@ describe("QUERY with Index Client", () => {
 
     const result = await sparseIndex.query(
       {
-        sparseVector: [
-          [0, 1, 3],
-          [0.1, 0.5, 0.1],
-        ],
+        sparseVector: {
+          indices: [0, 1, 3],
+          values: [0.1, 0.5, 0.1],
+        },
         topK: 5,
         includeVectors: true,
         includeMetadata: true,
@@ -367,32 +371,29 @@ describe("QUERY with Index Client", () => {
       {
         id: "id0",
         score: expect.any(Number),
-        metadata: undefined,
-        data: undefined,
-        sparseVector: [
-          [0, 1],
-          [0.1, 0.2],
-        ],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
       },
       {
         id: "id1",
         score: expect.any(Number),
         metadata: { key: "value" },
-        data: undefined,
-        sparseVector: [
-          [0, 1],
-          [0.2, 0.3],
-        ],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
       },
       {
         id: "id2",
         score: expect.any(Number),
         metadata: { key: "value" },
         data: "data",
-        sparseVector: [
-          [0, 1],
-          [0.3, 0.4],
-        ],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
       },
       // @ts-expect-error checking an index that doesn't exist
       undefined,
@@ -406,10 +407,10 @@ describe("QUERY with Index Client", () => {
     const result = await hybridIndex.query(
       {
         vector: [1, 2],
-        sparseVector: [
-          [0, 1, 3],
-          [0.1, 0.5, 0.1],
-        ],
+        sparseVector: {
+          indices: [0, 1, 3],
+          values: [0.1, 0.5, 0.1],
+        },
         topK: 5,
         includeVectors: true,
         includeMetadata: true,
@@ -427,10 +428,10 @@ describe("QUERY with Index Client", () => {
         metadata: undefined,
         data: undefined,
         vector: [0.1, 0.2],
-        sparseVector: [
-          [0, 1],
-          [0.1, 0.2],
-        ],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
       },
       {
         id: "id1",
@@ -438,10 +439,10 @@ describe("QUERY with Index Client", () => {
         metadata: { key: "value" },
         data: undefined,
         vector: [0.2, 0.3],
-        sparseVector: [
-          [0, 1],
-          [0.2, 0.3],
-        ],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
       },
       {
         id: "id2",
@@ -449,10 +450,10 @@ describe("QUERY with Index Client", () => {
         metadata: { key: "value" },
         data: "data",
         vector: [0.3, 0.4],
-        sparseVector: [
-          [0, 1],
-          [0.3, 0.4],
-        ],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
       },
       // @ts-expect-error checking an index that doesn't exist
       undefined,
@@ -461,7 +462,7 @@ describe("QUERY with Index Client", () => {
 
   test("should query hybrid index with query mode", async () => {
     const namespace = "query-hybrid-query-mode";
-    await hybridIndex.upsert(
+    await hybridWithEmbeddingIndex.upsert(
       [
         {
           id: "id0",
@@ -481,22 +482,24 @@ describe("QUERY with Index Client", () => {
       }
     );
 
-    const result = await hybridIndex.query(
+    const result = await hybridWithEmbeddingIndex.query(
       {
         data: "upstash",
         topK: 3,
         includeData: true,
-        // queryMode: QueryMode.SPARSE,
-        includeVectors: true,
+        queryMode: QueryMode.SPARSE,
       },
       {
         namespace,
       }
     );
 
-    expect(result).toEqual(
-      // @ts-expect-error update after actual index
-      "TODO: update after test"
-    );
+    expect(result).toEqual([
+      {
+        id: "id0",
+        score: expect.any(Number),
+        data: "hello world upstash",
+      },
+    ]);
   });
 });

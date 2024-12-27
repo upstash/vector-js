@@ -10,4 +10,7 @@ export type NAMESPACE = string;
 
 export type Dict = Record<string, unknown>;
 
-export type SparseVector = [indices: number[], values: number[]];
+export type SparseVector = {
+  indices: number[];
+  values: number[];
+};

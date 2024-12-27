@@ -165,10 +165,10 @@ describe("UPDATE with Index Client", () => {
     const { updated } = await sparseIndex.update(
       {
         id: "id1",
-        sparseVector: [
-          [6, 7],
-          [0.5, 0.6],
-        ],
+        sparseVector: {
+          indices: [6, 7],
+          values: [0.5, 0.6],
+        },
       },
       {
         namespace,
@@ -187,10 +187,10 @@ describe("UPDATE with Index Client", () => {
     expect(res[0]).not.toBeNull();
     const vector = res[0]!;
     expect(vector.id).toBe("id1");
-    expect(vector.sparseVector).toEqual([
-      [6, 7],
-      [0.5, 0.6],
-    ]);
+    expect(vector.sparseVector).toEqual({
+      indices: [6, 7],
+      values: [0.5, 0.6],
+    });
   });
 
   test("should update hybrid index", async () => {
@@ -201,10 +201,10 @@ describe("UPDATE with Index Client", () => {
       {
         id: "id1",
         vector: [0.5, 0.6],
-        sparseVector: [
-          [6, 7],
-          [0.5, 0.6],
-        ],
+        sparseVector: {
+          indices: [6, 7],
+          values: [0.5, 0.6],
+        },
       },
       {
         namespace,
@@ -213,7 +213,7 @@ describe("UPDATE with Index Client", () => {
 
     expect(updated).toBe(1);
 
-    const res = await sparseIndex.fetch(["id1"], {
+    const res = await hybridIndex.fetch(["id1"], {
       includeVectors: true,
       namespace,
     });
@@ -224,9 +224,9 @@ describe("UPDATE with Index Client", () => {
     const vector = res[0]!;
     expect(vector.id).toBe("id1");
     expect(vector.vector).toEqual([0.5, 0.6]);
-    expect(vector.sparseVector).toEqual([
-      [6, 7],
-      [0.5, 0.6],
-    ]);
+    expect(vector.sparseVector).toEqual({
+      indices: [6, 7],
+      values: [0.5, 0.6],
+    });
   });
 });

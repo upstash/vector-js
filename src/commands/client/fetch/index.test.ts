@@ -182,36 +182,29 @@ describe("FETCH with Index Client", () => {
     expect(result).toEqual([
       {
         id: "id0",
-        metadata: undefined,
-        data: undefined,
-        vector: undefined,
-        sparseVector: [
-          [0, 1],
-          [0.1, 0.2],
-        ],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
       },
       {
         id: "id1",
         metadata: { key: "value" },
-        data: undefined,
-        vector: undefined,
-        sparseVector: [
-          [0, 1],
-          [0.2, 0.3],
-        ],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
       },
       {
         id: "id2",
         metadata: { key: "value" },
         data: "data",
-        vector: undefined,
-        sparseVector: [
-          [0, 1],
-          [0.3, 0.4],
-        ],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
       },
-      // @ts-expect-error checking an index that doesn't exist
-      undefined,
+      null,
     ]);
   });
 
@@ -229,36 +222,32 @@ describe("FETCH with Index Client", () => {
     expect(result).toEqual([
       {
         id: "id0",
-        metadata: undefined,
-        data: undefined,
         vector: [0.1, 0.2],
-        sparseVector: [
-          [0, 1],
-          [0.1, 0.2],
-        ],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
       },
       {
         id: "id1",
         metadata: { key: "value" },
-        data: undefined,
         vector: [0.2, 0.3],
-        sparseVector: [
-          [0, 1],
-          [0.2, 0.3],
-        ],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
       },
       {
         id: "id2",
         metadata: { key: "value" },
         data: "data",
         vector: [0.3, 0.4],
-        sparseVector: [
-          [0, 1],
-          [0.3, 0.4],
-        ],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
       },
-      // @ts-expect-error checking an index that doesn't exist
-      undefined,
+      null,
     ]);
   });
 });

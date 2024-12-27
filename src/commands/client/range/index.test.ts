@@ -75,10 +75,10 @@ describe("RANGE with Index Client", () => {
       { length: 20 },
       (_, i) => ({
         id: `id-${i}`,
-        sparseVector: [
-          [Math.floor(Math.random() * 11), Math.floor(Math.random() * 11)],
-          [Math.random(), Math.random()],
-        ],
+        sparseVector: {
+          indices: [Math.floor(Math.random() * 11), Math.floor(Math.random() * 11)],
+          values: [Math.random(), Math.random()],
+        },
         metadata: { meta: i },
         data: `data-${i}`,
       })
@@ -134,10 +134,10 @@ describe("RANGE with Index Client", () => {
       (_, i) => ({
         id: `id-${i}`,
         vector: [Math.random(), Math.random()],
-        sparseVector: [
-          [Math.floor(Math.random() * 11), Math.floor(Math.random() * 11)],
-          [Math.random(), Math.random()],
-        ],
+        sparseVector: {
+          indices: [Math.floor(Math.random() * 11), Math.floor(Math.random() * 11)],
+          values: [Math.random(), Math.random()],
+        },
         metadata: { meta: i },
         data: `data-${i}`,
       })

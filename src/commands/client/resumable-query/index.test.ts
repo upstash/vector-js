@@ -133,8 +133,8 @@ describe("RESUMABLE QUERY", () => {
     // Assertion logic
     const { result, fetchNext, stop } = await sparseIndex.resumableQuery(
       {
-        sparseVector: [[0], [0.1]],
-        topK: 2,
+        sparseVector: { indices: [0, 1], values: [0.1, 0.2] },
+        topK: 1,
         includeVectors: true,
         includeMetadata: true,
         includeData: true,
@@ -147,42 +147,31 @@ describe("RESUMABLE QUERY", () => {
       }
     );
 
-    try {
-      expect(result.length).toBe(2);
-
-      // Validate first result
-      expect(result[0].id).toBe("id0");
-      expect(result[0].vector).toBeUndefined();
-      expect(result[0].sparseVector).toEqual([
-        [0, 1],
-        [0.3, 0.1],
-      ]);
-
-      // Validate second result
-      expect(result[1].id).toBe("id1");
-      expect(result[1].metadata).toEqual({ key: "value" });
-      expect(result[1].vector).toBeUndefined();
-      expect(result[1].sparseVector).toEqual([
-        [0, 2],
-        [0.2, 0.1],
-      ]);
-
-      // Fetch next result
-      const nextResult = await fetchNext(1);
-      expect(nextResult.length).toBe(1);
-
-      // Validate next result
-      expect(nextResult[0].id).toBe("id2");
-      expect(nextResult[0].metadata).toEqual({ key: "value" });
-      expect(nextResult[0].data).toBe("data");
-      expect(nextResult[0].vector).toBeUndefined();
-      expect(nextResult[0].sparseVector).toEqual([
-        [0, 3],
-        [0.1, 0.1],
-      ]);
-    } finally {
-      await stop();
-    }
+    expect(result).toEqual([
+      {
+        id: "id0",
+        score: 0.028_608_438,
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+    ]);
+    const nextResult = await fetchNext(1);
+    expect(nextResult).toEqual([
+      {
+        id: "id1",
+        score: 0.018_800_145,
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+        metadata: {
+          key: "value",
+        },
+      },
+    ]);
+    await stop();
   });
 
   test("should use resumable query for hybrid index", async () => {
@@ -193,7 +182,7 @@ describe("RESUMABLE QUERY", () => {
     const { result, fetchNext, stop } = await hybridIndex.resumableQuery(
       {
         vector: [0.1, 0.1],
-        sparseVector: [[0], [0.1]],
+        sparseVector: { indices: [0], values: [0.1] },
         topK: 2,
         includeVectors: true,
         includeMetadata: true,
@@ -207,41 +196,45 @@ describe("RESUMABLE QUERY", () => {
       }
     );
 
-    try {
-      expect(result.length).toBe(2);
-
-      // Validate first result
-      expect(result[0].id).toBe("id0");
-      expect(result[0].vector).toEqual([0.9, 0.9]);
-      expect(result[0].sparseVector).toEqual([
-        [0, 1],
-        [0.3, 0.1],
-      ]);
-
-      // Validate second result
-      expect(result[1].id).toBe("id1");
-      expect(result[1].metadata).toEqual({ key: "value" });
-      expect(result[1].vector).toEqual([0.8, 0.9]);
-      expect(result[1].sparseVector).toEqual([
-        [0, 2],
-        [0.2, 0.1],
-      ]);
-
-      // Fetch next result
-      const nextResult = await fetchNext(1);
-      expect(nextResult.length).toBe(1);
-
-      // Validate next result
-      expect(nextResult[0].id).toBe("id2");
-      expect(nextResult[0].metadata).toEqual({ key: "value" });
-      expect(nextResult[0].data).toBe("data");
-      expect(nextResult[0].vector).toEqual([0.7, 0.9]);
-      expect(nextResult[0].sparseVector).toEqual([
-        [0, 3],
-        [0.1, 0.1],
-      ]);
-    } finally {
-      await stop();
-    }
+    expect(result).toEqual([
+      {
+        id: "id2",
+        score: 0.617_851,
+        vector: [0.3, 0.4],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
+        metadata: {
+          key: "value",
+        },
+        data: "data",
+      },
+      {
+        id: "id0",
+        score: 0.5,
+        vector: [0.1, 0.2],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+    ]);
+    const nextResult = await fetchNext(1);
+    expect(nextResult).toEqual([
+      {
+        id: "id1",
+        score: 0.5,
+        vector: [0.2, 0.3],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+        metadata: {
+          key: "value",
+        },
+      },
+    ]);
+    await stop();
   });
 });

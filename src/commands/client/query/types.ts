@@ -10,7 +10,8 @@ export type QueryCommandPayload = {
   fusionAlgorithm?: FusionAlgorithm;
   queryMode?: QueryMode;
 } & (
-  | { vector?: number[]; sparseVector?: SparseVector; data?: never }
+  | { vector: number[]; sparseVector?: SparseVector; data?: never }
+  | { vector?: number[]; sparseVector: SparseVector; data?: never }
   | { data: string; vector?: never; sparseVector?: never }
 );
 

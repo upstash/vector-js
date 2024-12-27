@@ -3,7 +3,7 @@ import { InfoCommand } from "../commands/client/info";
 import { ResetCommand } from "../commands/client/reset";
 import { HttpClient, type RetryConfig } from "../http";
 import type { Index } from "../vector";
-import { UpsertCommand } from "@commands/client";
+import { type UpsertCommand } from "@commands/client";
 export * from "../platforms/nodejs";
 
 export type NonArrayType<T> = T extends Array<infer U> ? U : T;
@@ -110,26 +110,26 @@ export const populateSparseIndex = async (index: Index, namespace: string) => {
   const mockData: ConstructorParameters<typeof UpsertCommand>[0] = [
     {
       id: "id0",
-      sparseVector: [
-        [0, 1],
-        [0.1, 0.2],
-      ],
+      sparseVector: {
+        indices: [0, 1],
+        values: [0.1, 0.2],
+      },
     },
     {
       id: "id1",
-      sparseVector: [
-        [1, 2],
-        [0.2, 0.3],
-      ],
+      sparseVector: {
+        indices: [1, 2],
+        values: [0.2, 0.3],
+      },
       metadata: { key: "value" },
     },
   ];
   mockData.push({
     id: "id2",
-    sparseVector: [
-      [2, 3],
-      [0.3, 0.4],
-    ],
+    sparseVector: {
+      indices: [2, 3],
+      values: [0.3, 0.4],
+    },
     metadata: { key: "value" },
     // @ts-expect-error data field isn't allowed because this is
     // a vector payload. but we allow it for the test purposes
@@ -145,28 +145,28 @@ export const populateHybridIndex = async (index: Index, namespace: string) => {
     {
       id: "id0",
       vector: [0.1, 0.2],
-      sparseVector: [
-        [0, 1],
-        [0.1, 0.2],
-      ],
+      sparseVector: {
+        indices: [0, 1],
+        values: [0.1, 0.2],
+      },
     },
     {
       id: "id1",
       vector: [0.2, 0.3],
-      sparseVector: [
-        [1, 2],
-        [0.2, 0.3],
-      ],
+      sparseVector: {
+        indices: [1, 2],
+        values: [0.2, 0.3],
+      },
       metadata: { key: "value" },
     },
   ];
   mockData.push({
     id: "id2",
     vector: [0.3, 0.4],
-    sparseVector: [
-      [2, 3],
-      [0.3, 0.4],
-    ],
+    sparseVector: {
+      indices: [2, 3],
+      values: [0.3, 0.4],
+    },
     metadata: { key: "value" },
     // @ts-expect-error data field isn't allowed because this is
     // a vector payload. but we allow it for the test purposes
