@@ -5,10 +5,21 @@ type NoInfer<T> = T extends infer U ? U : never;
 
 type VectorPayload<TMetadata> = {
   id: number | string;
-  vector?: number[];
-  sparseVector?: SparseVector;
   metadata?: NoInfer<TMetadata>;
-};
+} & (
+  | {
+      vector: number[];
+      sparseVector?: never;
+    }
+  | {
+      vector?: never;
+      sparseVector: SparseVector;
+    }
+  | {
+      vector: number[];
+      sparseVector: SparseVector;
+    }
+);
 
 type DataPayload<TMetadata> = {
   id: number | string;

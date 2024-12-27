@@ -24,6 +24,7 @@ describe("UPSERT", () => {
   test("should return an error when vector is missing", () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
+      //@ts-expect-error Missing vector field in upsert command.
       await new UpsertCommand({ id: 1 }).exec(client);
     };
     expect(throwable).toThrow();
@@ -103,6 +104,7 @@ describe("UPSERT with Index Client", () => {
   test("should return an error when vector is missing", () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const throwable = async () => {
+      //@ts-expect-error Missing vector field in upsert command.
       await new UpsertCommand({ id: 1 }).exec(client);
     };
     expect(throwable).toThrow();

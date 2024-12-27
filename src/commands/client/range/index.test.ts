@@ -71,7 +71,7 @@ describe("RANGE with Index Client", () => {
   test("should use range for sparse", async () => {
     const namespace = "range-sparse";
 
-    const vectors: ConstructorParameters<typeof UpsertCommand>[0] = Array.from(
+    const vectors: ConstructorParameters<typeof UpsertCommand<Dict<unknown>>>[0] = Array.from(
       { length: 20 },
       (_, i) => ({
         id: `id-${i}`,
@@ -129,7 +129,7 @@ describe("RANGE with Index Client", () => {
   test("should use range for hybrid", async () => {
     const namespace = "range-hybrid";
 
-    const vectors: ConstructorParameters<typeof UpsertCommand>[0] = Array.from(
+    const vectors: ConstructorParameters<typeof UpsertCommand<Dict<unknown>>>[0] = Array.from(
       { length: 20 },
       (_, i) => ({
         id: `id-${i}`,
