@@ -69,6 +69,8 @@ describe("RANGE with Index Client", () => {
   });
 
   test("should use range for sparse", async () => {
+    console.log(process.env.SPARSE_UPSTASH_VECTOR_REST_URL);
+
     const namespace = "range-sparse";
 
     const vectors: ConstructorParameters<typeof UpsertCommand<Dict<unknown>>>[0] = Array.from(
