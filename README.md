@@ -49,12 +49,43 @@ const index = new Index<Metadata>({
   token: "<UPSTASH_VECTOR_REST_TOKEN>",
 });
 
-//Upsert data
+// Upsert to dense index
 await index.upsert([{
   id: 'upstash-rocks',
   vector: [
-    .... // embedding values
+    0.13, 0.87, ... // dense embedding
   ],
+  metadata: {
+    title: 'Lord of The Rings',
+    genre: 'fantasy',
+    category: 'classic'
+  }
+}])
+
+// Upsert to sparse index
+await index.upsert([{
+  id: 'upstash-rocks',
+  sparseVector: { // sparse embedding
+    indices: [2, 3],
+    values: [0.13, 0.87],
+  },
+  metadata: {
+    title: 'Lord of The Rings',
+    genre: 'fantasy',
+    category: 'classic'
+  }
+}])
+
+// Upsert to hybrid index
+await index.upsert([{
+  id: 'upstash-rocks',
+  vector: [
+    0.13, 0.87, ... // dense embedding
+  ],
+  sparseVector: {   // sparse embedding
+    indices: [2, 3],
+    values: [0.13, 0.87],
+  },
   metadata: {
     title: 'Lord of The Rings',
     genre: 'fantasy',
@@ -68,7 +99,7 @@ await index.upsert([{
   data: "Tokyo is the capital of Japan.",
 }])
 
-//Upsert data alongside with your embedding
+// Upsert data alongside with your embedding
 await index.upsert([{
   id: 'tokyo',
   data: "Tokyo is the capital of Japan.",
@@ -76,7 +107,7 @@ await index.upsert([{
 }])
 
 
-//Query data
+// Query data
 const results = await index.query<Metadata>(
   {
     vector: [
@@ -92,7 +123,7 @@ const results = await index.query<Metadata>(
   }
 )
 
-//Query with your data
+// Query with your data
 const results = await index.query(
   {
     data: "Where is the capital of Japan",
@@ -100,7 +131,7 @@ const results = await index.query(
   },
 )
 
-//Query with your data
+// Query with your data
 const results = await index.query(
   {
     vector: [
@@ -113,7 +144,7 @@ const results = await index.query(
 
 // If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
-//Update data
+// Update data
 await index.upsert(
   {
     id: "upstash-rocks",
@@ -128,19 +159,19 @@ await index.upsert(
   }
 );
 
-//Delete record
+// Delete record
 await index.delete("upstash-rocks", {namespace: "example-namespace"});
 
-//Delete many by id
+// Delete many by id
 await index.delete(["id-1", "id-2", "id-3"]);
 
-//Fetch records by their IDs
+// Fetch records by their IDs
 await index.fetch(["id-1", "id-2"], {namespace: "example-namespace"});
 
-//Fetch records by their IDs
+// Fetch records by their IDs
 await index.fetch(["id-1", "id-2"], {namespace: "example-namespace", includeData:true});
 
-//Fetch records with range
+// Fetch records with range
 await index.range(
   {
     cursor: 0,
@@ -152,19 +183,19 @@ await index.range(
   }
 );
 
-//Reset index
+// Reset index
 await index.reset();
 
-//Info about index
+// Info about index
 await index.info();
 
-//Random vector based on stored vectors
+// Random vector based on stored vectors
 await index.random({namespace: "example-namespace"});
 
-//List existing namesapces
+// List existing namesapces
 await index.listNamespaces();
 
-//Delete a namespace
+// Delete a namespace
 await index.deleteNamespace("namespace-to-be-deleted");
 ```
 
@@ -190,7 +221,7 @@ const index = new Index<Metadata>({
 
 const namespace = index.namespace("example-namespace");
 
-//Upsert Data
+// Upsert Data
 await namespace.upsert([{
   id: 'upstash-rocks',
   vector: [
@@ -203,7 +234,7 @@ await namespace.upsert([{
   }
 }])
 
-//Query Vector
+// Query Vector
 const results = await namespace.query<Metadata>(
   {
     vector: [
@@ -216,10 +247,10 @@ const results = await namespace.query<Metadata>(
   },
 )
 
-//Delete Record
+// Delete Record
 await namespace.delete("upstash-rocks");
 
-//Fetch records by their IDs
+// Fetch records by their IDs
 await namespace.fetch(["id-1", "id-2"]);
 ```
 
