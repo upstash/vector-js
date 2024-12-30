@@ -13,12 +13,12 @@ type VectorUpdatePayload = {
   id: string | number;
 } & (
   | {
-      vector?: never;
+      vector?: number[];
       sparseVector: SparseVector;
     }
   | {
       vector: number[];
-      sparseVector?: never;
+      sparseVector?: SparseVector;
     }
   | {
       vector: number[];

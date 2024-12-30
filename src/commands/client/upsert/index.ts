@@ -9,10 +9,10 @@ type VectorPayload<TMetadata> = {
 } & (
   | {
       vector: number[];
-      sparseVector?: never;
+      sparseVector?: SparseVector;
     }
   | {
-      vector?: never;
+      vector?: number[];
       sparseVector: SparseVector;
     }
   | {
