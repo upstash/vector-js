@@ -5,6 +5,7 @@ import type {
   QueryEndpointVariants,
   QueryResult,
 } from "../types";
+import { UpstashError } from "@error/index";
 
 export class QueryCommand<TMetadata> extends Command<QueryResult<TMetadata>[]> {
   constructor(payload: QueryCommandPayload, options?: QueryCommandOptions) {
@@ -12,6 +13,8 @@ export class QueryCommand<TMetadata> extends Command<QueryResult<TMetadata>[]> {
 
     if ("data" in payload) {
       endpoint = "query-data";
+    } else if (!payload.vector && !payload.sparseVector) {
+      throw new UpstashError("Either data, vector or sparseVector should be provided.");
     }
 
     if (options?.namespace) {

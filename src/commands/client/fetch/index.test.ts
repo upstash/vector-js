@@ -4,6 +4,8 @@ import {
   Index,
   awaitUntilIndexed,
   newHttpClient,
+  populateHybridIndex,
+  populateSparseIndex,
   randomID,
   range,
   resetIndexes,
@@ -68,6 +70,14 @@ describe("FETCH with Index Client", () => {
   const index = new Index({
     token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
     url: process.env.UPSTASH_VECTOR_REST_URL!,
+  });
+  const sparseIndex = new Index({
+    token: process.env.SPARSE_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.SPARSE_UPSTASH_VECTOR_REST_URL!,
+  });
+  const hybridIndex = new Index({
+    token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
   });
 
   test("should fetch array of records by IDs succesfully", async () => {
@@ -156,5 +166,88 @@ describe("FETCH with Index Client", () => {
     });
     const { data: _data, ...mockDataWithoutData } = mockData;
     expect(fetchWithID).toEqual([mockDataWithoutData]);
+  });
+
+  test("should fetch from sparse", async () => {
+    const namespace = "fetch-hybrid";
+    await populateSparseIndex(sparseIndex, namespace);
+
+    const result = await sparseIndex.fetch(["id0", "id1", "id2", "id3"], {
+      includeVectors: true,
+      includeMetadata: true,
+      includeData: true,
+      namespace,
+    });
+
+    expect(result).toEqual([
+      {
+        id: "id0",
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+      {
+        id: "id1",
+        metadata: { key: "value" },
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+      },
+      {
+        id: "id2",
+        metadata: { key: "value" },
+        data: "data",
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
+      },
+      null,
+    ]);
+  });
+
+  test("should fetch from hybrid", async () => {
+    const namespace = "fetch-hybrid";
+    await populateHybridIndex(hybridIndex, namespace);
+
+    const result = await hybridIndex.fetch(["id0", "id1", "id2", "id3"], {
+      includeVectors: true,
+      includeMetadata: true,
+      includeData: true,
+      namespace,
+    });
+
+    expect(result).toEqual([
+      {
+        id: "id0",
+        vector: [0.1, 0.2],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+      {
+        id: "id1",
+        metadata: { key: "value" },
+        vector: [0.2, 0.3],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+      },
+      {
+        id: "id2",
+        metadata: { key: "value" },
+        data: "data",
+        vector: [0.3, 0.4],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
+      },
+      null,
+    ]);
   });
 });

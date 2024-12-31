@@ -54,7 +54,7 @@ describe("Abort", () => {
   });
 });
 
-describe.only("retry", () => {
+describe("retry", () => {
   test("should terminate after sleeping 5 times", async () => {
     // init a cient which will always get errors
     const client = newHttpClient(

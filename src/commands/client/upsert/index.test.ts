@@ -4,6 +4,8 @@ import {
   Index,
   awaitUntilIndexed,
   newHttpClient,
+  populateHybridIndex,
+  populateSparseIndex,
   randomID,
   range,
   resetIndexes,
@@ -173,6 +175,16 @@ describe("UPSERT with Index Client", () => {
 
 describe("Upsert with new data field", () => {
   afterAll(async () => await resetIndexes());
+
+  const sparseIndex = new Index({
+    token: process.env.SPARSE_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.SPARSE_UPSTASH_VECTOR_REST_URL!,
+  });
+  const hybridIndex = new Index({
+    token: process.env.HYBRID_UPSTASH_VECTOR_REST_TOKEN!,
+    url: process.env.HYBRID_UPSTASH_VECTOR_REST_URL!,
+  });
+
   test("should add data to data field - /upsert-data", async () => {
     const id = randomID();
     const data = "testing data";
@@ -222,5 +234,80 @@ describe("Upsert with new data field", () => {
     }).exec(client);
 
     expect(result.map((r) => r.data)).toEqual([data]);
+  });
+
+  test("should upsert to sparse", async () => {
+    const namespace = "upsert-sparse";
+
+    // populate will upsert vectors
+    const mockData = await populateSparseIndex(sparseIndex, namespace);
+
+    const result = await sparseIndex.fetch(mockData.map((vector) => vector.id) as string[], {
+      includeVectors: true,
+      namespace,
+    });
+
+    expect(result).toEqual([
+      {
+        id: "id0",
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+      {
+        id: "id1",
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+      },
+      {
+        id: "id2",
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
+      },
+    ]);
+  });
+
+  test("should upsert to hybrid", async () => {
+    const namespace = "upsert-hybrid";
+
+    // populate will upsert vectors
+    const mockData = await populateHybridIndex(hybridIndex, namespace);
+
+    const result = await hybridIndex.fetch(mockData.map((vector) => vector.id) as string[], {
+      includeVectors: true,
+      namespace,
+    });
+
+    expect(result).toEqual([
+      {
+        id: "id0",
+        vector: [0.1, 0.2],
+        sparseVector: {
+          indices: [0, 1],
+          values: [0.1, 0.2],
+        },
+      },
+      {
+        id: "id1",
+        vector: [0.2, 0.3],
+        sparseVector: {
+          indices: [1, 2],
+          values: [0.2, 0.3],
+        },
+      },
+      {
+        id: "id2",
+        vector: [0.3, 0.4],
+        sparseVector: {
+          indices: [2, 3],
+          values: [0.3, 0.4],
+        },
+      },
+    ]);
   });
 });

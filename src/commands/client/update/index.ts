@@ -1,4 +1,4 @@
-import type { NAMESPACE } from "@commands/client/types";
+import type { NAMESPACE, SparseVector } from "@commands/client/types";
 import { Command } from "@commands/command";
 
 type NoInfer<T> = T extends infer U ? U : never;
@@ -11,8 +11,20 @@ type MetadataUpdatePayload<TMetadata> = {
 
 type VectorUpdatePayload = {
   id: string | number;
-  vector: number[];
-};
+} & (
+  | {
+      vector?: number[];
+      sparseVector: SparseVector;
+    }
+  | {
+      vector: number[];
+      sparseVector?: SparseVector;
+    }
+  | {
+      vector: number[];
+      sparseVector: SparseVector;
+    }
+);
 
 type DataUpdatePayload = {
   id: string | number;
