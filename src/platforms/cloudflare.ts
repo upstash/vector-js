@@ -124,3 +124,4 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
 
 export { type Requester, type UpstashRequest, type UpstashResponse } from "@http";
 export { QueryMode, FusionAlgorithm, WeightingStrategy } from "@commands/client/query";
+export { type SparseVector } from "@commands/client/types";
