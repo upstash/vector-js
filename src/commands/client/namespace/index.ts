@@ -7,6 +7,7 @@ import {
   UpdateCommand,
   UpsertCommand,
 } from "@commands/client";
+import { ResumableQuery, type ResumableQueryPayload } from "../resumable-query";
 import type { Dict } from "@commands/client/types";
 import type { Requester } from "@http";
 import type { CommandArgs } from "../../../vector";
@@ -140,6 +141,42 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    */
   query = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof QueryCommand>) =>
     new QueryCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
+
+
+  /**
+   * Initializes a resumable query operation on the vector database.
+   * This method allows for querying large result sets in multiple chunks or implementing pagination.
+   *
+   * @template TMetadata
+   * @param {ResumableQueryPayload} args - The arguments for the resumable query.
+   * @param {number} args.maxIdle - The maximum idle time in seconds before the query session expires.
+   * @param {number} args.topK - The number of top results to return in each fetch operation.
+   * @param {number[]} args.vector - The query vector used for similarity search.
+   * @param {boolean} [args.includeMetadata] - Whether to include metadata in the query results.
+   * @param {boolean} [args.includeVectors] - Whether to include vectors in the query results.
+   * @param {Object} [options] - Additional options for the query.
+   * @returns {Promise<ResumableQuery<TMetadata>>} A promise that resolves to a ResumableQuery object.
+   * @example
+   * const { result, fetchNext, stop } = await index.namespace("ns").resumableQuery({
+   *   maxIdle: 3600,
+   *   topK: 50,
+   *   vector: [0.1, 0.2, 0.3, ...],
+   *   includeMetadata: true,
+   *   includeVectors: true
+   * }, { namespace: 'my-namespace' });
+   *
+   * const firstBatch = await fetchNext(10);
+   * const secondBatch = await fetchNext(10);
+   * await stop(); // End the query session
+   */
+  resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(
+    args: ResumableQueryPayload,
+  ) => {
+    const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, this.namespace);
+    const initialQuery = await resumableQuery.start();
+    const { fetchNext, stop } = resumableQuery;
+    return { fetchNext, stop, result: initialQuery.scores };
+  };
 
   /**
    * Deletes a specific item or items from the index namespace by their ID(s).   *
