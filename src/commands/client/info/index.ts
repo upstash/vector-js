@@ -1,17 +1,30 @@
 import { Command } from "@commands/command";
 
 type NamespaceTitle = string;
+type SimilarityFunction = "COSINE" | "EUCLIDEAN" | "DOT_PRODUCT";
 type NamespaceInfo = {
   vectorCount: number;
   pendingVectorCount: number;
 };
+
+type DenseIndexInfo = {
+  dimension: number;
+  similarityFunction: SimilarityFunction;
+  embeddingModel: string;
+}
+
+type SparseIndexInfo = {
+  embeddingModel: string;
+}
 
 export type InfoResult = {
   vectorCount: number;
   pendingVectorCount: number;
   indexSize: number;
   dimension: number;
-  similarityFunction: "COSINE" | "EUCLIDEAN" | "DOT_PRODUCT";
+  similarityFunction: SimilarityFunction;
+  denseIndex?: DenseIndexInfo;
+  sparseIndex?: SparseIndexInfo;
   namespaces: Record<NamespaceTitle, NamespaceInfo>;
 };
 
