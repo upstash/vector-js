@@ -258,6 +258,22 @@ await namespace.fetch(["id-1", "id-2"]);
 
 If you wanna learn more about filtering check: [Metadata Filtering](https://upstash.com/docs/vector/features/filtering)
 
+## Telemetry
+
+This sdk sends anonymous telemetry data to help us improve your experience.
+We collect the following:
+
+- SDK version
+- Platform (Cloudflare, AWS or Vercel)
+- Runtime version (node@18.x)
+
+You can opt out by setting the `UPSTASH_DISABLE_TELEMETRY` environment variable
+to any truthy value.
+
+```sh
+UPSTASH_DISABLE_TELEMETRY=1
+```
+
 ## Troubleshooting
 
 We have a [Discord](upstash.com/discord) for common problems. If you can't find a solution, please [open an issue](https://github.com/upstash/vector-js/issues/new).

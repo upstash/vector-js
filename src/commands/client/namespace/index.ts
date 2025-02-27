@@ -142,7 +142,6 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
   query = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof QueryCommand>) =>
     new QueryCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
-
   /**
    * Initializes a resumable query operation on the vector database.
    * This method allows for querying large result sets in multiple chunks or implementing pagination.
@@ -169,9 +168,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * const secondBatch = await fetchNext(10);
    * await stop(); // End the query session
    */
-  resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(
-    args: ResumableQueryPayload,
-  ) => {
+  resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(args: ResumableQueryPayload) => {
     const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, this.namespace);
     const initialQuery = await resumableQuery.start();
     const { fetchNext, stop } = resumableQuery;
