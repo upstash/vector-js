@@ -1,5 +1,3 @@
-
-
 type IdsPayload = (number[] | string[]) | number | string;
 
 type ObjectPayload =
