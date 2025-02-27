@@ -43,16 +43,25 @@ export class Index<TIndexMetadata extends Dict = Dict> {
   namespace = (namespace: string) => new Namespace<TIndexMetadata>(this.client, namespace);
 
   /**
-   * Deletes a specific item or items from the index by their ID(s).   *
+   * Deletes items from the index by id, by id prefix, or by filter.
    *
    * @example
    * ```js
-   * const result = await index.delete('test-id');
-   * // { deleted: 1 }
+   * // Delete by id
+   * await index.delete("test-id");
+
+   * // Delete by ids
+   * await index.delete(["test-id1", "test-id2"]);
+
+   * // Delete by id prefix
+   * await index.delete({ prefix: "test-" });
+
+   * // Delete by filter
+   * await index.delete({ filter: "age >= 23" });
    * ```
    *
-   * @param id - List of ids or single id
-   * @returns Number of deleted vectors like `{ deleted: number }`. The number will be 0 if no vectors are deleted.
+   * @param args - A single id, an array of ids, a prefix, or a filter to delete items from the index.
+   * @returns Number of deleted vectors in the format `{ deleted: number }`.If no vectors are deleted, returns `{ deleted: 0 }`.
    */
   delete = (args: CommandArgs<typeof DeleteCommand>, options?: { namespace?: string }) =>
     new DeleteCommand(args, options).exec(this.client);

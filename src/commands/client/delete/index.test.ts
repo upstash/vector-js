@@ -48,6 +48,72 @@ describe("DELETE", () => {
       deleted: 1,
     });
   });
+
+  test("should delete using object with ids", async () => {
+    const initialVector = range(0, 384);
+    const idsToUpsert = [randomID(), randomID(), randomID()];
+
+    await new UpsertCommand(idsToUpsert.map((x) => ({ id: x, vector: initialVector }))).exec(
+      client
+    );
+    await awaitUntilIndexed(client);
+
+    const res = await new DeleteCommand({ ids: idsToUpsert }).exec(client);
+    expect(res).toEqual({
+      deleted: 3,
+    });
+  });
+
+  test("should delete by prefix", async () => {
+    const initialVector = range(0, 384);
+    const prefix = "test_prefix_";
+    const idsToUpsert = [`${prefix}1`, `${prefix}2`, `${prefix}3`, "different_prefix_1"];
+
+    await new UpsertCommand(idsToUpsert.map((x) => ({ id: x, vector: initialVector }))).exec(
+      client
+    );
+    await awaitUntilIndexed(client);
+
+    const res = await new DeleteCommand({ prefix: prefix }).exec(client);
+    expect(res).toEqual({
+      deleted: 3,
+    });
+  });
+
+  test("should delete by filter", async () => {
+    const initialVector = range(0, 384);
+    const idsToUpsert = [
+      {
+        id: randomID(),
+        vector: initialVector,
+        metadata: { type: "animal", category: "mammal" },
+      },
+      {
+        id: randomID(),
+        vector: initialVector,
+        metadata: { type: "animal", category: "reptile" },
+      },
+      {
+        id: randomID(),
+        vector: initialVector,
+        metadata: { type: "plant" },
+      },
+    ];
+
+    await new UpsertCommand(idsToUpsert).exec(client);
+    await awaitUntilIndexed(client);
+
+    const res = await new DeleteCommand({ filter: "type = 'animal'" }).exec(client);
+    expect(res).toEqual({
+      deleted: 2,
+    });
+  });
+
+  test("should throw when multiple delete criteria are provided", async () => {
+    expect(() => new DeleteCommand({ ids: ["1"], prefix: "test_" }).exec(client)).toThrow(
+      "Only one of ids, prefix or filter should be provided."
+    );
+  });
 });
 
 describe("DELETE with Index Client", () => {
@@ -78,6 +144,88 @@ describe("DELETE with Index Client", () => {
     await awaitUntilIndexed(client);
 
     const deletionResult = await index.delete(idsToUpsert);
+    expect(deletionResult).toEqual({
+      deleted: 3,
+    });
+  });
+
+  test("should delete by prefix using index client", async () => {
+    const initialVector = range(0, 384);
+    const prefix = "test_prefix_";
+    const idsToUpsert = [`${prefix}1`, `${prefix}2`, `${prefix}3`, "different_prefix_1"];
+
+    await index.upsert(idsToUpsert.map((id) => ({ id, vector: initialVector })));
+    await awaitUntilIndexed(client);
+
+    const deletionResult = await index.delete({ prefix });
+    expect(deletionResult).toEqual({
+      deleted: 3,
+    });
+  });
+
+  test("should delete by filter using index client", async () => {
+    const initialVector = range(0, 384);
+    const idsToUpsert = [
+      {
+        id: randomID(),
+        vector: initialVector,
+        metadata: { type: "animal", category: "mammal" },
+      },
+      {
+        id: randomID(),
+        vector: initialVector,
+        metadata: { type: "animal", category: "reptile" },
+      },
+      {
+        id: randomID(),
+        vector: initialVector,
+        metadata: { type: "plant" },
+      },
+    ];
+
+    await index.upsert(idsToUpsert);
+    await awaitUntilIndexed(client);
+
+    const deletionResult = await index.delete({ filter: "type = 'animal'" });
+    expect(deletionResult).toEqual({
+      deleted: 2,
+    });
+  });
+});
+
+describe("DELETE with Index Client and Namespaces", () => {
+  const index = new Index();
+  const namespace = "test_namespace";
+
+  afterAll(async () => {
+    await index.reset();
+  });
+
+  test("should delete single record in namespace", async () => {
+    const initialVector = range(0, 384);
+    const id = randomID();
+
+    await index.upsert({ id, vector: initialVector }, { namespace });
+    await awaitUntilIndexed(client);
+
+    const deletionResult = await index.delete(id, { namespace });
+    expect(deletionResult).toEqual({
+      deleted: 1,
+    });
+  });
+
+  test("should delete by prefix in namespace", async () => {
+    const initialVector = range(0, 384);
+    const prefix = "test_prefix_";
+    const idsToUpsert = [`${prefix}1`, `${prefix}2`, `${prefix}3`, "different_prefix_1"];
+
+    await index.upsert(
+      idsToUpsert.map((id) => ({ id, vector: initialVector })),
+      { namespace }
+    );
+    await awaitUntilIndexed(client);
+
+    const deletionResult = await index.delete({ prefix }, { namespace });
     expect(deletionResult).toEqual({
       deleted: 3,
     });
