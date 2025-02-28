@@ -10,11 +10,11 @@ type NamespaceInfo = {
 type DenseIndexInfo = {
   dimension: number;
   similarityFunction: SimilarityFunction;
-  embeddingModel: string;
+  embeddingModel?: string;
 }
 
 type SparseIndexInfo = {
-  embeddingModel: string;
+  embeddingModel?: string;
 }
 
 export type InfoResult = {
