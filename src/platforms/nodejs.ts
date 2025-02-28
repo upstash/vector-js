@@ -1,8 +1,10 @@
 import { HttpClient, type Requester, type RequesterConfig } from "@http";
 import * as core from "./../vector";
+import type { Dict } from "@commands/client/types";
+import { VERSION } from "../../version";
+import { getRuntime } from "@utils/get-runtime";
 
 export type * from "@commands/types";
-import type { Dict } from "@commands/client/types";
 
 /**
  * Connection credentials for upstash vector.
@@ -23,6 +25,14 @@ export type IndexConfig = {
    * For more check: https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
    */
   signal?: AbortSignal;
+
+  /**
+   * Enable telemetry to help us improve the SDK.
+   * The sdk will send the sdk version, platform and node version as telemetry headers.
+   *
+   * @default true
+   */
+  enableTelemetry?: boolean;
 } & RequesterConfig;
 
 /**
@@ -93,10 +103,26 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
       console.warn("The vector token contains whitespace or newline, which can cause errors!");
     }
 
+    const enableTelemetry = process.env.UPSTASH_DISABLE_TELEMETRY
+      ? false
+      : (configOrRequester?.enableTelemetry ?? true);
+
+    const telemetryHeaders: Record<string, string> = enableTelemetry
+      ? {
+          "Upstash-Telemetry-Sdk": `upstash-vector-js@${VERSION}`,
+          "Upstash-Telemetry-Platform": process.env.VERCEL
+            ? "vercel"
+            : process.env.AWS_REGION
+              ? "aws"
+              : "unknown",
+          "Upstash-Telemetry-Runtime": getRuntime(),
+        }
+      : {};
+
     const client = new HttpClient({
       baseUrl: url,
       retry: configOrRequester?.retry,
-      headers: { authorization: `Bearer ${token}` },
+      headers: { authorization: `Bearer ${token}`, ...telemetryHeaders },
       cache:
         configOrRequester?.cache === false ? undefined : configOrRequester?.cache || "no-store",
       signal: configOrRequester?.signal,

@@ -3,6 +3,7 @@ import * as core from "./../vector";
 
 export type * from "@commands/types";
 import type { Dict } from "@commands/client/types";
+import { VERSION } from "../../version";
 
 /**
  * Connection credentials for upstash vector.
@@ -23,6 +24,14 @@ export type IndexConfig = {
    * For more check: https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
    */
   signal?: AbortSignal;
+
+  /**
+   * Enable telemetry to help us improve the SDK.
+   * The sdk will send the sdk version, platform and node version as telemetry headers.
+   *
+   * @default true
+   */
+  enableTelemetry?: boolean;
 } & RequesterConfig;
 
 /**
@@ -73,10 +82,21 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
       console.warn("The vector token contains whitespace or newline, which can cause errors!");
     }
 
+    const enableTelemetry = safeProcess.UPSTASH_DISABLE_TELEMETRY
+      ? false
+      : (config?.enableTelemetry ?? true);
+
+    const telemetryHeaders: Record<string, string> = enableTelemetry
+      ? {
+          "Upstash-Telemetry-Sdk": `upstash-vector-js@${VERSION}`,
+          "Upstash-Telemetry-Platform": "cloudflare",
+        }
+      : {};
+
     const client = new HttpClient({
       baseUrl: url,
       retry: config?.retry,
-      headers: { authorization: `Bearer ${token}` },
+      headers: { authorization: `Bearer ${token}`, ...telemetryHeaders },
       signal: config?.signal,
       cache: config?.cache === false ? undefined : config?.cache,
     });
@@ -118,7 +138,13 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
       }
     }
 
-    return new Index({ ...config, url, token });
+    return new Index({
+      // @ts-expect-error We don't need to type this in the cf env type
+      enableTelemetry: env?.UPSTASH_DISABLE_TELEMETRY ? false : undefined,
+      ...config,
+      url,
+      token,
+    });
   }
 }
 
