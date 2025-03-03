@@ -226,23 +226,25 @@ export class Index<TIndexMetadata extends Dict = Dict> {
   ) => new UpdateCommand<TMetadata>(args, options).exec(this.client);
 
   /**
-   * It's used for retrieving specific items from the index, optionally including
-   * their metadata and feature vectors.
+   * Fetches specific items from the index by their IDs or by an id prefix.
+   *
+   * Note: While using id prefix, the paginated `range` command is recommended to prevent timeouts on large result sets.
    *
    * @example
    * ```js
-   * const fetchIds = ['123', '456'];
-   * const fetchOptions = { includeMetadata: true, includeVectors: false };
-   * const fetchResults = await index.fetch(fetchIds, fetchOptions);
-   * console.log(fetchResults); // Outputs the fetched items
+   * // Using ids
+   * await index.fetch(["test-1", "test-2"], { includeMetadata: true });
+   *
+   * // Using id prefix
+   * await index.fetch({ prefix: "test-" });
    * ```
    *
    * @param {...CommandArgs<typeof FetchCommand>} args - The arguments for the fetch command.
-   * @param {(number[]|string[])} args - An array of IDs of the items to be fetched.
-   * @param {FetchCommandOptions} args - Options for the fetch operation.
-   * @param {boolean} [args.includeMetadata=false] - Optionally include metadata of the fetched items.
-   * @param {boolean} [args.includeVectors=false] - Optionally include feature vectors of the fetched items.
-   * @param {boolean} [args.metadataUpdateMode="OVERWRITE"] - Specifies whether to overwrite or patch the metadata values.
+   * @param {FetchPayload} args[0] - An array of IDs or the id prefix of the items to be fetched.
+   * @param {FetchCommandOptions} args[1] - Options for the fetch operation.
+   * @param {boolean} [args[1].includeMetadata=false] - Optionally include metadata of the fetched items.
+   * @param {boolean} [args[1].includeVectors=false] - Optionally include feature vectors of the fetched items.
+   * @param {string} [args[1].namespace = ""] - The namespace of the index to fetch items from.
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
    */
@@ -281,27 +283,28 @@ export class Index<TIndexMetadata extends Dict = Dict> {
   reset = (options?: ResetCommandOptions) => new ResetCommand(options).exec(this.client);
 
   /**
-   * Retrieves a range of items from the index.
+   * Retrieves a paginated range of items from the index. Optionally filter results by an id prefix.
+   * Returns items in batches with a cursor for pagination.
    *
    * @example
    * ```js
-   * const rangeArgs = {
-   *   cursor: 0,
+   * const args = {
    *   limit: 10,
    *   includeVectors: true,
    *   includeMetadata: false
    * };
-   * const rangeResults = await index.range(rangeArgs);
-   * console.log(rangeResults); // Outputs the result of the range operation
-   * ```
+   * await index.range(args);
    *
-   * You can also pass a namespace like:
-   *
-   * ```js
-   * const rangeResults = await index.range(rangeArgs, { namespace: "ns" });
+   * // Use the cursor to get the next page of results
+   * const nextPage = await index.range({
+   *   // You have to pass the arguments from the first call
+   *   ...args,
+   *   cursor: rangeResult.nextCursor,
+   * });
    * ```
    *
    * @param {CommandArgs<typeof RangeCommand>} args - The arguments for the range command.
+   * @param {string} [args.prefix] - The prefix of the items to be fetched.
    * @param {number|string} args.cursor - The starting point (cursor) for the range query.
    * @param {number} args.limit - The maximum number of items to return in this range.
    * @param {boolean} [args.includeVectors=false] - Optionally include the feature vectors of the items in the response.

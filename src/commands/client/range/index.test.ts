@@ -50,13 +50,13 @@ describe("RANGE with Index Client", () => {
   afterAll(async () => {
     await index.reset();
   });
+
   test("should paginate records successfully", async () => {
     const randomizedData = Array.from({ length: 20 })
       .fill("")
       .map(() => ({ id: randomID(), vector: range(0, 384) }));
 
     await index.upsert(randomizedData);
-
     await awaitUntilIndexed(index);
 
     const res = await index.range({
@@ -66,6 +66,87 @@ describe("RANGE with Index Client", () => {
     });
 
     expect(res.nextCursor).toBe("5");
+  });
+
+  test("should paginate with prefix using index client", async () => {
+    const prefix = `prefix-${Math.floor(Math.random() * 10000)}-`;
+    const data = [
+      { id: `${prefix}1`, vector: range(0, 384) },
+      { id: `${prefix}2`, vector: range(0, 384) },
+      { id: `${prefix}3`, vector: range(0, 384) },
+      { id: "different_prefix_1", vector: range(0, 384) },
+      { id: `${prefix}4`, vector: range(0, 384) },
+    ];
+
+    await index.upsert(data);
+    await awaitUntilIndexed(index);
+
+    // First page
+    const res = await index.range({
+      cursor: 0,
+      limit: 2,
+      includeVectors: true,
+      prefix,
+    });
+
+    expect(res.vectors.length).toBe(2);
+    expect(res.vectors.every((item) => item.id.startsWith(prefix))).toBe(true);
+
+    // Second page with same prefix
+    const nextPage = await index.range({
+      cursor: res.nextCursor,
+      limit: 2,
+      includeVectors: true,
+      prefix,
+    });
+
+    expect(nextPage.vectors.length).toBe(2);
+    expect(nextPage.vectors.every((item) => item.id.startsWith(prefix))).toBe(true);
+    expect(nextPage.nextCursor).toBe("");
+  });
+
+  test("should paginate with prefix in namespace", async () => {
+    const prefix = `prefix-${Math.floor(Math.random() * 10000)}-`;
+    const namespace = "test_namespace";
+    const data = [
+      { id: `${prefix}1`, vector: range(0, 384) },
+      { id: `${prefix}2`, vector: range(0, 384) },
+      { id: `${prefix}3`, vector: range(0, 384) },
+      { id: "different_prefix_1", vector: range(0, 384) },
+      { id: `${prefix}4`, vector: range(0, 384) },
+    ];
+
+    await index.upsert(data, { namespace });
+    await awaitUntilIndexed(index);
+
+    // First page with prefix
+    const res = await index.range(
+      {
+        cursor: 0,
+        limit: 2,
+        includeVectors: true,
+        prefix,
+      },
+      { namespace }
+    );
+
+    expect(res.vectors.length).toBe(2);
+    expect(res.vectors.every((item) => item.id.startsWith(prefix))).toBe(true);
+
+    // Second page with same prefix
+    const nextPage = await index.range(
+      {
+        cursor: res.nextCursor,
+        limit: 2,
+        includeVectors: true,
+        prefix,
+      },
+      { namespace }
+    );
+
+    expect(nextPage.vectors.length).toBe(2);
+    expect(nextPage.vectors.every((item) => item.id.startsWith(prefix))).toBe(true);
+    expect(nextPage.nextCursor).toBe("");
   });
 
   test("should use range for sparse", async () => {

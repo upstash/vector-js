@@ -86,19 +86,21 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
   ) => new UpdateCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
   /**
-   * It's used for retrieving specific items from the index namespace, optionally including
-   * their metadata and feature vectors.
+   * Fetches specific items from the index by their IDs or by an id prefix.
+   *
+   * Note: While using id prefix, the paginated `range` command is recommended to prevent timeouts on large result sets.
    *
    * @example
    * ```js
-   * const fetchIds = ['123', '456'];
-   * const fetchOptions = { includeMetadata: true, includeVectors: false };
-   * const fetchResults = await index.namespace("ns").fetch(fetchIds, fetchOptions);
-   * console.log(fetchResults); // Outputs the fetched items
+   * // Using ids
+   * await index.namespace("ns").fetch(["test-1", "test-2"], { includeMetadata: true });
+   *
+   * // Using id prefix
+   * await index.namespace("ns").fetch({ prefix: "test-" });
    * ```
    *
    * @param {...CommandArgs<typeof FetchCommand>} args - The arguments for the fetch command.
-   * @param {(number[]|string[])} args[0] - An array of IDs of the items to be fetched.
+   * @param {FetchPayload} args[0] - An array of IDs or the id prefix of the items to be fetched.
    * @param {FetchCommandOptions} args[1] - Options for the fetch operation.
    * @param {boolean} [args[1].includeMetadata=false] - Optionally include metadata of the fetched items.
    * @param {boolean} [args[1].includeVectors=false] - Optionally include feature vectors of the fetched items.
@@ -200,21 +202,28 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
     new DeleteCommand(args, { namespace: this.namespace }).exec(this.client);
 
   /**
-   * Retrieves a range of items from the index.
+   * Retrieves a paginated range of items from the index. Optionally filter results by an id prefix.
+   * Returns items in batches with a cursor for pagination.
    *
    * @example
    * ```js
-   * const rangeArgs = {
-   *   cursor: 0,
+   * const args = {
    *   limit: 10,
    *   includeVectors: true,
    *   includeMetadata: false
    * };
-   * const rangeResults = await index.namespace("ns").range(rangeArgs);
-   * console.log(rangeResults); // Outputs the result of the range operation
+   * await index.namespace("ns").range(args);
+   *
+   * // Use the cursor to get the next page of results
+   * const nextPage = await index.namespace("ns").range({
+   *   // You have to pass the arguments from the first call
+   *   ...args,
+   *   cursor: rangeResult.nextCursor,
+   * });
    * ```
    *
    * @param {CommandArgs<typeof RangeCommand>} args - The arguments for the range command.
+   * @param {string} [args.prefix] - The prefix of the items to be fetched.
    * @param {number|string} args.cursor - The starting point (cursor) for the range query.
    * @param {number} args.limit - The maximum number of items to return in this range.
    * @param {boolean} [args.includeVectors=false] - Optionally include the feature vectors of the items in the response.
