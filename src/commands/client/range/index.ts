@@ -2,21 +2,14 @@ import type { NAMESPACE, Vector } from "@commands/client/types";
 import type { Dict } from "@commands/client/types";
 import { Command } from "@commands/command";
 
-type BaseRangePayload = {
+type RangeCommandPayload = {
   cursor: number | string;
   limit: number;
   includeVectors?: boolean;
   includeMetadata?: boolean;
   includeData?: boolean;
+  prefix?: string;
 };
-
-type RangeCommandPayload = BaseRangePayload &
-  (
-    | {}
-    | {
-        prefix: string;
-      }
-  );
 
 type RangeCommandOptions = { namespace?: string };
 
