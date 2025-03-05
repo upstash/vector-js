@@ -26,36 +26,7 @@ export class DeleteCommand extends Command<{ deleted: number }> {
         endpoint
       );
     } else if (typeof payload === "object") {
-      // Check if more than one key is present
-      const keysCount = Object.keys(payload)
-        .map((key) => ["ids", "prefix", "filter"].includes(key))
-        .filter(Boolean).length;
-      if (keysCount > 1) {
-        throw new Error("Only one of ids, prefix or filter should be provided.");
-      }
-
-      if ("ids" in payload) {
-        super(
-          {
-            ids: payload.ids,
-          },
-          endpoint
-        );
-      } else if ("prefix" in payload) {
-        super(
-          {
-            prefix: payload.prefix,
-          },
-          endpoint
-        );
-      } else if ("filter" in payload) {
-        super(
-          {
-            filter: payload.filter,
-          },
-          endpoint
-        );
-      }
+      super(payload, endpoint);
     }
   }
 }

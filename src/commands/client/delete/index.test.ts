@@ -110,8 +110,8 @@ describe("DELETE", () => {
   });
 
   test("should throw when multiple delete criteria are provided", async () => {
-    expect(() => new DeleteCommand({ ids: ["1"], prefix: "test_" }).exec(client)).toThrow(
-      "Only one of ids, prefix or filter should be provided."
+    expect(new DeleteCommand({ ids: ["1"], prefix: "test_" }).exec(client)).rejects.toThrow(
+      "Only and only one of the ids, prefix, or filter must be provided."
     );
   });
 });
