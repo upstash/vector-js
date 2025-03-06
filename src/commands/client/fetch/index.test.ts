@@ -63,6 +63,45 @@ describe("FETCH", () => {
 
     expect(res).toEqual([mockData]);
   });
+
+  test("should accept id's from object payload", async () => {
+    const mockData = {
+      id: randomID(),
+      vector: range(0, 384),
+      metadata: { hello: "world" },
+    };
+    await new UpsertCommand(mockData).exec(client);
+
+    const res = await new FetchCommand([{ ids: [mockData.id] }]).exec(client);
+
+    expect(res.length).toBe(1);
+    expect(res[0]?.id).toBe(mockData.id);
+  });
+
+  test("should fetch by prefix", async () => {
+    const initialVector = range(0, 384);
+    const prefix = `prefix-${Math.floor(Math.random() * 10000)}-`;
+    const idsToUpsert = [
+      { id: `${prefix}1`, vector: initialVector },
+      { id: `${prefix}2`, vector: initialVector },
+      { id: `${prefix}3`, vector: initialVector },
+      { id: "different_prefix_1", vector: initialVector },
+    ];
+
+    await Promise.all(idsToUpsert.map((data) => new UpsertCommand(data).exec(client)));
+    await awaitUntilIndexed(client);
+
+    const res = await new FetchCommand([{ prefix }]).exec(client);
+
+    expect(res).toHaveLength(3);
+    expect(res.every((item) => item?.id.startsWith(prefix))).toBeTrue();
+  });
+
+  test("should throw when multiple fetch criteria are provided", async () => {
+    await expect(new FetchCommand([{ ids: ["1"], prefix: "test_" }]).exec(client)).rejects.toThrow(
+      "Only one of ids or prefix must be provided."
+    );
+  });
 });
 
 describe("FETCH with Index Client", () => {
@@ -249,5 +288,43 @@ describe("FETCH with Index Client", () => {
       },
       null,
     ]);
+  });
+
+  test("should fetch by prefix using index client", async () => {
+    const initialVector = range(0, 384);
+    const prefix = `prefix-${Math.floor(Math.random() * 10000)}-`;
+    const idsToUpsert = [
+      { id: `${prefix}1`, vector: initialVector },
+      { id: `${prefix}2`, vector: initialVector },
+      { id: `${prefix}3`, vector: initialVector },
+      { id: "different_prefix_1", vector: initialVector },
+    ];
+
+    await index.upsert(idsToUpsert);
+    await awaitUntilIndexed(client);
+
+    const res = await index.fetch({ prefix });
+    expect(res).toHaveLength(3);
+    expect(res.every((item) => item?.id.startsWith(prefix))).toBeTrue();
+  });
+
+  test("should fetch by prefix in namespace", async () => {
+    const initialVector = range(0, 384);
+    const prefix = `prefix-${Math.floor(Math.random() * 10000)}-`;
+    const namespace = "test_namespace";
+    const idsToUpsert = [
+      { id: `${prefix}1`, vector: initialVector },
+      { id: `${prefix}2`, vector: initialVector },
+      { id: `${prefix}3`, vector: initialVector },
+      { id: "different_prefix_1", vector: initialVector },
+    ];
+
+    await index.upsert(idsToUpsert, { namespace });
+    await awaitUntilIndexed(client);
+
+    const res = await index.namespace(namespace).fetch({ prefix });
+
+    expect(res).toHaveLength(3);
+    expect(res.every((item) => item?.id.startsWith(prefix))).toBeTrue();
   });
 });

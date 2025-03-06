@@ -9,12 +9,30 @@ type FetchCommandOptions = {
   namespace?: string;
 };
 
+type IdsPayload = number[] | string[];
+
+type ObjectPayload =
+  | {
+      /**
+       * Ids of the items to be fetched.
+       */
+      ids: number[] | string[];
+    }
+  | {
+      /**
+       * Id prefix of the items to be fetched.
+       */
+      prefix: string;
+    };
+
+type FetchPayload = IdsPayload | ObjectPayload;
+
 export type FetchResult<TMetadata = Dict> = Vector<TMetadata> | null;
 
 type FetchEndpointVariants = `fetch` | `fetch/${NAMESPACE}`;
 
 export class FetchCommand<TMetadata> extends Command<FetchResult<TMetadata>[]> {
-  constructor([ids, opts]: [ids: number[] | string[], opts?: FetchCommandOptions]) {
+  constructor([payload, opts]: [payload: FetchPayload, opts?: FetchCommandOptions]) {
     let endpoint: FetchEndpointVariants = "fetch";
 
     if (opts?.namespace) {
@@ -22,6 +40,12 @@ export class FetchCommand<TMetadata> extends Command<FetchResult<TMetadata>[]> {
       delete opts.namespace;
     }
 
-    super({ ids, ...opts }, endpoint);
+    if (Array.isArray(payload)) {
+      super({ ids: payload, ...opts }, endpoint);
+    } else if (typeof payload === "object") {
+      super({ ...payload, ...opts }, endpoint);
+    } else {
+      throw new Error("Invalid payload");
+    }
   }
 }

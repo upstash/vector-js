@@ -8,6 +8,7 @@ type RangeCommandPayload = {
   includeVectors?: boolean;
   includeMetadata?: boolean;
   includeData?: boolean;
+  prefix?: string;
 };
 
 type RangeCommandOptions = { namespace?: string };
