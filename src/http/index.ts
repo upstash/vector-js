@@ -62,14 +62,14 @@ export type HttpClientConfig = {
   headers?: Record<string, string>;
   baseUrl: string;
   retry?: RetryConfig;
-  signal?: AbortSignal;
+  signal?: AbortSignal | (() => AbortSignal);
 } & RequesterConfig;
 
 export class HttpClient implements Requester {
   public baseUrl: string;
   public headers: Record<string, string>;
   public readonly options: {
-    signal?: AbortSignal;
+    signal?: HttpClientConfig["signal"];
     cache?: CacheSetting;
   };
 
@@ -104,13 +104,16 @@ export class HttpClient implements Requester {
   }
 
   public async request<TResult>(req: UpstashRequest): Promise<UpstashResponse<TResult>> {
+    const signal = this.options.signal;
+    const isSignalFunction = typeof signal === "function";
+
     const requestOptions = {
       cache: this.options.cache,
       method: "POST",
       headers: this.headers,
       body: JSON.stringify(req.body),
       keepalive: true,
-      signal: this.options.signal,
+      signal: isSignalFunction ? signal() : signal,
     };
 
     let res: Response | null = null;
@@ -120,13 +123,15 @@ export class HttpClient implements Requester {
         res = await fetch([this.baseUrl, ...(req.path ?? [])].join("/"), requestOptions);
         break;
       } catch (error_) {
-        if (this.options.signal?.aborted) {
+        if (requestOptions.signal?.aborted && isSignalFunction) {
+          throw error_;
+        } else if (requestOptions.signal?.aborted) {
           const myBlob = new Blob([
-            JSON.stringify({ result: this.options.signal.reason ?? "Aborted" }),
+            JSON.stringify({ result: requestOptions.signal.reason ?? "Aborted" }),
           ]);
           const myOptions = {
             status: 200,
-            statusText: this.options.signal.reason ?? "Aborted",
+            statusText: requestOptions.signal.reason ?? "Aborted",
           };
           res = new Response(myBlob, myOptions);
           break;
