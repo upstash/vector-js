@@ -11,11 +11,11 @@ type DenseIndexInfo = {
   dimension: number;
   similarityFunction: SimilarityFunction;
   embeddingModel?: string;
-}
+};
 
 type SparseIndexInfo = {
   embeddingModel?: string;
-}
+};
 
 export type InfoResult = {
   vectorCount: number;

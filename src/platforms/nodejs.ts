@@ -1,3 +1,4 @@
+import type { HttpClientConfig } from "@http";
 import { HttpClient, type Requester, type RequesterConfig } from "@http";
 import * as core from "./../vector";
 import type { Dict } from "@commands/client/types";
@@ -24,7 +25,7 @@ export type IndexConfig = {
    * The signal will allow aborting requests on the fly.
    * For more check: https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
    */
-  signal?: AbortSignal;
+  signal?: HttpClientConfig["signal"];
 
   /**
    * Enable telemetry to help us improve the SDK.
