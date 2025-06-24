@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { newHttpClient } from "@utils/test-utils";
 import { HttpClient } from "./";
+import { serve } from "bun";
+import { Index, type InfoResult } from "../platforms/nodejs";
 
 test("remove trailing slash from urls", () => {
   const client = new HttpClient({ baseUrl: "https://example.com/" });
@@ -51,6 +53,51 @@ describe("Abort", () => {
 
     const bodyResponse = await body;
     expect(bodyResponse.result).toEqual("Abort works!");
+  });
+
+  const MOCK_SERVER_PORT = 8080;
+  const SERVER_URL = `http://localhost:${MOCK_SERVER_PORT}`;
+
+  test("should throw on request timeouts", async () => {
+
+    const result: InfoResult = {
+      vectorCount: 0,
+      pendingVectorCount: 0,
+      indexSize: 0,
+      dimension: 0,
+      similarityFunction: "COSINE",
+      namespaces: {},
+    }
+
+    const server = serve({
+      async fetch(request) {
+
+        if (request.url.includes("info")) {
+          return new Response(JSON.stringify({ result }), { status: 200 });
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        return new Response("Hello World");
+      },
+      port: MOCK_SERVER_PORT,
+    });
+
+    const index = new Index({
+      url: SERVER_URL,
+      token: "non-existent",
+      signal: () => AbortSignal.timeout(1000), // set a timeout of 1 second
+    });
+
+    try {
+      expect(index.reset()).rejects.toThrow("The operation timed out.");
+      expect(index.info()).resolves.toEqual(result);
+      expect(index.reset()).rejects.toThrow("The operation timed out.");
+    } catch (error) {
+      server.stop(true);
+      throw error;
+    } finally {
+      server.stop(true);
+    }
   });
 });
 
