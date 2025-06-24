@@ -59,7 +59,6 @@ describe("Abort", () => {
   const SERVER_URL = `http://localhost:${MOCK_SERVER_PORT}`;
 
   test("should throw on request timeouts", async () => {
-
     const result: InfoResult = {
       vectorCount: 0,
       pendingVectorCount: 0,
@@ -67,11 +66,10 @@ describe("Abort", () => {
       dimension: 0,
       similarityFunction: "COSINE",
       namespaces: {},
-    }
+    };
 
     const server = serve({
       async fetch(request) {
-
         if (request.url.includes("info")) {
           return new Response(JSON.stringify({ result }), { status: 200 });
         }
