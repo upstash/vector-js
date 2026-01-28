@@ -23,8 +23,8 @@ await ns.query({ vector: [0.1, 0.2], topK: 5 });
 ## Operatoins
 
 ```ts
-await index.deleteNamespace("ns")
-await index.listNamespaces()
+await index.deleteNamespace("ns");
+await index.listNamespaces();
 ```
 
 ## Common Pitfalls

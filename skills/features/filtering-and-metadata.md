@@ -9,22 +9,22 @@ Filtering uses a SQL‑like syntax and supports nested objects, array indexing, 
 You can upsert vectors with metadata and optional data. Metadata is any JSON structure; data is typically raw text.
 
 ```ts
-import { Index } from "@upstash/vector"
+import { Index } from "@upstash/vector";
 
-const index = new Index({ url: "...", token: "..." })
+const index = new Index({ url: "...", token: "..." });
 
 await index.upsert([
   {
     id: "v0",
     vector: [0.1, 0.2],
     metadata: { city: "Istanbul", population: 15460000 },
-    data: "Istanbul info"
+    data: "Istanbul info",
   },
   {
     id: "v1",
-    data: "Upstash is a serverless data platform."
-  }
-])
+    data: "Upstash is a serverless data platform.",
+  },
+]);
 ```
 
 ## Querying with Metadata Filters
@@ -75,8 +75,8 @@ await index.query({
   topK: 5,
   includeMetadata: true,
   includeData: true,
-})
+});
 
 // range
-await index.range({ cursor: "0", limit: 3, includeMetadata: true })
+await index.range({ cursor: "0", limit: 3, includeMetadata: true });
 ```
