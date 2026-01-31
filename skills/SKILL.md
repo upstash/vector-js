@@ -1,5 +1,5 @@
 ---
-name: upstash/vector
+name: vector-js
 description: Provides quick-start guidance and a unified entry point for Vector features, SDK usage, and integrations. Use when users ask how to work with Vector, its TS SDK, features, or supported frameworks.
 ---
 
