@@ -482,6 +482,8 @@ describe("QUERY with Index Client", () => {
       }
     );
 
+    await awaitUntilIndexed(hybridWithEmbeddingIndex);
+
     const result = await hybridWithEmbeddingIndex.query(
       {
         data: "upstash",
