@@ -1,30 +1,27 @@
 name: Tests
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-  schedule:
-    - cron: "0 0 * * *" # daily
 
-env:
-  UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
-  UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
-  SPARSE_UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.SPARSE_UPSTASH_VECTOR_REST_TOKEN }}
-  SPARSE_UPSTASH_VECTOR_REST_URL: ${{ secrets.SPARSE_UPSTASH_VECTOR_REST_URL }}
-  HYBRID_UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.HYBRID_UPSTASH_VECTOR_REST_TOKEN }}
-  HYBRID_UPSTASH_VECTOR_REST_URL: ${{ secrets.HYBRID_UPSTASH_VECTOR_REST_URL }}
-  HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_URL: ${{ secrets.HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_URL }}
-  HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_TOKEN }}
+on:
+  workflow_call:
+
 jobs:
   test:
     runs-on: ubuntu-latest
     concurrency: test
 
+    env:
+      UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
+      UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
+      SPARSE_UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.SPARSE_UPSTASH_VECTOR_REST_TOKEN }}
+      SPARSE_UPSTASH_VECTOR_REST_URL: ${{ secrets.SPARSE_UPSTASH_VECTOR_REST_URL }}
+      HYBRID_UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.HYBRID_UPSTASH_VECTOR_REST_TOKEN }}
+      HYBRID_UPSTASH_VECTOR_REST_URL: ${{ secrets.HYBRID_UPSTASH_VECTOR_REST_URL }}
+      HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_URL: ${{ secrets.HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_URL }}
+      HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.HYBRID_EMBEDDING_UPSTASH_VECTOR_REST_TOKEN }}
+
     name: Tests
     steps:
       - name: Setup repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -47,11 +44,16 @@ jobs:
     needs:
       - test
     runs-on: ubuntu-latest
+    env:
+      UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
+      UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
     steps:
       - name: Setup repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup nodejs
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -90,13 +92,16 @@ jobs:
     needs:
       - release
     runs-on: ubuntu-latest
+    env:
+      UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
+      UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
     steps:
       - name: Setup repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup nodejs
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -135,11 +140,16 @@ jobs:
     needs:
       - test
     runs-on: ubuntu-latest
+    env:
+      UPSTASH_VECTOR_REST_URL: ${{ secrets.UPSTASH_VECTOR_REST_URL }}
+      UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
     steps:
       - name: Setup repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup nodejs
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -182,12 +192,12 @@ jobs:
       - release
     steps:
       - name: Setup repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -236,16 +246,17 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get version
         id: version
-        run: echo "::set-output name=version::v0.0.0-ci.${GITHUB_SHA}-$(date +%Y%m%d%H%M%S)"
+        run: echo "version=v0.0.0-ci.${GITHUB_SHA}-$(date +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
 
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
+          registry-url: https://registry.npmjs.org
 
       - name: Set package version
         run: echo $(jq --arg v "${{ steps.version.outputs.version }}" '(.version) = $v' package.json) > package.json
@@ -261,11 +272,8 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Add npm token
-        run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > .npmrc
-
       - name: Publish release candidate
-        run: npm publish --access public --tag=ci
+        run: npm publish --access public --tag=ci --provenance
 
       - name: Sleep
         run: sleep 5
