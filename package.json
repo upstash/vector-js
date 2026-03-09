@@ -4,7 +4,7 @@
   "author": "Oguzhan Olguncu <oguzhan@upstash.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/upstash/vector-js"
+    "url": "git@github.com:upstash/vector-js.git"
   },
   "exports": {
     ".": {
