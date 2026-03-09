@@ -81,6 +81,47 @@ describe("QUERY", () => {
       ],
     ]);
   });
+
+  test("should return nested array when single query is provided", async () => {
+    const ID = randomID();
+    const initialData = [
+      {
+        id: `1-${ID}`,
+        vector: range(0, 384),
+        metadata: {
+          animal: "elephant",
+          tags: ["mammal"],
+          diet: "herbivore",
+        },
+      },
+    ];
+    await new UpsertCommand(initialData).exec(client);
+
+    await awaitUntilIndexed(client);
+
+    const res = await new QueryManyCommand<{
+      animal: string;
+      tags: string[];
+      diet: string;
+    }>([
+      {
+        vector: initialData[0].vector,
+        topK: 1,
+        filter: "tags[0] = 'mammal' AND diet = 'herbivore'",
+        includeMetadata: true,
+      },
+    ]).exec(client);
+
+    // Should always return a nested array, even with a single query
+    expect(Array.isArray(res)).toBe(true);
+    expect(res.length).toBe(1);
+    expect(Array.isArray(res[0])).toBe(true);
+    expect(res[0][0]).toMatchObject({
+      id: `1-${ID}`,
+      score: 1,
+      metadata: { animal: "elephant", tags: ["mammal"], diet: "herbivore" },
+    });
+  });
 });
 
 describe("QUERY with Index Client", () => {
@@ -156,6 +197,48 @@ describe("QUERY with Index Client", () => {
         },
       ],
     ]);
+  });
+
+  test("should return nested array with single query via Index client", async () => {
+    const ID = randomID();
+    const initialData = [
+      {
+        id: `1-${ID}`,
+        vector: range(0, 384),
+        metadata: {
+          animal: "elephant",
+          tags: ["mammal"],
+          diet: "herbivore",
+        },
+      },
+    ];
+
+    await index.upsert(initialData);
+
+    await awaitUntilIndexed(index);
+
+    const res = await index.queryMany<{
+      animal: string;
+      tags: string[];
+      diet: string;
+    }>([
+      {
+        vector: initialData[0].vector,
+        topK: 1,
+        filter: "tags[0] = 'mammal' AND diet = 'herbivore'",
+        includeMetadata: true,
+      },
+    ]);
+
+    // Should always return a nested array, even with a single query
+    expect(Array.isArray(res)).toBe(true);
+    expect(res.length).toBe(1);
+    expect(Array.isArray(res[0])).toBe(true);
+    expect(res[0][0]).toMatchObject({
+      id: `1-${ID}`,
+      score: 1,
+      metadata: { animal: "elephant", tags: ["mammal"], diet: "herbivore" },
+    });
   });
 
   test("should query hybrid index", async () => {
