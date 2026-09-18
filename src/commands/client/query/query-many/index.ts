@@ -35,10 +35,12 @@ export class QueryManyCommand<TMetadata> extends Command<QueryResult<TMetadata>[
     const result = await super.exec(client);
 
     // When only one query is provided, the API returns a flat array
-    // (QueryResult[]) instead of a nested array (QueryResult[][]).
-    // Detect this by checking if the first element is a plain result
-    // object rather than an array.
-    if (this.queryCount === 1 && result.length > 0 && !Array.isArray(result[0])) {
+    // (QueryResult[]) instead of a nested array (QueryResult[][]) - this
+    // includes the zero-match case, where it returns [] rather than [[]].
+    // Detect the flat shape by checking if the first element is a plain
+    // result object rather than an array; `result[0]` is `undefined` (not
+    // an array) when `result` is empty, so this also catches zero matches.
+    if (this.queryCount === 1 && !Array.isArray(result[0])) {
       return [result as unknown as QueryResult<TMetadata>[]];
     }
 
