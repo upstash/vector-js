@@ -37,6 +37,8 @@ export type IndexConfig = {
 
 /**
  * Serverless vector client for upstash.
+ *
+ * @see node_modules/@upstash/vector/docs/getting-started.mdx
  */
 export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndexMetadata> {
   /**
@@ -54,6 +56,8 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    * ```typescript
    * const index = new Index();
    * ```
+   *
+   * @see node_modules/@upstash/vector/docs/getting-started.mdx
    */
   constructor(config?: IndexConfig) {
     const safeProcess = (typeof process === "undefined" ? {} : process) as Record<
@@ -114,6 +118,8 @@ export class Index<TIndexMetadata extends Dict = Dict> extends core.Index<TIndex
    * When used on the Cloudflare Workers, you can just pass the "env" context provided by Cloudflare.
    * Else, this tries to load `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from
    * your environment using `process.env`.
+   *
+   * @see node_modules/@upstash/vector/docs/getting-started.mdx
    */
   static fromEnv(
     env?: { UPSTASH_VECTOR_REST_URL: string; UPSTASH_VECTOR_REST_TOKEN: string },
