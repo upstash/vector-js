@@ -222,9 +222,9 @@ export class Index<TIndexMetadata extends Dict = Dict> {
    *
    * @param {CommandArgs<typeof UpdateCommand>} args - The arguments for the update command.
    * @param {number|string} args.id - The unique identifier for the item being updated.
-   * @param {number[]} args.vector - The feature vector associated with the item.
+   * @param {number[]} [args.vector] - The feature vector associated with the item.
    * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
-   * @param {string} [args.namespace] - The namespace to update the item in.
+   * @param {string} [options.namespace] - The namespace to update the item in.
    *
    * @returns {Promise<{updated: number}>} A promise that returns the number of items successfully updated.
    * @see node_modules/@upstash/vector/docs/commands/upsert.mdx
