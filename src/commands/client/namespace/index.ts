@@ -55,12 +55,13 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {Dict} [args.metadata] - Optional metadata to be associated with the item.
    *
    * @returns {string} A promise that resolves with the result of the upsert operation after the command is executed.
+   * @see node_modules/@upstash/vector/docs/commands/upsert.mdx
    */
   upsert = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpsertCommand<TMetadata>>
   ) => new UpsertCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
 
-  /*
+  /**
    * Updates specific items in the index.
    * It's used for updating existing items in the index.
    *
@@ -80,6 +81,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {Record<string, unknown>} [args.metadata] - Optional metadata to be associated with the item.
    *
    * @returns {Promise<{updated: number}>} A promise that returns the number of items successfully updated.
+   * @see node_modules/@upstash/vector/docs/commands/upsert.mdx
    */
   update = <TMetadata extends Dict = TIndexMetadata>(
     args: CommandArgs<typeof UpdateCommand<TMetadata>>
@@ -107,6 +109,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {string} [args[1].namespace = ""] - The namespace of the index to fetch items from.
    *
    * @returns {Promise<FetchReturnResponse<TMetadata>[]>} A promise that resolves with an array of fetched items or null if not found, after the command is executed.
+   * @see node_modules/@upstash/vector/docs/commands/fetch.mdx
    */
   fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) => {
     if (args[1]) {
@@ -140,6 +143,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {boolean} [args.includeMetadata=false] - When set to true, includes additional metadata of the returned items in the response.
    *
    * @returns A promise that resolves with an array of query result objects when the request to query the index is completed.
+   * @see node_modules/@upstash/vector/docs/commands/query.mdx
    */
   query = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof QueryCommand>) =>
     new QueryCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
@@ -169,6 +173,8 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * const firstBatch = await fetchNext(10);
    * const secondBatch = await fetchNext(10);
    * await stop(); // End the query session
+   *
+   * @see node_modules/@upstash/vector/docs/commands/resumable-query.mdx
    */
   resumableQuery = async <TMetadata extends Dict = TIndexMetadata>(args: ResumableQueryPayload) => {
     const resumableQuery = new ResumableQuery<TMetadata>(args, this.client, this.namespace);
@@ -197,6 +203,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    *
    * @param args - A single id, an array of ids, a prefix, or a filter to delete items from the index.
    * @returns Number of deleted vectors in the format `{ deleted: number }`.If no vectors are deleted, returns `{ deleted: 0 }`.
+   * @see node_modules/@upstash/vector/docs/commands/delete.mdx
    */
   delete = (args: CommandArgs<typeof DeleteCommand>) =>
     new DeleteCommand(args, { namespace: this.namespace }).exec(this.client);
@@ -230,6 +237,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @param {boolean} [args.includeMetadata=false] - Optionally include additional metadata of the items in the response.
    *
    * @returns {Promise<RangeReturnResponse<TMetadata>>} A promise that resolves with the response containing the next cursor and an array of vectors, after the command is executed.
+   * @see node_modules/@upstash/vector/docs/commands/range.mdx
    */
   range = <TMetadata extends Dict = TIndexMetadata>(args: CommandArgs<typeof RangeCommand>) =>
     new RangeCommand<TMetadata>(args, { namespace: this.namespace }).exec(this.client);
@@ -244,6 +252,7 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * ```
    *
    * @returns {Promise<string>} A promise that resolves with the result of the reset operation after the command is executed.
+   * @see node_modules/@upstash/vector/docs/commands/reset.mdx
    */
   reset = () => new ResetCommand({ namespace: this.namespace }).exec(this.client);
 }
