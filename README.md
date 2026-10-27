@@ -282,6 +282,8 @@ We have a [Discord](upstash.com/discord) for common problems. If you can't find 
 
 See [the documentation](https://upstash.com/docs/vector/sdks/ts/getting-started) for details.
 
+The npm package includes TypeScript source in `node_modules/@upstash/vector/src/` and documentation in `node_modules/@upstash/vector/docs/`. Start with `src/platforms/nodejs.ts` to explore the source.
+
 ## Contributing
 
 ### [Install Bun](https://bun.sh/docs/installation)

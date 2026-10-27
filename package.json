@@ -30,6 +30,7 @@
     "bun-types": "latest",
     "eslint": "9.10.0",
     "eslint-plugin-unicorn": "^55.0.0",
+    "giget": "3.3.1",
     "husky": "^8.0.3",
     "prettier": "^3.3.3",
     "tsup": "latest",
@@ -41,7 +42,17 @@
   },
   "description": "An HTTP/REST based Vector DB client built on top of Upstash REST API.",
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "docs",
+    "version.ts",
+    "tsconfig.json",
+    "!src/**/*.test.*",
+    "!src/**/*.test-d.*",
+    "!src/**/*.spec.*",
+    "!src/**/test-utils.*",
+    "!src/**/__tests__/**",
+    "!src/**/__snapshots__/**"
   ],
   "homepage": "https://upstash.com/vector",
   "keywords": [
@@ -55,6 +66,10 @@
     "fmt": "prettier --write .",
     "lint": "tsc && eslint \"src/**/*.{js,ts,tsx}\" --quiet --fix",
     "build": "tsup ",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepack": "giget gh:upstash/docs/vector/sdks/ts docs --force-clean 1>&2"
+  },
+  "directories": {
+    "doc": "./docs"
   }
 }
