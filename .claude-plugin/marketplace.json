@@ -1,33 +1,36 @@
 {
   "name": "vector-js",
+  "description": "The Upstash Vector agent skill for Claude Code",
   "owner": {
-    "name": "Upstash"
+    "name": "Upstash",
+    "url": "https://upstash.com"
   },
-  "description": "Upstash Vector agent skill",
   "plugins": [
     {
       "name": "vector-js",
       "displayName": "Upstash Vector",
-      "description": "Upstash Vector agent skill for Claude Code",
       "source": "./",
       "strict": false,
+      "description": "Guides coding agents through the Upstash Vector TypeScript SDK: quick start, upsert/query/fetch, namespaces, metadata filtering, and dense/sparse/hybrid indexes. Use when working with @upstash/vector or Upstash Vector features.",
+      "version": "0.1.1",
       "author": {
         "name": "Upstash",
-        "url": "https://github.com/upstash"
+        "url": "https://upstash.com"
       },
-      "homepage": "https://docs.upstash.com/vector",
+      "homepage": "https://upstash.com/vector",
       "repository": "https://github.com/upstash/vector-js",
       "license": "MIT",
+      "category": "development",
       "keywords": [
         "upstash",
         "vector",
         "embeddings",
-        "serverless"
+        "serverless",
+        "typescript",
+        "sdk",
+        "coding-agents"
       ],
-      "category": "development",
-      "skills": [
-        "./skills"
-      ]
+      "skills": ["./skills"]
     }
   ]
 }
