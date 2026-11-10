@@ -1,0 +1,28 @@
+{
+  "name": "vector-js",
+  "description": "Upstash Vector agent skill",
+  "author": {
+    "name": "Upstash",
+    "url": "https://github.com/upstash"
+  },
+  "homepage": "https://docs.upstash.com/vector",
+  "repository": "https://github.com/upstash/vector-js",
+  "license": "MIT",
+  "keywords": [
+    "upstash",
+    "vector",
+    "embeddings",
+    "serverless"
+  ],
+  "skills": [
+    "./"
+  ],
+  "interface": {
+    "displayName": "Upstash Vector",
+    "shortDescription": "Upstash Vector agent skill",
+    "longDescription": "Agent skill for the Upstash Vector SDK, installed from the skill already in this repository.",
+    "developerName": "Upstash",
+    "category": "Developer Tools",
+    "websiteURL": "https://docs.upstash.com/vector"
+  }
+}

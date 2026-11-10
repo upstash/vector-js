@@ -1,0 +1,20 @@
+{
+  "name": "vector-js",
+  "interface": {
+    "displayName": "Upstash Vector"
+  },
+  "plugins": [
+    {
+      "name": "vector-js",
+      "source": {
+        "source": "local",
+        "path": "./skills"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

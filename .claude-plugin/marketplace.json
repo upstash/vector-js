@@ -1,0 +1,33 @@
+{
+  "name": "vector-js",
+  "owner": {
+    "name": "Upstash"
+  },
+  "description": "Upstash Vector agent skill",
+  "plugins": [
+    {
+      "name": "vector-js",
+      "displayName": "Upstash Vector",
+      "description": "Upstash Vector agent skill for Claude Code",
+      "source": "./skills",
+      "strict": false,
+      "author": {
+        "name": "Upstash",
+        "url": "https://github.com/upstash"
+      },
+      "homepage": "https://docs.upstash.com/vector",
+      "repository": "https://github.com/upstash/vector-js",
+      "license": "MIT",
+      "keywords": [
+        "upstash",
+        "vector",
+        "embeddings",
+        "serverless"
+      ],
+      "category": "development",
+      "skills": [
+        "./"
+      ]
+    }
+  ]
+}
