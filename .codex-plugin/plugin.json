@@ -13,7 +13,7 @@
   "skills": ["./skills"],
   "interface": {
     "displayName": "Upstash Vector",
-    "shortDescription": "Upstash Vector TypeScript SDK guidance for coding agents",
+    "shortDescription": "Use the Upstash Vector TypeScript SDK",
     "longDescription": "Upstash Vector is a serverless vector database for storing, querying, and managing embeddings. This plugin installs the repository's agent skill so coding agents know how to use the @upstash/vector TypeScript SDK.\n\nUse it when connecting to an Upstash Vector index, upserting or querying vectors (including text that is embedded automatically), fetching or deleting by ID, working with namespaces, attaching and filtering on metadata, or choosing dense, sparse, or hybrid index structures. The skill points agents at the SDK methods and feature docs already in skills/ — not at reading package source.\n\nThe skill text is the same guidance shipped in skills/SKILL.md and its linked reference files.",
     "developerName": "Upstash",
     "category": "Developer Tools",

@@ -1,6 +1,6 @@
 {
   "name": "vector-js",
-  "description": "The Upstash Vector agent skill for Claude Code",
+  "description": "The Upstash Vector agent skill",
   "owner": {
     "name": "Upstash",
     "url": "https://upstash.com"
