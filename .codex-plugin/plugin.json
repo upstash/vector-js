@@ -1,0 +1,36 @@
+{
+  "name": "vector-js",
+  "version": "0.1.1",
+  "description": "Guides coding agents through the Upstash Vector TypeScript SDK: quick start, upsert/query/fetch, namespaces, metadata filtering, and dense/sparse/hybrid indexes.",
+  "author": {
+    "name": "Upstash",
+    "url": "https://upstash.com"
+  },
+  "homepage": "https://upstash.com/vector",
+  "repository": "https://github.com/upstash/vector-js",
+  "license": "MIT",
+  "keywords": ["upstash", "vector", "embeddings", "serverless", "typescript", "sdk"],
+  "skills": ["./skills"],
+  "interface": {
+    "displayName": "Upstash Vector",
+    "shortDescription": "Use the Upstash Vector TypeScript SDK",
+    "longDescription": "Upstash Vector is a serverless vector database for storing, querying, and managing embeddings. This plugin installs the repository's agent skill so coding agents know how to use the @upstash/vector TypeScript SDK.\n\nUse it when connecting to an Upstash Vector index, upserting or querying vectors (including text that is embedded automatically), fetching or deleting by ID, working with namespaces, attaching and filtering on metadata, or choosing dense, sparse, or hybrid index structures. The skill points agents at the SDK methods and feature docs already in skills/ — not at reading package source.\n\nThe skill text is the same guidance shipped in skills/SKILL.md and its linked reference files.",
+    "developerName": "Upstash",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Vector SDK quick start",
+      "Upsert, query, and fetch",
+      "Namespaces and metadata filtering",
+      "Dense, sparse, and hybrid indexes"
+    ],
+    "websiteURL": "https://upstash.com/vector",
+    "defaultPrompt": [
+      "Help me upsert and query vectors with @upstash/vector",
+      "Filter Upstash Vector results by metadata",
+      "Set up namespaces for multi-tenant vector search"
+    ],
+    "brandColor": "#00C98D",
+    "composerIcon": "./assets/logo.svg",
+    "logo": "./assets/logo.svg"
+  }
+}
