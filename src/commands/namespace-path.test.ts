@@ -21,23 +21,15 @@ describe("namespace in request path", () => {
     globalThis.fetch = originalFetch;
   });
 
-  test("namespace names are sent as before", async () => {
+  test("ordinary namespace names are sent as before", async () => {
     const urls = captureUrls();
     await index.fetch([1], { namespace: "my-namespace_1" });
     await index.namespace("tenant.a").range({ cursor: 0, limit: 1 });
-    await index.query({ vector: [0.1], topK: 1 }, { namespace: "user:1@example.com+a=b" });
-    await index.upsert({ id: "1", vector: [0.1] }, { namespace: "a,b;c&d$e" });
-    await index.delete("1", { namespace: ".hidden" });
-    await index.reset({ namespace: "a..b" });
-    await index.deleteNamespace("100%25");
+    await index.delete("1", { namespace: "a..b" });
     expect(urls).toEqual([
       `${BASE}/fetch/my-namespace_1`,
       `${BASE}/range/tenant.a`,
-      `${BASE}/query/user:1@example.com+a=b`,
-      `${BASE}/upsert/a,b;c&d$e`,
-      `${BASE}/delete/.hidden`,
-      `${BASE}/reset/a..b`,
-      `${BASE}/delete-namespace/100%25`,
+      `${BASE}/delete/a..b`,
     ]);
   });
 
@@ -47,28 +39,44 @@ describe("namespace in request path", () => {
     expect(urls).toEqual([`${BASE}/reset?all`]);
   });
 
-  test.each(["a/b", String.raw`a\b`, "a?b", "a#b", "../reset?all", String.raw`..\reset`])(
+  test.each([
+    ["a?b", "a%3Fb"],
+    ["a#b", "a%23b"],
+    ["a b", "a%20b"],
+    ["user:1@example.com", "user%3A1%40example.com"],
+    ["a+b=c", "a%2Bb%3Dc"],
+    ["..?all", "..%3Fall"],
+    [".. ", "..%20"],
+  ])("namespace %p stays a single path segment", async (namespace, encoded) => {
+    const urls = captureUrls();
+    await index.query({ vector: [0.1], topK: 1 }, { namespace });
+    await index.upsert({ id: "1", vector: [0.1] }, { namespace });
+    await index.delete("1", { namespace });
+    await index.reset({ namespace });
+    await index.deleteNamespace(namespace);
+    expect(urls).toEqual([
+      `${BASE}/query/${encoded}`,
+      `${BASE}/upsert/${encoded}`,
+      `${BASE}/delete/${encoded}`,
+      `${BASE}/reset/${encoded}`,
+      `${BASE}/delete-namespace/${encoded}`,
+    ]);
+  });
+
+  test.each(["a/b", String.raw`a\b`, "../reset?all", "100%", "%2e%2e", "a%2Fb"])(
     "namespace %p is not accepted",
     async (namespace) => {
       const urls = captureUrls();
       expect(() => index.namespace(namespace).fetch([1])).toThrow("Namespace cannot contain");
-      expect(() => index.query({ vector: [0.1], topK: 1 }, { namespace })).toThrow(
-        "Namespace cannot contain"
-      );
       expect(() => index.deleteNamespace(namespace)).toThrow("Namespace cannot contain");
       expect(urls).toEqual([]);
     }
   );
 
-  test.each([".", "..", "%2e", "%2E%2e", ".%2e", ".\t.", ".. ", " ..", "..\n"])(
-    "namespace %p is not accepted",
-    async (namespace) => {
-      const urls = captureUrls();
-      expect(() => index.namespace(namespace).fetch([1])).toThrow(
-        'Namespace cannot be "." or ".."'
-      );
-      expect(() => index.deleteNamespace(namespace)).toThrow('Namespace cannot be "." or ".."');
-      expect(urls).toEqual([]);
-    }
-  );
+  test.each([".", ".."])("namespace %p is not accepted", async (namespace) => {
+    const urls = captureUrls();
+    expect(() => index.namespace(namespace).fetch([1])).toThrow('Namespace cannot be "." or ".."');
+    expect(() => index.deleteNamespace(namespace)).toThrow('Namespace cannot be "." or ".."');
+    expect(urls).toEqual([]);
+  });
 });
