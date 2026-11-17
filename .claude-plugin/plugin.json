@@ -1,0 +1,19 @@
+{
+  "name": "vector-js",
+  "version": "0.1.1",
+  "description": "Guides coding agents through the Upstash Vector TypeScript SDK and registers the remote Upstash MCP server (Vector tools over OAuth).",
+  "author": {
+    "name": "Upstash",
+    "url": "https://upstash.com"
+  },
+  "homepage": "https://upstash.com/vector",
+  "repository": "https://github.com/upstash/vector-js",
+  "license": "MIT",
+  "skills": ["./skills"],
+  "mcpServers": {
+    "upstash": {
+      "type": "http",
+      "url": "https://mcp.upstash.com/mcp?features=vector"
+    }
+  }
+}

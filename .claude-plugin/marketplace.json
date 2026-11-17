@@ -1,6 +1,6 @@
 {
   "name": "vector-js",
-  "description": "The Upstash Vector agent skill",
+  "description": "The Upstash Vector agent skill and remote MCP server",
   "owner": {
     "name": "Upstash",
     "url": "https://upstash.com"
@@ -11,7 +11,7 @@
       "displayName": "Upstash Vector",
       "source": "./",
       "strict": false,
-      "description": "Guides coding agents through the Upstash Vector TypeScript SDK: quick start, upsert/query/fetch, namespaces, metadata filtering, and dense/sparse/hybrid indexes. Use when working with @upstash/vector or Upstash Vector features.",
+      "description": "Guides coding agents through the Upstash Vector TypeScript SDK: quick start, upsert/query/fetch, namespaces, metadata filtering, and dense/sparse/hybrid indexes. Registers the remote Upstash MCP server for Vector tools over OAuth. Use when working with @upstash/vector or Upstash Vector features.",
       "version": "0.1.1",
       "author": {
         "name": "Upstash",
@@ -28,9 +28,16 @@
         "serverless",
         "typescript",
         "sdk",
+        "mcp",
         "coding-agents"
       ],
-      "skills": ["./skills"]
+      "skills": ["./skills"],
+      "mcpServers": {
+        "upstash": {
+          "type": "http",
+          "url": "https://mcp.upstash.com/mcp?features=vector"
+        }
+      }
     }
   ]
 }
