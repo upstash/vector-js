@@ -1,6 +1,6 @@
 import type { NAMESPACE, Vector } from "@commands/client/types";
 import type { Dict } from "@commands/client/types";
-import { Command } from "@commands/command";
+import { Command, withNamespace } from "@commands/command";
 
 type FetchCommandOptions = {
   includeMetadata?: boolean;
@@ -36,7 +36,7 @@ export class FetchCommand<TMetadata> extends Command<FetchResult<TMetadata>[]> {
     let endpoint: FetchEndpointVariants = "fetch";
 
     if (opts?.namespace) {
-      endpoint = `${endpoint}/${opts.namespace}`;
+      endpoint = withNamespace(endpoint, opts.namespace);
       delete opts.namespace;
     }
 

@@ -1,5 +1,5 @@
 import type { NAMESPACE } from "@commands/client/types";
-import { Command } from "@commands/command";
+import { Command, withNamespace } from "@commands/command";
 
 type ResetEndpointVariants = `reset` | `reset/${NAMESPACE}` | `reset?all`;
 
@@ -11,7 +11,7 @@ export class ResetCommand extends Command<string> {
     let endpoint: ResetEndpointVariants = "reset";
 
     if (options?.namespace) {
-      endpoint = `${endpoint}/${options.namespace}`;
+      endpoint = withNamespace(endpoint, options.namespace);
     } else if (options?.all) {
       endpoint = `${endpoint}?all`;
     }

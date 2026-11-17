@@ -1,6 +1,6 @@
 import type { NAMESPACE, Vector } from "@commands/client/types";
 import type { Dict } from "@commands/client/types";
-import { Command } from "@commands/command";
+import { Command, withNamespace } from "@commands/command";
 
 type RangeCommandPayload = {
   cursor: number | string;
@@ -25,7 +25,7 @@ export class RangeCommand<TMetadata> extends Command<RangeResult<TMetadata>> {
     let endpoint: RangeEndpointVariants = "range";
 
     if (options?.namespace) {
-      endpoint = `${endpoint}/${options.namespace}`;
+      endpoint = withNamespace(endpoint, options.namespace);
     }
 
     super(payload, endpoint);

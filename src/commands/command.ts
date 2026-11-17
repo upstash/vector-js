@@ -59,3 +59,31 @@ export class Command<TResult> {
     return result;
   }
 }
+
+/**
+ * Appends a namespace to an endpoint.
+ *
+ * The namespace is sent as it is, so it has to fit in a single path segment. Names containing
+ * `/`, `\`, `?` or `#` would change which endpoint the request is sent to, and `.` and `..` are
+ * resolved by URL parsers (also in their percent-encoded forms), so these are not accepted.
+ */
+export const withNamespace = <TEndpoint extends string>(
+  endpoint: TEndpoint,
+  namespace: string
+): `${TEndpoint}/${string}` => {
+  if (typeof namespace !== "string") {
+    throw new UpstashError("Namespace must be a string.");
+  }
+  if (/[#/?\\]/.test(namespace)) {
+    throw new UpstashError(String.raw`Namespace cannot contain "/", "\", "?" or "#".`);
+  }
+  // URL parsers drop whitespace and control characters around a segment and read %2e as a dot
+  const segment = [...namespace]
+    .filter((char) => char > " ")
+    .join("")
+    .replaceAll(/%2e/gi, ".");
+  if (segment === "." || segment === "..") {
+    throw new UpstashError('Namespace cannot be "." or "..".');
+  }
+  return `${endpoint}/${namespace}`;
+};

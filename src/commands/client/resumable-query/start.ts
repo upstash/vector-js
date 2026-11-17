@@ -1,4 +1,4 @@
-import { Command } from "@commands/command";
+import { Command, withNamespace } from "@commands/command";
 import type { QueryResult } from "@commands/types";
 import type { ResumableQueryEndpointVariants, ResumableQueryPayload } from ".";
 
@@ -17,7 +17,7 @@ export class StartResumableQueryCommand<TMetadata> extends Command<
     }
 
     if (namespace) {
-      endpoint = `${endpoint}/${namespace}`;
+      endpoint = withNamespace(endpoint, namespace);
     }
 
     super(payload, endpoint);

@@ -1,4 +1,4 @@
-import { Command } from "@commands/command";
+import { Command, withNamespace } from "@commands/command";
 import type { Requester } from "@http";
 import type {
   QueryCommandOptions,
@@ -17,7 +17,7 @@ export class QueryManyCommand<TMetadata> extends Command<QueryResult<TMetadata>[
     endpoint = hasData ? "query-data" : "query";
 
     if (options?.namespace) {
-      endpoint = `${endpoint}/${options.namespace}`;
+      endpoint = withNamespace(endpoint, options.namespace);
     }
 
     super(payload, endpoint);
