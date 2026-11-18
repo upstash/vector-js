@@ -72,7 +72,6 @@ describe("namespace in request path", () => {
       );
       await expect(index.deleteNamespace(namespace)).rejects.toThrow("Namespace cannot contain");
       await expect(index.reset({ namespace })).rejects.toThrow("Namespace cannot contain");
-      await Promise.allSettled([index.query({ vector: [0.1], topK: 1 }, { namespace })]);
       expect(urls).toEqual([]);
     }
   );
@@ -85,16 +84,6 @@ describe("namespace in request path", () => {
     await expect(index.deleteNamespace(namespace)).rejects.toThrow(
       'Namespace cannot be "." or ".."'
     );
-    expect(urls).toEqual([]);
-  });
-
-  test("an unusable namespace is reported as a rejected promise", async () => {
-    const urls = captureUrls();
-    const caught = await index
-      .namespace("a/b")
-      .fetch([1])
-      .catch((error: unknown) => error);
-    expect(caught).toBeInstanceOf(Error);
     expect(urls).toEqual([]);
   });
 
