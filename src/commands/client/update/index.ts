@@ -1,5 +1,5 @@
 import type { NAMESPACE, SparseVector } from "@commands/client/types";
-import { Command } from "@commands/command";
+import { Command, withNamespace } from "@commands/command";
 
 type NoInfer<T> = T extends infer U ? U : never;
 
@@ -46,7 +46,7 @@ export class UpdateCommand<TMetadata> extends Command<UpdateCommandResponse> {
     let endpoint: UpdateEndpointVariants = "update";
 
     if (opts?.namespace) {
-      endpoint = `${endpoint}/${opts.namespace}`;
+      endpoint = withNamespace(endpoint, opts.namespace);
     }
 
     super(payload, endpoint);
