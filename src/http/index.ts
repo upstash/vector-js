@@ -146,9 +146,28 @@ export class HttpClient implements Requester {
       throw error ?? new Error("Exhausted all retries");
     }
 
-    const body = (await res.json()) as UpstashResponse<TResult>;
+    // Read the body as text first: an error response is not guaranteed to be a JSON object,
+    // and the status has to reach the caller even when the body can't be parsed.
+    const text = await res.text();
+    let body: UpstashResponse<TResult> | null | undefined;
+    try {
+      body = JSON.parse(text) as UpstashResponse<TResult> | null;
+    } catch {
+      body = undefined;
+    }
+    const isObject = typeof body === "object" && body !== null;
+
     if (!res.ok) {
-      throw new UpstashError(`${body.error}`);
+      const detail = isObject && body?.error ? body.error : text.slice(0, 500);
+      const status = [res.status, res.statusText].filter(Boolean).join(" ");
+      throw new UpstashError(
+        isObject && body?.error ? detail : `Request failed with status ${status}: ${detail}`
+      );
+    }
+    if (!isObject || !body) {
+      throw new UpstashError(
+        `Unexpected response with status ${res.status}: ${text.slice(0, 500)}`
+      );
     }
 
     return { result: body.result, error: body.error };
