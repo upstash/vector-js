@@ -63,4 +63,62 @@ describe("QueryManyCommand - single query response normalization", () => {
 
     expect(res).toEqual([[], []]);
   });
+
+  test("returns one empty array per query when the API returns a single empty array", async () => {
+    // This is what the API returns when the namespace does not exist,
+    // regardless of the number of queries.
+    const command = new QueryManyCommand(
+      [
+        { vector: [0.1], topK: 1 },
+        { vector: [0.2], topK: 1 },
+        { vector: [0.3], topK: 1 },
+      ],
+      { namespace: "missing" }
+    );
+
+    const res = await command.exec(mockRequester([]));
+
+    expect(res).toEqual([[], [], []]);
+  });
+});
+
+const sentTo = async (command: QueryManyCommand<unknown>) => {
+  let path: string[] | undefined;
+  await command.exec({
+    request: async <TResult>(request: { path?: string[] }) => {
+      path = request.path;
+      return { result: [] } as UpstashResponse<TResult>;
+    },
+  });
+  return path;
+};
+
+describe("QueryManyCommand - endpoint", () => {
+  test("sends vector queries to query", async () => {
+    const command = new QueryManyCommand([
+      { vector: [0.1], topK: 1 },
+      { sparseVector: { indices: [1], values: [0.5] }, topK: 1 },
+    ]);
+
+    expect(await sentTo(command)).toEqual(["query"]);
+  });
+
+  test("sends data queries to query-data, including an empty string", async () => {
+    const command = new QueryManyCommand([
+      { data: "hello", topK: 1 },
+      { data: "", topK: 1 },
+    ]);
+
+    expect(await sentTo(command)).toEqual(["query-data"]);
+  });
+
+  test("rejects a batch that mixes data and vector queries", () => {
+    expect(
+      () =>
+        new QueryManyCommand([
+          { vector: [0.1], topK: 1 },
+          { data: "hello", topK: 1 },
+        ])
+    ).toThrow("cannot be mixed");
+  });
 });
