@@ -34,16 +34,16 @@ type FetchEndpointVariants = `fetch` | `fetch/${NAMESPACE}`;
 export class FetchCommand<TMetadata> extends Command<FetchResult<TMetadata>[]> {
   constructor([payload, opts]: [payload: FetchPayload, opts?: FetchCommandOptions]) {
     let endpoint: FetchEndpointVariants = "fetch";
+    const { namespace, ...restOpts } = opts ?? {};
 
-    if (opts?.namespace) {
-      endpoint = withNamespace(endpoint, opts.namespace);
-      delete opts.namespace;
+    if (namespace) {
+      endpoint = withNamespace(endpoint, namespace);
     }
 
     if (Array.isArray(payload)) {
-      super({ ids: payload, ...opts }, endpoint);
+      super({ ids: payload, ...restOpts }, endpoint);
     } else if (typeof payload === "object") {
-      super({ ...payload, ...opts }, endpoint);
+      super({ ...payload, ...restOpts }, endpoint);
     } else {
       throw new Error("Invalid payload");
     }
