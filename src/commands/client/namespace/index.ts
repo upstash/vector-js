@@ -112,13 +112,11 @@ export class Namespace<TIndexMetadata extends Dict = Dict> {
    * @see node_modules/@upstash/vector/docs/commands/fetch.mdx
    */
   fetch = <TMetadata extends Dict = TIndexMetadata>(...args: CommandArgs<typeof FetchCommand>) => {
-    if (args[1]) {
-      args[1].namespace = this.namespace;
-    } else {
-      args[1] = { namespace: this.namespace };
-    }
+    const [payload, options] = args;
 
-    return new FetchCommand<TMetadata>(args).exec(this.client);
+    return new FetchCommand<TMetadata>([payload, { ...options, namespace: this.namespace }]).exec(
+      this.client
+    );
   };
 
   /**
